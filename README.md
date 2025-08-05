@@ -1,4 +1,4 @@
-# 🤖 Takeshi Bot
+# 🤖 DeadBoT
 
 <div align="center">
     <img src="./assets/images/takeshi-bot.png" width="500">
