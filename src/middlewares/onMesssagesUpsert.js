@@ -19,6 +19,10 @@ const { badMacHandler } = require("../utils/badMacHandler");
 const { checkIfMemberIsMuted } = require("../utils/database");
 const { messageHandler } = require("./messageHandler");
 
+// 🔊 Módulos para áudio automático
+const fs = require("fs");
+const path = require("path");
+
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
   if (!messages.length) {
     return;
@@ -40,6 +44,48 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
 
       if (webMessage?.message) {
         messageHandler(socket, webMessage);
+
+        // ✅ ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
+        const msg =
+          webMessage.message?.extendedTextMessage?.text ||
+          webMessage.message?.conversation ||
+          "";
+        const chatId = webMessage.key.remoteJid;
+
+        const audioTriggers = {
+          "vagabunda": "vagabunda.mp3",
+          "prostituta": "prostituta.mp3",
+          "corno": "corno.mp3",
+          "oremos": "ferrolhos.mp3",
+          
+          // adicione mais pares "palavra": "arquivo.mp3"
+        };
+
+        const msgLower = msg.toLowerCase();
+        for (const trigger in audioTriggers) {
+          if (msgLower.includes(trigger)) {
+            const audioPath = path.join(
+              __dirname,
+              "..",
+              "assets",
+              "audios",
+              audioTriggers[trigger]
+            );
+            
+            if (fs.existsSync(audioPath)) {
+              const audioBuffer = fs.readFileSync(audioPath);
+              await socket.sendMessage(chatId, {
+                audio: audioBuffer,
+                mimetype: "audio/mp4",
+                ptt: true,
+              });
+            } else {
+              console.warn(`Arquivo de áudio não encontrado: ${audioPath}`);
+            }
+
+            break; // impede múltiplas respostas por uma mensagem
+          }
+        }
       }
 
       if (isAtLeastMinutesInPast(timestamp)) {
