@@ -57,13 +57,13 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}fechar
  • ${prefix}fumar
  • ${prefix}hidetag
- • ${prefix}limpar
- • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}motivar
  • ${prefix}mute
  • ${prefix}only-admin (1/0)
  • ${prefix}parabens
+ • ${prefix}mute
+ • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
  • ${prefix}revelar
