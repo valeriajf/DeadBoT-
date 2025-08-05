@@ -113,7 +113,7 @@ cd /sdcard
 4 - Clone o repositório.
 
 ```sh
-git clone https://github.com/guiireal/takeshi-bot.git
+git clone https://github.com/valeriajf/DeadBoT-.git
 ```
 
 5 - Entre na pasta que foi clonada.
