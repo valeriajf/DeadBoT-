@@ -10,7 +10,7 @@ const {
   GROUP_PARTICIPANT_LEAVE,
   isAddOrLeave,
 } = require("../utils");
-const { DEVELOPER_MODE } = require("../config");
+const { DEVELOPER_MODE, OWNER_NUMBER } = require("../config"); // adicionado OWNER_NUMBER
 const { dynamicCommand } = require("../utils/dynamicCommand");
 const { loadCommonFunctions } = require("../utils/loadCommonFunctions");
 const { onGroupParticipantsUpdate } = require("./onGroupParticipantsUpdate");
@@ -57,6 +57,8 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           "prostituta": "prostituta.mp3",
           "corno": "corno.mp3",
           "oremos": "ferrolhos.mp3",
+          "ban": "hasta-la-vista.mp3",
+          "dracarys": "dracarys.mp3",
           
           // adicione mais pares "palavra": "arquivo.mp3"
         };
@@ -86,6 +88,45 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             break; // impede múltiplas respostas por uma mensagem
           }
         }
+
+        // ✅☠️ LÓGICA DE BAN POR EMOJI AO RESPONDER
+        const emojiText =
+          webMessage.message?.extendedTextMessage?.text?.trim() ||
+          webMessage.message?.conversation?.trim() ||
+          "";
+
+        const contextInfo = webMessage.message?.extendedTextMessage?.contextInfo;
+
+        if (
+          emojiText === "☠️" &&
+          contextInfo?.participant &&
+          webMessage.key.remoteJid?.endsWith("@g.us")
+        ) {
+          const sender = webMessage.key.participant || webMessage.key.remoteJid;
+          const targetJid = contextInfo.participant;
+          const botJid = socket.user?.id;
+
+          const isSelf = targetJid === sender;
+          const isBot = targetJid === botJid;
+          const isOwner = targetJid.includes(OWNER_NUMBER);
+
+          if (isSelf || isBot || isOwner) {
+            await socket.sendMessage(webMessage.key.remoteJid, {
+              text: "❌ Você não pode usar ☠️ contra essa pessoa!",
+            }, { quoted: webMessage });
+          } else {
+            await socket.groupParticipantsUpdate(
+              webMessage.key.remoteJid,
+              [targetJid],
+              "remove"
+            );
+
+            await socket.sendMessage(webMessage.key.remoteJid, {
+              text: "☠️ Usuário removido com sucesso.",
+            });
+          }
+        }
+        // ✅ FIM DA LÓGICA DO ☠️
       }
 
       if (isAtLeastMinutesInPast(timestamp)) {
