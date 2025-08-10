@@ -119,7 +119,7 @@ git clone https://github.com/valeriajf/DeadBoT-.git
 5 - Entre na pasta que foi clonada.
 
 ```sh
-cd takeshi-bot
+cd DeadBoT-
 ```
 
 6 - Habilite permissões de leitura e escrita (faça apenas 1x esse passo).
