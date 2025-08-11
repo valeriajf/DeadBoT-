@@ -56,6 +56,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}exit (1/0)
  • ${prefix}fechar
  • ${prefix}fumar
+ • ${prefix}get-sticker 
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo

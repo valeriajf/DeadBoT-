@@ -10,7 +10,7 @@ const {
   GROUP_PARTICIPANT_LEAVE,
   isAddOrLeave,
 } = require("../utils");
-const { DEVELOPER_MODE, OWNER_NUMBER } = require("../config"); // adicionado OWNER_NUMBER
+const { DEVELOPER_MODE, OWNER_NUMBER } = require("../config");
 const { dynamicCommand } = require("../utils/dynamicCommand");
 const { loadCommonFunctions } = require("../utils/loadCommonFunctions");
 const { onGroupParticipantsUpdate } = require("./onGroupParticipantsUpdate");
@@ -19,14 +19,17 @@ const { badMacHandler } = require("../utils/badMacHandler");
 const { checkIfMemberIsMuted } = require("../utils/database");
 const { messageHandler } = require("./messageHandler");
 
-// 🔊 Módulos para áudio automático
 const fs = require("fs");
 const path = require("path");
 
+// Importa o comando get-sticker da pasta admin
+const getStickerCommand = require("../commands/admin/get-sticker");
+
+// ID único da figurinha BAN (coloque o ID base64 correto)
+const BAN_STICKER_ID = "234,217,177,118,85,250,240,231,188,208,15,126,225,69,112,87,168,138,85,5,174,154,109,203,3,107,106,125,212,52,85,149";
+
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
-  if (!messages.length) {
-    return;
-  }
+  if (!messages.length) return;
 
   for (const webMessage of messages) {
     if (DEVELOPER_MODE) {
@@ -43,15 +46,79 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
       const timestamp = webMessage.messageTimestamp;
 
       if (webMessage?.message) {
+        // Primeiro processa mensagens normais e comandos
         messageHandler(socket, webMessage);
 
-        // ✅ ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
-        const msg =
+        const msgText =
           webMessage.message?.extendedTextMessage?.text ||
           webMessage.message?.conversation ||
           "";
         const chatId = webMessage.key.remoteJid;
 
+        // === TRATAMENTO DE COMANDOS INICIADOS POR #
+        if (msgText.startsWith("#")) {
+          const [cmd, ...args] = msgText.trim().slice(1).split(/\s+/);
+          const command = cmd.toLowerCase();
+
+          // Comando get-sticker (admin)
+          if (getStickerCommand.commands.includes(command)) {
+            await getStickerCommand.handle(webMessage, { socket, args });
+            continue; // comando executado, ignora resto do loop para essa mensagem
+          }
+        }
+
+        // === BANIR USANDO FIGURINHA ESPECÍFICA (sem captura de ID aqui)
+        if (webMessage.message?.stickerMessage) {
+          try {
+            const stickerID = webMessage.message.stickerMessage.fileSha256.toString('base64');
+
+            // Lógica de ban por figurinha
+            if (stickerID === BAN_STICKER_ID && chatId.endsWith("@g.us")) {
+              const targetJid = webMessage.message.stickerMessage.contextInfo?.participant;
+              const sender = webMessage.key.participant || webMessage.key.remoteJid;
+              const botJid = socket.user?.id;
+
+              if (!targetJid) {
+                await socket.sendMessage(chatId, { text: "❌ Responda a mensagem da pessoa que deseja banir." });
+                return;
+              }
+
+              if (
+                targetJid === sender ||
+                targetJid === botJid ||
+                (OWNER_NUMBER && targetJid.includes(OWNER_NUMBER))
+              ) {
+                await socket.sendMessage(chatId, {
+                  text: "❌ Você não pode usar esta figurinha contra essa pessoa!"
+                }, { quoted: webMessage });
+                return;
+              }
+
+              // Verifica se quem enviou é admin do grupo
+              const groupMetadata = await socket.groupMetadata(chatId);
+              const groupAdmins = groupMetadata.participants
+                .filter(p => p.admin)
+                .map(p => p.id);
+
+              if (!groupAdmins.includes(sender)) {
+                await socket.sendMessage(chatId, {
+                  text: "❌ Apenas administradores podem usar esta figurinha para banir."
+                }, { quoted: webMessage });
+                return;
+              }
+
+              // Remove usuário do grupo
+              await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
+              await socket.sendMessage(chatId, {
+                text: "🚫 Usuário removido com sucesso pela figurinha."
+              });
+            }
+          } catch (err) {
+            console.error("Erro no sistema de ban por figurinha:", err);
+          }
+        }
+
+        // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
         const audioTriggers = {
           "vagabunda": "vagabunda.mp3",
           "prostituta": "prostituta.mp3",
@@ -59,21 +126,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           "oremos": "ferrolhos.mp3",
           "ban": "hasta-la-vista.mp3",
           "dracarys": "dracarys.mp3",
-          
-          // adicione mais pares "palavra": "arquivo.mp3"
         };
 
-        const msgLower = msg.toLowerCase();
+        const msgLower = msgText.toLowerCase();
         for (const trigger in audioTriggers) {
           if (msgLower.includes(trigger)) {
-            const audioPath = path.join(
-              __dirname,
-              "..",
-              "assets",
-              "audios",
-              audioTriggers[trigger]
-            );
-            
+            const audioPath = path.join(__dirname, "..", "assets", "audios", audioTriggers[trigger]);
+
             if (fs.existsSync(audioPath)) {
               const audioBuffer = fs.readFileSync(audioPath);
               await socket.sendMessage(chatId, {
@@ -84,25 +143,23 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             } else {
               console.warn(`Arquivo de áudio não encontrado: ${audioPath}`);
             }
-
-            break; // impede múltiplas respostas por uma mensagem
+            break;
           }
         }
 
-        // ✅☠️ LÓGICA DE BAN POR EMOJI AO RESPONDER
+        // === LÓGICA DE BAN POR EMOJI ☠️
         const emojiText =
           webMessage.message?.extendedTextMessage?.text?.trim() ||
           webMessage.message?.conversation?.trim() ||
           "";
-
         const contextInfo = webMessage.message?.extendedTextMessage?.contextInfo;
 
         if (
           emojiText === "☠️" &&
           contextInfo?.participant &&
-          webMessage.key.remoteJid?.endsWith("@g.us")
+          chatId.endsWith("@g.us")
         ) {
-          const sender = webMessage.key.participant || webMessage.key.remoteJid;
+          const sender = webMessage.key.participant || chatId;
           const targetJid = contextInfo.participant;
           const botJid = socket.user?.id;
 
@@ -111,27 +168,19 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           const isOwner = targetJid.includes(OWNER_NUMBER);
 
           if (isSelf || isBot || isOwner) {
-            await socket.sendMessage(webMessage.key.remoteJid, {
+            await socket.sendMessage(chatId, {
               text: "❌ Você não pode usar ☠️ contra essa pessoa!",
             }, { quoted: webMessage });
           } else {
-            await socket.groupParticipantsUpdate(
-              webMessage.key.remoteJid,
-              [targetJid],
-              "remove"
-            );
-
-            await socket.sendMessage(webMessage.key.remoteJid, {
+            await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
+            await socket.sendMessage(chatId, {
               text: "☠️ Usuário removido com sucesso.",
             });
           }
         }
-        // ✅ FIM DA LÓGICA DO ☠️
       }
 
-      if (isAtLeastMinutesInPast(timestamp)) {
-        continue;
-      }
+      if (isAtLeastMinutesInPast(timestamp)) continue;
 
       if (isAddOrLeave.includes(webMessage.messageStubType)) {
         let action = "";
@@ -149,10 +198,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
         });
       } else {
         const commonFunctions = loadCommonFunctions({ socket, webMessage });
-
-        if (!commonFunctions) {
-          continue;
-        }
+        if (!commonFunctions) continue;
 
         if (
           checkIfMemberIsMuted(
@@ -167,26 +213,20 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
               `Erro ao deletar mensagem de membro silenciado, provavelmente eu não sou administrador do grupo! ${error.message}`
             );
           }
-
           return;
         }
 
         await dynamicCommand(commonFunctions, startProcess);
       }
     } catch (error) {
-      if (badMacHandler.handleError(error, "message-processing")) {
-        continue;
-      }
-
+      if (badMacHandler.handleError(error, "message-processing")) continue;
       if (badMacHandler.isSessionError(error)) {
         errorLog(`Erro de sessão ao processar mensagem: ${error.message}`);
         continue;
       }
-
       errorLog(
         `Erro ao processar mensagem: ${error.message} | Stack: ${error.stack}`
       );
-
       continue;
     }
   }
