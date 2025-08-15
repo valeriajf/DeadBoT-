@@ -55,13 +55,16 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
  • ${prefix}fechar
+ • ${prefix}fumar
  • ${prefix}get-sticker 
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
+ • ${prefix}motivar
  • ${prefix}mute
  • ${prefix}only-admin (1/0)
+ • ${prefix}parabens
  • ${prefix}promover
  • ${prefix}rebaixar
  • ${prefix}revelar
@@ -76,12 +79,9 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
- • ${prefix}fumar
  • ${prefix}gerar-link
  • ${prefix}get-lid
  • ${prefix}google-search
- • ${prefix}motivar
- • ${prefix}parabens
  • ${prefix}perfil
  • ${prefix}ping
  • ${prefix}raw-message

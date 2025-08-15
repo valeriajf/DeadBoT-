@@ -12,15 +12,15 @@
         "answer": "No hablo Taka Taka"
     },
     {
-         "match": "Bem vinde",
-         "answer": "Já pode mandar figurinhas"
+         "match": "Olá",
+         "answer": "!figurinhas 10"
     },
     {
           "match": "Boa noite",
           "answer": "Good night"
     },
     {
-          "match": "Regras",
-          "answer": "🤖 SE CHEGOU POR AQUI, É BOM SABER QUE ⚠️ É PERMITIDO NÚMERO ESTRANGEIRO, EXCETO DDI 62 🫂 SOMOS UM GRUPO DE BATE PAPO COM FIGURINHAS 🎉 É PERMITIDO FLOOD COM MODERAÇÃO 🔊  VOCÊ DEVE ENVIAR SUA MÍDIA SOMENTE EM VISUALIZAÇÃO ÚNICA 🕒 PV CADA UM CUIDA DO SEU 🤬 POR AQUI NÃO TOLERAMOS ☠️ GORE, FIGURINHAS NOJENTAS, MAUS TRATOS,VIOLÊNCIA, RACISMO, NAZISMO, PEDOFILIA, ZOOFILIA, PORNOGRAFIA, HOMOFOBIA, LINKS, VÍDEOS, ÁUDIOS ESTOURADOS E GEMIDÃO DO ZAP 🍥 EM CASO DE DÚVIDAS, DENÚNCIAS OU SUGESTÕES, ~NÃO~ CHAME OS ADMins 💆 ELES DEVEM ESTAR DORMINDO! 🆗"
-}
+           "match": "Dead",
+           "answer": "Fala comigo"
+    }
 ]
