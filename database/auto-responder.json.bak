@@ -1,14 +1,10 @@
 [
     {
-        "match": "Oi",
-        "answer": "Turubom?"
-    },
-    {
         "match": "Bom dia",
         "answer": "Bom é vc"
     },
     {
-        "match": "Bot burro",
+        "match": "Dead",
         "answer": "No hablo Taka Taka"
     },
     {

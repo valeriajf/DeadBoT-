@@ -122,9 +122,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
         const audioTriggers = {
           "vagabunda": "vagabunda.mp3",
           "prostituta": "prostituta.mp3",
-          "corno": "corno.mp3",
           "oremos": "ferrolhos.mp3",
-          "dracarys": "dracarys.mp3",
         };
 
         const msgLower = msgText.toLowerCase();
