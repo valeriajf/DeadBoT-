@@ -1,19 +1,11 @@
 [
     {
-        "match": "Bom dia",
-        "answer": "Bom é vc"
-    },
-    {
-        "match": "Dead",
+        "match": "Oq",
         "answer": "No hablo Taka Taka"
     },
     {
          "match": "Olá",
          "answer": "!figurinhas 10"
-    },
-    {
-          "match": "Boa noite",
-          "answer": "Good night"
     },
     {
            "match": "Dead",

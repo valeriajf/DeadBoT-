@@ -28,6 +28,19 @@ const getStickerCommand = require("../commands/admin/get-sticker");
 // ID único da figurinha BAN (coloque o ID base64 correto)
 const BAN_STICKER_ID = "234,217,177,118,85,250,240,231,188,208,15,126,225,69,112,87,168,138,85,5,174,154,109,203,3,107,106,125,212,52,85,149";
 
+// Caminho do JSON de palavras-chave → figurinha
+const keywordsPath = path.join(__dirname, "../../database/keywords.json");
+let keywords = {};
+if (fs.existsSync(keywordsPath)) {
+  try {
+    keywords = JSON.parse(fs.readFileSync(keywordsPath, "utf8"));
+  } catch (e) {
+    console.error("[keywords] JSON inválido:", e.message);
+  }
+} else {
+  console.warn("[keywords] Arquivo não encontrado:", keywordsPath);
+}
+
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
   if (!messages.length) return;
 
@@ -70,16 +83,21 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
         // === BANIR USANDO FIGURINHA ESPECÍFICA (sem captura de ID aqui)
         if (webMessage.message?.stickerMessage) {
           try {
-            const stickerID = webMessage.message.stickerMessage.fileSha256.toString('base64');
+            const stickerID =
+              webMessage.message.stickerMessage.fileSha256.toString("base64");
 
             // Lógica de ban por figurinha
             if (stickerID === BAN_STICKER_ID && chatId.endsWith("@g.us")) {
-              const targetJid = webMessage.message.stickerMessage.contextInfo?.participant;
-              const sender = webMessage.key.participant || webMessage.key.remoteJid;
+              const targetJid =
+                webMessage.message.stickerMessage.contextInfo?.participant;
+              const sender =
+                webMessage.key.participant || webMessage.key.remoteJid;
               const botJid = socket.user?.id;
 
               if (!targetJid) {
-                await socket.sendMessage(chatId, { text: "❌ Responda a mensagem da pessoa que deseja banir." });
+                await socket.sendMessage(chatId, {
+                  text: "❌ Responda a mensagem da pessoa que deseja banir.",
+                });
                 return;
               }
 
@@ -88,29 +106,37 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 targetJid === botJid ||
                 (OWNER_NUMBER && targetJid.includes(OWNER_NUMBER))
               ) {
-                await socket.sendMessage(chatId, {
-                  text: "❌ Você não pode usar esta figurinha contra essa pessoa!"
-                }, { quoted: webMessage });
+                await socket.sendMessage(
+                  chatId,
+                  {
+                    text: "❌ Você não pode usar esta figurinha contra essa pessoa!",
+                  },
+                  { quoted: webMessage }
+                );
                 return;
               }
 
               // Verifica se quem enviou é admin do grupo
               const groupMetadata = await socket.groupMetadata(chatId);
               const groupAdmins = groupMetadata.participants
-                .filter(p => p.admin)
-                .map(p => p.id);
+                .filter((p) => p.admin)
+                .map((p) => p.id);
 
               if (!groupAdmins.includes(sender)) {
-                await socket.sendMessage(chatId, {
-                  text: "❌ Apenas administradores podem usar esta figurinha para banir."
-                }, { quoted: webMessage });
+                await socket.sendMessage(
+                  chatId,
+                  {
+                    text: "❌ Apenas administradores podem usar esta figurinha para banir.",
+                  },
+                  { quoted: webMessage }
+                );
                 return;
               }
 
               // Remove usuário do grupo
               await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
               await socket.sendMessage(chatId, {
-                text: "🚫 Usuário removido com sucesso pela figurinha."
+                text: "🚫 Usuário removido com sucesso pela figurinha.",
               });
             }
           } catch (err) {
@@ -118,17 +144,50 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
+        // === AUTO FIGURINHA POR PALAVRA-CHAVE (JSON) ===
+        try {
+          const body =
+            webMessage.message?.extendedTextMessage?.text ||
+            webMessage.message?.conversation ||
+            "";
+          const msgLower = body.toLowerCase();
+
+          if (msgLower) {
+            for (const key of Object.keys(keywords)) {
+              if (msgLower.includes(key)) {
+                await socket.sendMessage(
+                  chatId,
+                  { sticker: { url: keywords[key] } },
+                  { quoted: webMessage }
+                );
+                console.log(`[keywords] match="${key}" -> figurinha enviada`);
+                break;
+              }
+            }
+          }
+        } catch (err) {
+          console.error("[keywords] erro ao responder figurinha:", err);
+        }
+
         // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
         const audioTriggers = {
-          "vagabunda": "vagabunda.mp3",
-          "prostituta": "prostituta.mp3",
-          "oremos": "ferrolhos.mp3",
+          vagabunda: "vagabunda.mp3",
+          prostituta: "prostituta.mp3",
+          oremos: "ferrolhos.mp3",
+          love: "love.mp3",
+          dracarys: "dracarys.mp3"
         };
 
         const msgLower = msgText.toLowerCase();
         for (const trigger in audioTriggers) {
           if (msgLower.includes(trigger)) {
-            const audioPath = path.join(__dirname, "..", "assets", "audios", audioTriggers[trigger]);
+            const audioPath = path.join(
+              __dirname,
+              "..",
+              "assets",
+              "audios",
+              audioTriggers[trigger]
+            );
 
             if (fs.existsSync(audioPath)) {
               const audioBuffer = fs.readFileSync(audioPath);
@@ -149,7 +208,8 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           webMessage.message?.extendedTextMessage?.text?.trim() ||
           webMessage.message?.conversation?.trim() ||
           "";
-        const contextInfo = webMessage.message?.extendedTextMessage?.contextInfo;
+        const contextInfo =
+          webMessage.message?.extendedTextMessage?.contextInfo;
 
         if (
           emojiText === "☠️" &&
@@ -165,9 +225,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           const isOwner = targetJid.includes(OWNER_NUMBER);
 
           if (isSelf || isBot || isOwner) {
-            await socket.sendMessage(chatId, {
-              text: "❌ Você não pode usar ☠️ contra essa pessoa!",
-            }, { quoted: webMessage });
+            await socket.sendMessage(
+              chatId,
+              {
+                text: "❌ Você não pode usar ☠️ contra essa pessoa!",
+              },
+              { quoted: webMessage }
+            );
           } else {
             await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
             await socket.sendMessage(chatId, {
