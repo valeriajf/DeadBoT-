@@ -22,25 +22,25 @@ const { messageHandler } = require("./messageHandler");
 const fs = require("fs");
 const path = require("path");
 
-// Importa o comando get-sticker da pasta admin
+// Importa o comando get-sticker
 const getStickerCommand = require("../commands/admin/get-sticker");
 
-// ID único da figurinha BAN (coloque o ID base64 correto)
-const BAN_STICKER_ID = "234,217,177,118,85,250,240,231,188,208,15,126,225,69,112,87,168,138,85,5,174,154,109,203,3,107,106,125,212,52,85,149";
+// ============================================
+// LISTA DE FIGURINHAS BAN (adicione quantas IDs quiser)
+// Use o comando #get-sticker para pegar o ID base64 e cole aqui
+// ============================================
+const BAN_STICKERS = [
+  "26,139,43,53,193,110,27,37,22,136,30,158,215,72,252,28,93,213,19,110,39,250,10,112,14,51,131,100,58,96,251,242",
+  
+  "132,199,221,11,6,89,79,133,31,176,112,107,196,23,111,114,19,103,192,49,212,127,143,164,205,144,208,41,6,174,217,148",
+  
+  "51,55,140,125,135,13,79,233,18,139,2,162,81,226,124,238,137,57,31,45,219,236,130,171,255,191,225,161,127,227,112,31"
+  
+];
 
-// Caminho do JSON de palavras-chave → figurinha
-const keywordsPath = path.join(__dirname, "../../database/keywords.json");
-let keywords = {};
-if (fs.existsSync(keywordsPath)) {
-  try {
-    keywords = JSON.parse(fs.readFileSync(keywordsPath, "utf8"));
-  } catch (e) {
-    console.error("[keywords] JSON inválido:", e.message);
-  }
-} else {
-  console.warn("[keywords] Arquivo não encontrado:", keywordsPath);
-}
-
+// ============================================
+// EVENTO PRINCIPAL
+// ============================================
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
   if (!messages.length) return;
 
@@ -59,7 +59,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
       const timestamp = webMessage.messageTimestamp;
 
       if (webMessage?.message) {
-        // Primeiro processa mensagens normais e comandos
+        // Processa mensagens normais e comandos
         messageHandler(socket, webMessage);
 
         const msgText =
@@ -76,18 +76,17 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           // Comando get-sticker (admin)
           if (getStickerCommand.commands.includes(command)) {
             await getStickerCommand.handle(webMessage, { socket, args });
-            continue; // comando executado, ignora resto do loop para essa mensagem
+            continue; // comando executado
           }
         }
 
-        // === BANIR USANDO FIGURINHA ESPECÍFICA (sem captura de ID aqui)
+        // === BANIR USANDO FIGURINHAS DA LISTA
         if (webMessage.message?.stickerMessage) {
           try {
             const stickerID =
               webMessage.message.stickerMessage.fileSha256.toString("base64");
 
-            // Lógica de ban por figurinha
-            if (stickerID === BAN_STICKER_ID && chatId.endsWith("@g.us")) {
+            if (BAN_STICKERS.includes(stickerID) && chatId.endsWith("@g.us")) {
               const targetJid =
                 webMessage.message.stickerMessage.contextInfo?.participant;
               const sender =
@@ -126,7 +125,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 await socket.sendMessage(
                   chatId,
                   {
-                    text: "❌ Apenas administradores podem usar esta figurinha para banir.",
+                    text: "❌ Apenas administradores podem usar estas figurinhas para banir.",
                   },
                   { quoted: webMessage }
                 );
@@ -144,38 +143,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
-        // === AUTO FIGURINHA POR PALAVRA-CHAVE (JSON) ===
-        try {
-          const body =
-            webMessage.message?.extendedTextMessage?.text ||
-            webMessage.message?.conversation ||
-            "";
-          const msgLower = body.toLowerCase();
-
-          if (msgLower) {
-            for (const key of Object.keys(keywords)) {
-              if (msgLower.includes(key)) {
-                await socket.sendMessage(
-                  chatId,
-                  { sticker: { url: keywords[key] } },
-                  { quoted: webMessage }
-                );
-                console.log(`[keywords] match="${key}" -> figurinha enviada`);
-                break;
-              }
-            }
-          }
-        } catch (err) {
-          console.error("[keywords] erro ao responder figurinha:", err);
-        }
-
         // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
         const audioTriggers = {
           vagabunda: "vagabunda.mp3",
           prostituta: "prostituta.mp3",
           oremos: "ferrolhos.mp3",
-          love: "love.mp3",
-          dracarys: "dracarys.mp3"
+          sexo: "love.mp3",
+          dracarys: "dracarys.mp3",
         };
 
         const msgLower = msgText.toLowerCase();
