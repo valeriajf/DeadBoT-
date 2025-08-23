@@ -174,7 +174,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           vagabunda: "vagabunda.mp3",
           prostituta: "prostituta.mp3",
           oremos: "ferrolhos.mp3",
-          love: "love.mp3",
+          sexo: "love.mp3",
           dracarys: "dracarys.mp3"
         };
 
