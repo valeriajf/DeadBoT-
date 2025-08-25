@@ -27,6 +27,7 @@ exports.menuMessage = (groupJid) => {
 
  • ${prefix}exec
  • ${prefix}get-id
+ • ${prefix}get-sticker
  • ${prefix}off
  • ${prefix}on
  • ${prefix}set-menu-image

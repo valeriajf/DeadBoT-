@@ -10,5 +10,9 @@
     {
            "match": "Dead",
            "answer": "Fala comigo"
+    },
+    {
+           "match": "boa noite",
+           "answer": "Good night"
     }
 ]
