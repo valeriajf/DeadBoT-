@@ -27,6 +27,7 @@ exports.menuMessage = (groupJid) => {
 
  • ${prefix}exec
  • ${prefix}get-id
+ • ${prefix}get-sticker
  • ${prefix}off
  • ${prefix}on
  • ${prefix}set-menu-image
@@ -64,6 +65,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
+ • ${prefix}regras
  • ${prefix}revelar
  • ${prefix}unmute
  • ${prefix}welcome (1/0)

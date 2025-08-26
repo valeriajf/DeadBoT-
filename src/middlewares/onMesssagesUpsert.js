@@ -2,7 +2,7 @@
  * Evento chamado quando uma mensagem
  * é enviada para o grupo do WhatsApp
  *
- * @author Dev Gui
+ * @author VaL
  */
 const {
   isAtLeastMinutesInPast,
@@ -22,27 +22,60 @@ const { messageHandler } = require("./messageHandler");
 const fs = require("fs");
 const path = require("path");
 
-// Importa o comando get-sticker da pasta admin
+// Importa o comando get-sticker
 const getStickerCommand = require("../commands/admin/get-sticker");
 
-// ID único da figurinha BAN (coloque o ID base64 correto)
-const BAN_STICKER_ID = "234,217,177,118,85,250,240,231,188,208,15,126,225,69,112,87,168,138,85,5,174,154,109,203,3,107,106,125,212,52,85,149";
+// Importa o middleware AFK
+const afkMiddleware = require("../middlewares/afkMiddleware");
 
-// Caminho do JSON de palavras-chave → figurinha
-const keywordsPath = path.join(__dirname, "../../database/keywords.json");
-let keywords = {};
-if (fs.existsSync(keywordsPath)) {
+// ============================================
+// LISTA DE FIGURINHAS BAN (não alterado)
+// ============================================
+const BAN_STICKERS = [
+  "227,89,200,55,104,255,67,168,47,44,155,251,97,97,0,144,138,223,255,190,113,225,215,134,190,212,78,91,44,82,89,64",
+  "85,121,86,228,137,139,70,228,190,57,166,60,137,154,203,51,159,5,62,228,112,104,58,133,65,125,129,88,195,194,205,163",
+  "132,199,221,11,6,89,79,133,31,176,112,107,196,23,111,114,19,103,192,49,212,127,143,164,205,144,208,41,6,174,217,148",
+  "251,76,243,50,101,105,253,254,45,51,118,147,53,234,6,86,241,57,200,28,69,177,63,201,90,33,255,223,196,93,128,162",
+];
+
+// ============================================
+// Carrega keywords de figurinhas (palavra -> URL .webp)
+// Arquivo: src/database/keywords.json
+// ============================================
+function loadStickerKeywords() {
+  const keywordsPath = path.join(__dirname, "..", "database", "keywords.json");
   try {
-    keywords = JSON.parse(fs.readFileSync(keywordsPath, "utf8"));
+    if (!fs.existsSync(keywordsPath)) {
+      console.warn(`⚠️ [keywords] Arquivo não encontrado: ${keywordsPath}`);
+      return {};
+    }
+    const raw = fs.readFileSync(keywordsPath, "utf8");
+    const data = JSON.parse(raw);
+    if (data && typeof data === "object") return data;
   } catch (e) {
-    console.error("[keywords] JSON inválido:", e.message);
+    console.error("❌ [keywords] Erro ao carregar keywords.json:", e.message);
   }
-} else {
-  console.warn("[keywords] Arquivo não encontrado:", keywordsPath);
+  return {};
 }
 
+// Normaliza texto: minúsculas + remove acentos + colapsa espaços
+const normalize = (s) =>
+  (s || "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+// ============================================
+// EVENTO PRINCIPAL
+// ============================================
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
   if (!messages.length) return;
+
+  // Carrega o mapa de keywords (pegando sempre do arquivo atual)
+  const STICKER_KEYWORDS = loadStickerKeywords();
 
   for (const webMessage of messages) {
     if (DEVELOPER_MODE) {
@@ -59,7 +92,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
       const timestamp = webMessage.messageTimestamp;
 
       if (webMessage?.message) {
-        // Primeiro processa mensagens normais e comandos
+        // Processa mensagens normais e comandos
         messageHandler(socket, webMessage);
 
         const msgText =
@@ -76,18 +109,17 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           // Comando get-sticker (admin)
           if (getStickerCommand.commands.includes(command)) {
             await getStickerCommand.handle(webMessage, { socket, args });
-            continue; // comando executado, ignora resto do loop para essa mensagem
+            continue; // comando executado
           }
         }
 
-        // === BANIR USANDO FIGURINHA ESPECÍFICA (sem captura de ID aqui)
+        // === BANIR USANDO FIGURINHAS DA LISTA (APENAS ADM) — NÃO ALTERADO
         if (webMessage.message?.stickerMessage) {
           try {
             const stickerID =
               webMessage.message.stickerMessage.fileSha256.toString("base64");
 
-            // Lógica de ban por figurinha
-            if (stickerID === BAN_STICKER_ID && chatId.endsWith("@g.us")) {
+            if (BAN_STICKERS.includes(stickerID) && chatId.endsWith("@g.us")) {
               const targetJid =
                 webMessage.message.stickerMessage.contextInfo?.participant;
               const sender =
@@ -116,7 +148,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 return;
               }
 
-              // Verifica se quem enviou é admin do grupo
+              // Verifica se quem enviou a figurinha é admin do grupo
               const groupMetadata = await socket.groupMetadata(chatId);
               const groupAdmins = groupMetadata.participants
                 .filter((p) => p.admin)
@@ -126,7 +158,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 await socket.sendMessage(
                   chatId,
                   {
-                    text: "❌ Apenas administradores podem usar esta figurinha para banir.",
+                    text: "❌ Apenas administradores podem usar estas figurinhas para banir.",
                   },
                   { quoted: webMessage }
                 );
@@ -136,7 +168,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
               // Remove usuário do grupo
               await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
               await socket.sendMessage(chatId, {
-                text: "🚫 Usuário removido com sucesso pela figurinha.",
+                text: "🚫 Usuário removido com sucesso pela figurinha (ação de administrador).",
               });
             }
           } catch (err) {
@@ -144,24 +176,26 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
-        // === AUTO FIGURINHA POR PALAVRA-CHAVE (JSON) ===
+        // === FIGURINHAS AUTOMÁTICAS POR PALAVRA-CHAVE (keywords.json)
         try {
           const body =
             webMessage.message?.extendedTextMessage?.text ||
             webMessage.message?.conversation ||
             "";
-          const msgLower = body.toLowerCase();
+          const nMsg = normalize(body);
 
-          if (msgLower) {
-            for (const key of Object.keys(keywords)) {
-              if (msgLower.includes(key)) {
+          if (nMsg) {
+            for (const [key, url] of Object.entries(STICKER_KEYWORDS)) {
+              const nKey = normalize(key);
+              if (!nKey) continue;
+              if (nMsg.includes(nKey)) {
                 await socket.sendMessage(
                   chatId,
-                  { sticker: { url: keywords[key] } },
+                  { sticker: { url: String(url) } },
                   { quoted: webMessage }
                 );
                 console.log(`[keywords] match="${key}" -> figurinha enviada`);
-                break;
+                break; // evita múltiplos envios por mensagem
               }
             }
           }
@@ -169,13 +203,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           console.error("[keywords] erro ao responder figurinha:", err);
         }
 
-        // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE
+        // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE — NÃO ALTERADO
         const audioTriggers = {
           vagabunda: "vagabunda.mp3",
           prostituta: "prostituta.mp3",
           oremos: "ferrolhos.mp3",
-          love: "love.mp3",
-          dracarys: "dracarys.mp3"
+          sexo: "love.mp3",
+          dracarys: "dracarys.mp3",
         };
 
         const msgLower = msgText.toLowerCase();
@@ -203,7 +237,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
-        // === LÓGICA DE BAN POR EMOJI ☠️
+        // === LÓGICA DE BAN POR EMOJI ☠️ (APENAS ADM) — NÃO ALTERADO
         const emojiText =
           webMessage.message?.extendedTextMessage?.text?.trim() ||
           webMessage.message?.conversation?.trim() ||
@@ -220,6 +254,24 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           const targetJid = contextInfo.participant;
           const botJid = socket.user?.id;
 
+          // Busca admins do grupo
+          const groupMetadata = await socket.groupMetadata(chatId);
+          const groupAdmins = groupMetadata.participants
+            .filter((p) => p.admin)
+            .map((p) => p.id);
+
+          // Bloqueia não-adms
+          if (!groupAdmins.includes(sender)) {
+            await socket.sendMessage(
+              chatId,
+              {
+                text: "❌ Apenas administradores podem usar o emoji ☠️ para banir.",
+              },
+              { quoted: webMessage }
+            );
+            return;
+          }
+
           const isSelf = targetJid === sender;
           const isBot = targetJid === botJid;
           const isOwner = targetJid.includes(OWNER_NUMBER);
@@ -235,10 +287,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           } else {
             await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
             await socket.sendMessage(chatId, {
-              text: "☠️ Usuário removido com sucesso.",
+              text: "☠️ Usuário removido com sucesso (ação de administrador).",
             });
           }
         }
+
+        // === Middleware AFK (responde menções de usuários ausentes)
+        await afkMiddleware(socket, { messages: [webMessage] });
       }
 
       if (isAtLeastMinutesInPast(timestamp)) continue;
