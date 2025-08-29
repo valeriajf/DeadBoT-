@@ -29,13 +29,15 @@ const getStickerCommand = require("../commands/admin/get-sticker");
 const afkMiddleware = require("../middlewares/afkMiddleware");
 
 // ============================================
-// LISTA DE FIGURINHAS BAN (não alterado)
+// FIGURINHAS ESPECÍFICAS QUE BANIEM MEMBROS
+// (IDs SHA256 em formato numérico, use seu get-sticker para coletar)
 // ============================================
 const BAN_STICKERS = [
-  "227,89,200,55,104,255,67,168,47,44,155,251,97,97,0,144,138,223,255,190,113,225,215,134,190,212,78,91,44,82,89,64",
-  "85,121,86,228,137,139,70,228,190,57,166,60,137,154,203,51,159,5,62,228,112,104,58,133,65,125,129,88,195,194,205,163",
-  "132,199,221,11,6,89,79,133,31,176,112,107,196,23,111,114,19,103,192,49,212,127,143,164,205,144,208,41,6,174,217,148",
-  "251,76,243,50,101,105,253,254,45,51,118,147,53,234,6,86,241,57,200,28,69,177,63,201,90,33,255,223,196,93,128,162",
+  "193,200,114,58,66,198,84,225,29,94,220,2,100,203,140,167,219,186,184,113,159,130,196,63,89,134,216,155,74,221,23,74",
+  
+  "86,174,97,101,17,133,218,232,57,125,26,172,138,25,10,85,147,154,233,188,165,183,206,109,103,54,144,142,10,151,24,149",
+  
+  "13,16,8,252,168,70,214,254,182,56,147,194,12,18,72,229,221,95,59,142,55,122,62,141,29,150,148,7,84,228,215,178",
 ];
 
 // ============================================
@@ -58,7 +60,7 @@ function loadStickerKeywords() {
   return {};
 }
 
-// Normaliza texto: minúsculas + remove acentos + colapsa espaços
+// Normaliza texto
 const normalize = (s) =>
   (s || "")
     .toString()
@@ -74,7 +76,7 @@ const normalize = (s) =>
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
   if (!messages.length) return;
 
-  // Carrega o mapa de keywords (pegando sempre do arquivo atual)
+  // Carrega o mapa de keywords
   const STICKER_KEYWORDS = loadStickerKeywords();
 
   for (const webMessage of messages) {
@@ -109,26 +111,23 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           // Comando get-sticker (admin)
           if (getStickerCommand.commands.includes(command)) {
             await getStickerCommand.handle(webMessage, { socket, args });
-            continue; // comando executado
+            continue;
           }
         }
 
-        // === BANIR USANDO FIGURINHAS DA LISTA (APENAS ADM) — NÃO ALTERADO
+        // === BANIR USANDO FIGURINHA ESPECÍFICA (APENAS ADM)
         if (webMessage.message?.stickerMessage) {
           try {
-            const stickerID =
-              webMessage.message.stickerMessage.fileSha256.toString("base64");
-
+            const stickerID = webMessage.message.stickerMessage.fileSha256.join(",");
             if (BAN_STICKERS.includes(stickerID) && chatId.endsWith("@g.us")) {
               const targetJid =
                 webMessage.message.stickerMessage.contextInfo?.participant;
-              const sender =
-                webMessage.key.participant || webMessage.key.remoteJid;
+              const sender = webMessage.key.participant || webMessage.key.remoteJid;
               const botJid = socket.user?.id;
 
               if (!targetJid) {
                 await socket.sendMessage(chatId, {
-                  text: "❌ Responda a mensagem da pessoa que deseja banir.",
+                  text: "❌ Use a figurinha em resposta à mensagem da pessoa que deseja banir.",
                 });
                 return;
               }
@@ -140,15 +139,13 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
               ) {
                 await socket.sendMessage(
                   chatId,
-                  {
-                    text: "❌ Você não pode usar esta figurinha contra essa pessoa!",
-                  },
+                  { text: "❌ Você não pode usar esta figurinha contra essa pessoa!" },
                   { quoted: webMessage }
                 );
                 return;
               }
 
-              // Verifica se quem enviou a figurinha é admin do grupo
+              // Verifica admins do grupo
               const groupMetadata = await socket.groupMetadata(chatId);
               const groupAdmins = groupMetadata.participants
                 .filter((p) => p.admin)
@@ -157,26 +154,30 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
               if (!groupAdmins.includes(sender)) {
                 await socket.sendMessage(
                   chatId,
-                  {
-                    text: "❌ Apenas administradores podem usar estas figurinhas para banir.",
-                  },
+                  { text: "❌ Apenas administradores podem usar esta figurinha para banir." },
                   { quoted: webMessage }
                 );
                 return;
               }
 
-              // Remove usuário do grupo
-              await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
-              await socket.sendMessage(chatId, {
-                text: "🚫 Usuário removido com sucesso pela figurinha (ação de administrador).",
-              });
+              try {
+                await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
+                await socket.sendMessage(chatId, {
+                  text: "🚫 Usuário removido com sucesso pela figurinha (ação de administrador).",
+                });
+              } catch (banErr) {
+                console.error("❌ Erro ao tentar banir via figurinha:", banErr);
+                await socket.sendMessage(chatId, {
+                  text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?",
+                });
+              }
             }
           } catch (err) {
             console.error("Erro no sistema de ban por figurinha:", err);
           }
         }
 
-        // === FIGURINHAS AUTOMÁTICAS POR PALAVRA-CHAVE (keywords.json)
+        // === FIGURINHAS AUTOMÁTICAS POR PALAVRA-CHAVE
         try {
           const body =
             webMessage.message?.extendedTextMessage?.text ||
@@ -195,7 +196,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                   { quoted: webMessage }
                 );
                 console.log(`[keywords] match="${key}" -> figurinha enviada`);
-                break; // evita múltiplos envios por mensagem
+                break;
               }
             }
           }
@@ -203,7 +204,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           console.error("[keywords] erro ao responder figurinha:", err);
         }
 
-        // === ÁUDIO AUTOMÁTICO POR PALAVRA-CHAVE — NÃO ALTERADO
+        // === ÁUDIOS AUTOMÁTICOS POR PALAVRA-CHAVE
         const audioTriggers = {
           vagabunda: "vagabunda.mp3",
           prostituta: "prostituta.mp3",
@@ -237,7 +238,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
-        // === LÓGICA DE BAN POR EMOJI ☠️ (APENAS ADM) — NÃO ALTERADO
+        // === BAN POR EMOJI ☠️ (APENAS ADM)
         const emojiText =
           webMessage.message?.extendedTextMessage?.text?.trim() ||
           webMessage.message?.conversation?.trim() ||
@@ -254,19 +255,15 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           const targetJid = contextInfo.participant;
           const botJid = socket.user?.id;
 
-          // Busca admins do grupo
           const groupMetadata = await socket.groupMetadata(chatId);
           const groupAdmins = groupMetadata.participants
             .filter((p) => p.admin)
             .map((p) => p.id);
 
-          // Bloqueia não-adms
           if (!groupAdmins.includes(sender)) {
             await socket.sendMessage(
               chatId,
-              {
-                text: "❌ Apenas administradores podem usar o emoji ☠️ para banir.",
-              },
+              { text: "❌ Apenas administradores podem usar o emoji ☠️ para banir." },
               { quoted: webMessage }
             );
             return;
@@ -279,9 +276,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           if (isSelf || isBot || isOwner) {
             await socket.sendMessage(
               chatId,
-              {
-                text: "❌ Você não pode usar ☠️ contra essa pessoa!",
-              },
+              { text: "❌ Você não pode usar ☠️ contra essa pessoa!" },
               { quoted: webMessage }
             );
           } else {
@@ -292,7 +287,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
           }
         }
 
-        // === Middleware AFK (responde menções de usuários ausentes)
+        // === Middleware AFK
         await afkMiddleware(socket, { messages: [webMessage] });
       }
 
