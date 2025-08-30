@@ -1,0 +1,18 @@
+[
+    {
+        "match": "Oi",
+        "answer": "No hablo Taka Taka"
+    },
+    {
+         "match": "Olá",
+         "answer": "!figurinhas 10"
+    },
+    {
+           "match": "Dead",
+           "answer": "Fala comigo"
+    },
+    {
+           "match": "boa noite",
+           "answer": "Good night"
+    }
+]
