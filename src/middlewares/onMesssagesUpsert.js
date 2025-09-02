@@ -2,7 +2,9 @@
  * Evento chamado quando uma mensagem
  * é enviada para o grupo do WhatsApp
  *
- * @author VaL
+ * Adaptado para o DeadBoT com sistema de rastreamento de atividade
+ *
+ * @author VaL (DeadBoT)
  */
 const {
     isAtLeastMinutesInPast,
@@ -22,37 +24,39 @@ const { messageHandler } = require("./messageHandler");
 const fs = require("fs");
 const path = require("path");
 
+// 🔥 SISTEMA DE RASTREAMENTO DE ATIVIDADE - DeadBoT
+const activityTracker = require("../utils/activityTracker");
+
 // Importa o comando get-sticker
 const getStickerCommand = require("../commands/admin/get-sticker");
 
 // Importa o middleware AFK
 const afkMiddleware = require("../middlewares/afkMiddleware");
 
-// ============================================
+// ====================================
 // FIGURINHAS ESPECÍFICAS QUE BANEM MEMBROS
-// (IDs SHA256 em formato numérico, use seu get-sticker para coletar)
-// ============================================
+// (IDs numéricos separados por vírgula, use #get-sticker para coletar)
+// ====================================
 const BAN_STICKERS = [
+    "227,246,6,190,64,161,232,127,190,56,219,179,82,226,18,176,33,138,111,158,181,245,171,4,59,177,106,32,179,67,148,76",
+    
+    "236,74,208,233,187,186,170,99,222,30,206,40,112,231,104,17,104,201,177,98,34,45,254,250,100,180,18,213,222,40,201,240",
+    
     "116,205,49,43,153,13,227,246,107,133,220,157,207,192,120,170,141,0,141,51,130,161,11,79,89,80,0,48,2,152,154,60",
     
     "71,103,13,113,44,52,238,155,33,217,247,77,33,69,195,165,199,236,100,214,241,171,229,240,133,39,14,178,76,177,65,111",
     
-    "232,1,71,43,63,206,2,221,36,8,191,144,60,95,47,237,127,23,225,92,254,205,133,198,239,79,45,238,229,32,239,201",
+    "232,226,227,200,225,90,105,101,220,212,8,169,67,200,184,85,212,21,70,228,24,145,25,154,99,113,42,200,53,27,18,163",
     
-    "236,74,208,233,187,186,170,99,222,30,206,40,112,231,104,17,104,201,177,98,34,45,254,250,100,180,18,213,222,40,201,240",
+    "133,59,105,45,67,200,86,59,49,24,82,189,108,157,140,16,70,16,80,203,240,38,198,90,191,90,84,23,178,230,249,214",
 ];
 
-// ============================================
+// ====================================
 // Carrega keywords de figurinhas (palavra -> URL .webp)
-// Arquivo: src/database/keywords.json
-// ============================================
 function loadStickerKeywords() {
     const keywordsPath = path.join(__dirname, "..", "database", "keywords.json");
     try {
-        if (!fs.existsSync(keywordsPath)) {
-            console.warn(`⚠️ [keywords] Arquivo não encontrado: ${keywordsPath}`);
-            return {};
-        }
+        if (!fs.existsSync(keywordsPath)) return {};
         const raw = fs.readFileSync(keywordsPath, "utf8");
         const data = JSON.parse(raw);
         if (data && typeof data === "object") return data;
@@ -62,11 +66,8 @@ function loadStickerKeywords() {
     return {};
 }
 
-// Normaliza texto
 const normalize = (s) =>
-    (s || "")
-        .toString()
-        .toLowerCase()
+    (s || "").toString().toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/\s+/g, " ")
@@ -76,107 +77,153 @@ const normalize = (s) =>
 // EVENTO PRINCIPAL
 // ============================================
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
-
     if (!messages.length) return;
 
-    // Carrega o mapa de keywords
     const STICKER_KEYWORDS = loadStickerKeywords();
 
     for (const webMessage of messages) {
         if (DEVELOPER_MODE) {
-            infoLog(
-                `\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(
-                    messages,
-                    null,
-                    2
-                )}`
-            );
+            infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
         }
 
         try {
             const timestamp = webMessage.messageTimestamp;
 
+            // 🔥 SISTEMA DE RASTREAMENTO DE ATIVIDADE MELHORADO - DeadBoT
+            if (webMessage?.message && !webMessage.key.fromMe) {
+                const remoteJid = webMessage.key.remoteJid;
+                const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+
+                // Só rastreia mensagens de grupos
+                if (remoteJid?.includes('@g.us')) {
+                    try {
+                        // Captura o nome do usuário de várias fontes
+                        let userName = null;
+                        
+                        // 1. Nome do push (mais comum)
+                        if (webMessage.pushName && !webMessage.pushName.match(/^\+?\d+$/)) {
+                            userName = webMessage.pushName;
+                        }
+                        
+                        // 2. Nome do notify (contatos salvos)
+                        if (!userName && webMessage.verifiedBizName) {
+                            userName = webMessage.verifiedBizName;
+                        }
+                        
+                        // 3. Nome de perfil verificado
+                        if (!userName && webMessage.message?.extendedTextMessage?.contextInfo?.pushName) {
+                            const contextName = webMessage.message.extendedTextMessage.contextInfo.pushName;
+                            if (!contextName.match(/^\+?\d+$/)) {
+                                userName = contextName;
+                            }
+                        }
+
+                        const messageType = Object.keys(webMessage.message || {})[0];
+
+                        switch (messageType) {
+                            case 'conversation':
+                            case 'extendedTextMessage':
+                                // Mensagem de texto
+                                activityTracker.trackMessage(remoteJid, userJid, userName);
+                                if (DEVELOPER_MODE) {
+                                    console.log(`📊 [ACTIVITY] Mensagem de ${userName || userJid.split('@')[0]} registrada`);
+                                }
+                                break;
+
+                            case 'stickerMessage':
+                                // Figurinha
+                                activityTracker.trackSticker(remoteJid, userJid, userName);
+                                if (DEVELOPER_MODE) {
+                                    console.log(`🎭 [ACTIVITY] Figurinha de ${userName || userJid.split('@')[0]} registrada`);
+                                }
+                                break;
+
+                            case 'imageMessage':
+                            case 'videoMessage':
+                            case 'audioMessage':
+                            case 'documentMessage':
+                                // Outras mídias contam como mensagem
+                                activityTracker.trackMessage(remoteJid, userJid, userName);
+                                if (DEVELOPER_MODE) {
+                                    console.log(`📁 [ACTIVITY] Mídia de ${userName || userJid.split('@')[0]} registrada`);
+                                }
+                                break;
+
+                            default:
+                                // Outros tipos de mensagem
+                                if (messageType) {
+                                    activityTracker.trackMessage(remoteJid, userJid, userName);
+                                    if (DEVELOPER_MODE) {
+                                        console.log(`💬 [ACTIVITY] ${messageType} de ${userName || userJid.split('@')[0]} registrado`);
+                                    }
+                                }
+                                break;
+                        }
+                    } catch (activityError) {
+                        console.error('❌ [ACTIVITY] Erro no rastreamento:', activityError.message);
+                    }
+                }
+            }
+            // 🔥 FIM DO SISTEMA DE RASTREAMENTO MELHORADO
+
             if (webMessage?.message) {
-                // Processa mensagens normais e comandos
                 messageHandler(socket, webMessage);
 
-                const msgText =
-                    webMessage.message?.extendedTextMessage?.text ||
-                    webMessage.message?.conversation ||
-                    "";
+                const msgText = webMessage.message?.extendedTextMessage?.text ||
+                                webMessage.message?.conversation || "";
                 const chatId = webMessage.key.remoteJid;
 
-                // === TRATAMENTO DE COMANDOS INICIADOS POR #
+                // === COMANDOS #
                 if (msgText.startsWith("#")) {
                     const [cmd, ...args] = msgText.trim().slice(1).split(/\s+/);
                     const command = cmd.toLowerCase();
 
-                    // Comando get-sticker (admin)
                     if (getStickerCommand.commands.includes(command)) {
                         await getStickerCommand.handle(webMessage, { socket, args });
                         continue;
                     }
                 }
 
-                // === BANIR USANDO FIGURINHA ESPECÍFICA (ADMs podem usar)
+                // === BAN POR FIGURINHA (ADMs) ===
                 if (webMessage.message?.stickerMessage) {
                     try {
-                        const stickerID = webMessage.message.stickerMessage.fileSha256.join(",");
+                        // Converte SHA256 da figurinha em string numérica
+                        const stickerID = Array.from(webMessage.message.stickerMessage.fileSha256 || []).join(",");
+
                         if (BAN_STICKERS.includes(stickerID) && chatId.endsWith("@g.us")) {
-                            const targetJid =
-                                webMessage.message.stickerMessage.contextInfo?.participant;
+                            const targetJid = webMessage.message.stickerMessage.contextInfo?.participant;
                             const sender = webMessage.key.participant || webMessage.key.remoteJid;
                             const botJid = socket.user?.id;
 
                             if (!targetJid) {
-                                await socket.sendMessage(chatId, {
-                                    text: "🎯 Marque o alvo para banir",
-                                });
+                                await socket.sendMessage(chatId, { text: "🎯 Marque o alvo para banir" });
                                 return;
                             }
 
-                            // Verifica admins do grupo
                             const groupMetadata = await socket.groupMetadata(chatId);
-                            const groupAdmins = groupMetadata.participants
-                                .filter((p) => p.admin)
-                                .map((p) => p.id);
+                            const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
 
-                            // Se quem enviou não for ADM, bloqueia
                             if (!groupAdmins.includes(sender)) {
-                                await socket.sendMessage(
-                                    chatId,
-                                    { text: "❌ Apenas administradores podem usar esta figurinha para banir." },
-                                    { quoted: webMessage }
-                                );
+                                await socket.sendMessage(chatId, { text: "❌ Apenas administradores podem usar esta figurinha para banir." }, { quoted: webMessage });
                                 return;
                             }
 
-                            // Bloqueia ban em si mesmo, no bot, no dono ou em outro ADM
                             const isSelf = targetJid === sender;
                             const isBot = targetJid === botJid;
                             const isOwner = OWNER_NUMBER && targetJid.includes(OWNER_NUMBER);
                             const isTargetAdmin = groupAdmins.includes(targetJid);
 
                             if (isSelf || isBot || isOwner || isTargetAdmin) {
-                                await socket.sendMessage(
-                                    chatId,
-                                    { text: "❌ Você não pode usar esta figurinha contra ADMs" },
-                                    { quoted: webMessage }
-                                );
+                                await socket.sendMessage(chatId, { text: "❌ Você não pode usar esta figurinha contra ADMs" }, { quoted: webMessage });
                                 return;
                             }
 
-                            // Tenta banir
                             try {
                                 await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
-                                await socket.sendMessage(chatId, {
-                                    text: "🚫 Usuário removido com sucesso!",
-                                });
+                                await socket.sendMessage(chatId, { text: "🚫 Usuário removido com sucesso!" });
                             } catch (banErr) {
                                 console.error("❌ Erro ao tentar banir via figurinha:", banErr);
-                                await socket.sendMessage(chatId, {
-                                    text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?",
-                                });
+                                await socket.sendMessage(chatId, { text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?" });
                             }
                         }
                     } catch (err) {
@@ -186,22 +233,14 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
 
                 // === FIGURINHAS AUTOMÁTICAS POR PALAVRA-CHAVE
                 try {
-                    const body =
-                        webMessage.message?.extendedTextMessage?.text ||
-                        webMessage.message?.conversation ||
-                        "";
+                    const body = webMessage.message?.extendedTextMessage?.text || webMessage.message?.conversation || "";
                     const nMsg = normalize(body);
 
                     if (nMsg) {
                         for (const [key, url] of Object.entries(STICKER_KEYWORDS)) {
-                            const nKey = normalize(key);
-                            if (!nKey) continue;
-                            if (nMsg.includes(nKey)) {
-                                await socket.sendMessage(
-                                    chatId,
-                                    { sticker: { url: String(url) } },
-                                    { quoted: webMessage }
-                                );
+                            if (!normalize(key)) continue;
+                            if (nMsg.includes(normalize(key))) {
+                                await socket.sendMessage(chatId, { sticker: { url: String(url) } }, { quoted: webMessage });
                                 console.log(`[keywords] match="${key}" -> figurinha enviada`);
                                 break;
                             }
@@ -223,21 +262,10 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 const msgLower = msgText.toLowerCase();
                 for (const trigger in audioTriggers) {
                     if (msgLower.includes(trigger)) {
-                        const audioPath = path.join(
-                            __dirname,
-                            "..",
-                            "assets",
-                            "audios",
-                            audioTriggers[trigger]
-                        );
-
+                        const audioPath = path.join(__dirname, "..", "assets", "audios", audioTriggers[trigger]);
                         if (fs.existsSync(audioPath)) {
                             const audioBuffer = fs.readFileSync(audioPath);
-                            await socket.sendMessage(chatId, {
-                                audio: audioBuffer,
-                                mimetype: "audio/mp4",
-                                ptt: true,
-                            });
+                            await socket.sendMessage(chatId, { audio: audioBuffer, mimetype: "audio/mp4", ptt: true });
                         } else {
                             console.warn(`Arquivo de áudio não encontrado: ${audioPath}`);
                         }
@@ -245,64 +273,39 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                     }
                 }
 
-                // === BAN POR EMOJI ☠️ (ADMs podem usar)
-                const emojiText =
-                    webMessage.message?.extendedTextMessage?.text?.trim() ||
-                    webMessage.message?.conversation?.trim() ||
-                    "";
-                const contextInfo =
-                    webMessage.message?.extendedTextMessage?.contextInfo;
+                // === BAN POR EMOJI ☠️ (ADMs)
+                const emojiText = webMessage.message?.extendedTextMessage?.text?.trim() || webMessage.message?.conversation?.trim() || "";
+                const contextInfo = webMessage.message?.extendedTextMessage?.contextInfo;
 
-                if (
-                    emojiText === "☠️" &&
-                    contextInfo?.participant &&
-                    chatId.endsWith("@g.us")
-                ) {
+                if (emojiText === "☠️" && contextInfo?.participant && chatId.endsWith("@g.us")) {
                     const sender = webMessage.key.participant || chatId;
                     const targetJid = contextInfo.participant;
                     const botJid = socket.user?.id;
 
                     const groupMetadata = await socket.groupMetadata(chatId);
-                    const groupAdmins = groupMetadata.participants
-                        .filter((p) => p.admin)
-                        .map((p) => p.id);
+                    const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
 
-                    // Se quem enviou não for ADM, bloqueia
                     if (!groupAdmins.includes(sender)) {
-                        await socket.sendMessage(
-                            chatId,
-                            { text: "❌ Apenas administradores podem usar o emoji ☠️ para banir." },
-                            { quoted: webMessage }
-                        );
+                        await socket.sendMessage(chatId, { text: "❌ Apenas administradores podem usar o emoji ☠️ para banir." }, { quoted: webMessage });
                         return;
                     }
 
-                    // Bloqueios
                     const isSelf = targetJid === sender;
                     const isBot = targetJid === botJid;
                     const isOwner = OWNER_NUMBER && targetJid.includes(OWNER_NUMBER);
                     const isTargetAdmin = groupAdmins.includes(targetJid);
 
                     if (isSelf || isBot || isOwner || isTargetAdmin) {
-                        await socket.sendMessage(
-                            chatId,
-                            { text: "❌ Você não pode usar ☠️ contra administradores, o dono, o bot ou você mesmo!" },
-                            { quoted: webMessage }
-                        );
+                        await socket.sendMessage(chatId, { text: "❌ Você não pode usar ☠️ contra ADMs!" }, { quoted: webMessage });
                         return;
                     }
 
-                    // Tenta banir
                     try {
                         await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
-                        await socket.sendMessage(chatId, {
-                            text: "☠️ Usuário removido com sucesso (ação de administrador).",
-                        });
+                        await socket.sendMessage(chatId, { text: "☠️ Usuário removido com sucesso" });
                     } catch (banErr) {
                         console.error("❌ Erro ao tentar banir via ☠️:", banErr);
-                        await socket.sendMessage(chatId, {
-                            text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?",
-                        });
+                        await socket.sendMessage(chatId, { text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?" });
                     }
                 }
 
@@ -313,12 +316,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             if (isAtLeastMinutesInPast(timestamp)) continue;
 
             if (isAddOrLeave.includes(webMessage.messageStubType)) {
-                let action = "";
-                if (webMessage.messageStubType === GROUP_PARTICIPANT_ADD) {
-                    action = "add";
-                } else if (webMessage.messageStubType === GROUP_PARTICIPANT_LEAVE) {
-                    action = "remove";
-                }
+                const action = webMessage.messageStubType === GROUP_PARTICIPANT_ADD ? "add" : "remove";
 
                 await onGroupParticipantsUpdate({
                     userJid: webMessage.messageStubParameters[0],
@@ -326,39 +324,31 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                     socket,
                     action,
                 });
+                
+                // 🔥 SISTEMA DE RASTREAMENTO - Remove usuário quando sai do grupo
+                if (action === "remove") {
+                    try {
+                        activityTracker.removeUser(webMessage.key.remoteJid, webMessage.messageStubParameters[0]);
+                        if (DEVELOPER_MODE) {
+                            console.log(`🚪 [ACTIVITY] Usuário removido dos dados: ${webMessage.messageStubParameters[0]}`);
+                        }
+                    } catch (error) {
+                        console.error('❌ [ACTIVITY] Erro ao remover usuário:', error.message);
+                    }
+                }
             } else {
-
-                if (
-                    checkIfMemberIsMuted(
-                        webMessage?.key?.remoteJid,
-                        webMessage?.key?.participant?.replace(/:[0-9][0-9]|:[0-9]/g, "")
-                    )
-                ) {
+                if (checkIfMemberIsMuted(webMessage?.key?.remoteJid, webMessage?.key?.participant?.replace(/:[0-9][0-9]|:[0-9]/g, ""))) {
                     try {
                         const { id, remoteJid, participant } = webMessage.key;
-
-                        const deleteKey = {
-                            remoteJid,
-                            fromMe: false,
-                            id,
-                            participant,
-                        };
-
-                        await socket.sendMessage(remoteJid, { delete: deleteKey });
+                        await socket.sendMessage(remoteJid, { delete: { remoteJid, fromMe: false, id, participant } });
                     } catch (error) {
-                        errorLog(
-                            `Erro ao deletar mensagem de membro silenciado, provavelmente eu não sou administrador do grupo! ${error.message}`
-                        );
+                        errorLog(`Erro ao deletar mensagem de membro silenciado: ${error.message}`);
                     }
                     return;
                 }
 
                 const commonFunctions = loadCommonFunctions({ socket, webMessage });
-
-                if (!commonFunctions) {
-                    continue;
-                }
-
+                if (!commonFunctions) continue;
                 await dynamicCommand(commonFunctions, startProcess);
             }
         } catch (error) {
@@ -367,9 +357,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 errorLog(`Erro de sessão ao processar mensagem: ${error.message}`);
                 continue;
             }
-            errorLog(
-                `Erro ao processar mensagem: ${error.message} | Stack: ${error.stack}`
-            );
+            errorLog(`Erro ao processar mensagem: ${error.message} | Stack: ${error.stack}`);
             continue;
         }
     }
