@@ -1,45 +1,70 @@
-// middlewares/afkMiddleware.js
-const { afkData } = require("../commands/member/afk");
+const fs = require("fs");
+const path = require("path");
 
-async function afkMiddleware(sock, msg) {
-  try {
-    const m = msg.messages[0];
-    if (!m?.message) return;
+const afkFile = path.resolve(__dirname, "../afk.json");
 
-    const chatId = m.key.remoteJid;
-
-    // Menções na mensagem
-    const contextInfo = m.message?.extendedTextMessage?.contextInfo;
-    const mentionedJids = contextInfo?.mentionedJid || [];
-    if (!mentionedJids.length) return;
-
-    const replies = [];
-
-    for (const jid of mentionedJids) {
-      if (afkData[jid]) {
-        const { motivo, timestamp } = afkData[jid];
-
-        // Nome do contato (se disponível)
-        let nome = jid.split("@")[0];
-        try {
-          const contact = await sock.onWhatsApp(jid);
-          const notify =
-            contact?.[0]?.notify || contact?.[0]?.name || contact?.[0]?.canonical;
-          if (notify) nome = notify;
-        } catch {}
-
-        replies.push(
-          `👤 *${nome}* está marcado como AFK!\n🕒 Desde: ${timestamp.toLocaleString()}\nℹ️ Motivo: ${motivo}`
-        );
-      }
-    }
-
-    if (replies.length) {
-      await sock.sendMessage(chatId, { text: replies.join("\n\n") }, { quoted: m });
-    }
-  } catch (e) {
-    console.error("Erro no afkMiddleware:", e);
-  }
+function loadAfk() {
+    if (!fs.existsSync(afkFile)) return {};
+    return JSON.parse(fs.readFileSync(afkFile));
 }
 
-module.exports = afkMiddleware;
+function saveAfk(data) {
+    fs.writeFileSync(afkFile, JSON.stringify(data, null, 2));
+}
+
+module.exports = async (m, { sock }) => {
+    try {
+        const textMsg =
+            m.message?.extendedTextMessage?.text ||
+            m.message?.conversation ||
+            "";
+
+        const lower = textMsg.toLowerCase();
+
+        // Ignorar mensagens que são comandos do próprio AFK
+        if (lower.startsWith("#afk") || lower.startsWith("#voltei")) {
+            return;
+        }
+
+        const sender =
+            m.sender || m.key?.participant || m.key?.remoteJid;
+        if (!sender) return;
+
+        let afkData = loadAfk();
+
+        // Se o usuário está AFK e mandou mensagem → ele voltou
+        if (afkData[sender]) {
+            const { time, reason } = afkData[sender];
+            const duration = ((Date.now() - time) / 1000).toFixed(0);
+
+            delete afkData[sender];
+            saveAfk(afkData);
+
+            const mention = "@" + sender.split("@")[0];
+
+            await sock.sendMessage(m.chat, {
+                text: `👋 ${mention} voltou!\n⏳ Ficou AFK por ${duration}s\n📌 Motivo: ${reason}`,
+                mentions: [sender]
+            });
+        }
+
+        // Verifica se a mensagem tem menções a alguém
+        const mentions =
+            m.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+
+        for (const jid of mentions) {
+            if (afkData[jid]) {
+                const { time, reason } = afkData[jid];
+                const duration = ((Date.now() - time) / 1000).toFixed(0);
+                const mention = "@" + jid.split("@")[0];
+
+                await sock.sendMessage(m.chat, {
+                    text: `💤 ${mention} está AFK\n📌 Motivo: ${reason}\n⏰ Desde: ${new Date(time).toLocaleString()}`,
+                    mentions: [jid]
+                });
+            }
+        }
+    } catch (err) {
+        console.error("[AFK Middleware] Erro:", err);
+    }
+};

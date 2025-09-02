@@ -32,6 +32,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}on
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
+ • ${prefix}zerar-rank
 
 ╰━━─「🌌」─━━
 
@@ -86,6 +87,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}parabens
  • ${prefix}perfil
  • ${prefix}ping
+ • ${prefix}rank-ativo
  • ${prefix}raw-message
  • ${prefix}rename
  • ${prefix}sticker

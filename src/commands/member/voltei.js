@@ -1,62 +1,36 @@
-// commands/member/voltei.js
-const { afkData } = require("./afk");
-
 module.exports = {
-  commands: ["voltei"],
-  description: "Remove status AFK. Uso: #voltei",
-  async handle(msgOrCf, ctx = {}) {
-    try {
-      const socket = ctx.socket;
-      let webMessage = null;
-      let chatId;
-      let userId;
+    commands: ["voltei"],
+    description: "Marca você como de volta (remove AFK)",
+    category: "member",
+    handle: async (m, { sock }) => {
+        const fs = require("fs");
+        const path = require("path");
 
-      if (msgOrCf && msgOrCf.key && msgOrCf.message) {
-        webMessage = msgOrCf;
-        chatId = webMessage.key.remoteJid;
-        userId = webMessage.key.participant || webMessage.key.remoteJid;
-      } else if (ctx.commonFunctions) {
-        const cf = ctx.commonFunctions;
-        chatId = cf.remoteJid;
-        userId = cf.userJid;
-      } else {
-        chatId = ctx.chatId;
-        userId = ctx.userId;
-      }
+        const afkFile = path.resolve(__dirname, "../../afk.json");
+        if (!fs.existsSync(afkFile)) return;
 
-      if (!userId) {
-        if (socket && chatId)
-          await socket.sendMessage(
-            chatId,
-            { text: "❌ Não foi possível identificar o usuário." },
-            { quoted: webMessage }
-          );
-        return;
-      }
+        let afkData = JSON.parse(fs.readFileSync(afkFile));
 
-      if (afkData[userId]) {
-        delete afkData[userId];
-        const reply = "🤖👋 Bem-vindo de volta! Sua ausência foi removida.";
-        if (socket && chatId) {
-          if (webMessage)
-            await socket.sendMessage(chatId, { text: reply }, { quoted: webMessage });
-          else
-            await socket.sendMessage(chatId, { text: reply });
+        const sender = m.sender || m.key?.participant || m.key?.remoteJid;
+        if (!sender) return;
+
+        if (!afkData[sender]) {
+            return sock.sendMessage(m.chat, {
+                text: "⚠️ Você não está marcado como AFK."
+            });
         }
-      } else {
-        if (socket && chatId)
-          await socket.sendMessage(
-            chatId,
-            { text: "⚠️ Você não está marcado como ausente." },
-            { quoted: webMessage }
-          );
-      }
-    } catch (e) {
-      console.error("Erro no comando Voltei:", e);
-      try {
-        if (ctx.socket && ctx.chatId)
-          await ctx.socket.sendMessage(ctx.chatId, { text: "❌ Erro ao remover ausência." });
-      } catch {}
+
+        const { time } = afkData[sender];
+        const duration = ((Date.now() - time) / 1000).toFixed(0);
+
+        delete afkData[sender];
+        fs.writeFileSync(afkFile, JSON.stringify(afkData, null, 2));
+
+        const mention = "@" + sender.split("@")[0];
+
+        await sock.sendMessage(m.chat, {
+            text: `👋 ${mention} voltou!\n⏳ Ficou AFK por ${duration}s`,
+            mentions: [sender]
+        });
     }
-  },
 };
