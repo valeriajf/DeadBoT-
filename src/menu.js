@@ -57,7 +57,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}get-sticker 
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
