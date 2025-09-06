@@ -2,8 +2,7 @@
  * Evento chamado quando uma mensagem
  * é enviada para o grupo do WhatsApp
  *
- * Adaptado para o DeadBoT com sistema de rastreamento de atividade
- * + Sistema Muteall integrado
+ * Adaptado para o DeadBoT 
  *
  * @author VaL (DeadBoT)
  */
