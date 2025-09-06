@@ -1,70 +1,96 @@
-const fs = require("fs");
-const path = require("path");
+/**
+ * Middleware AFK - Detecta automaticamente quando usuários voltam
+ * Substitua o conteúdo do arquivo: src/middlewares/afkMiddleware.js
+ * 
+ * @author Val (DeadBoT)
+ */
+const afkSystem = require('../utils/afkSystem');
 
-const afkFile = path.resolve(__dirname, "../afk.json");
-
-function loadAfk() {
-    if (!fs.existsSync(afkFile)) return {};
-    return JSON.parse(fs.readFileSync(afkFile));
-}
-
-function saveAfk(data) {
-    fs.writeFileSync(afkFile, JSON.stringify(data, null, 2));
-}
-
-module.exports = async (m, { sock }) => {
+/**
+ * Middleware que verifica AFK automaticamente
+ */
+module.exports = async (socket, { messages }) => {
+  for (const webMessage of messages) {
     try {
-        const textMsg =
-            m.message?.extendedTextMessage?.text ||
-            m.message?.conversation ||
-            "";
+      // Ignora mensagens do próprio bot
+      if (webMessage.key.fromMe) continue;
+      
+      // Só processa mensagens de grupos
+      const remoteJid = webMessage.key.remoteJid;
+      if (!remoteJid?.includes('@g.us')) continue;
+      
+      const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+      
+      // Verifica se o usuário estava AFK e agora mandou mensagem
+      if (afkSystem.isAFK(userJid)) {
+        const afkData = afkSystem.removeAFK(userJid);
+        
+        if (afkData) {
+          // Pega o nome do usuário
+          let userName = "Usuário";
+          if (webMessage.pushName && !webMessage.pushName.match(/^\+?\d+$/)) {
+            userName = webMessage.pushName;
+          }
+          
+          // Calcula duração do AFK
+          const now = new Date();
+          const duration = afkSystem.formatDuration(now.getTime() - afkData.startTime);
+          
+          // Formata data/hora atual
+          const timeString = now.toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+          });
+          const dateString = now.toLocaleDateString('pt-BR');
+          
+          // Mensagem de volta
+          const welcomeMessage = `👋 @${userJid.split('@')[0]} voltou!
 
-        const lower = textMsg.toLowerCase();
+🕐 ${timeString} | 📅 ${dateString}
+⏱️ Ficou ausente por: ${duration}
+💭 Motivo anterior: ${afkData.reason}`;
 
-        // Ignorar mensagens que são comandos do próprio AFK
-        if (lower.startsWith("#afk") || lower.startsWith("#voltei")) {
-            return;
+          // Envia mensagem mencionando o usuário
+          await socket.sendMessage(remoteJid, {
+            text: welcomeMessage,
+            mentions: [userJid]
+          });
         }
+      }
+      
+      // Verifica se alguém mencionou um usuário AFK
+      const mentions = webMessage.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+      
+      for (const mentionedJid of mentions) {
+        if (afkSystem.isAFK(mentionedJid) && mentionedJid !== userJid) {
+          const afkData = afkSystem.getAFKData(mentionedJid);
+          const duration = afkSystem.getAFKDuration(mentionedJid);
+          
+          // Formata data/hora do AFK
+          const afkDate = new Date(afkData.timestamp);
+          const afkTimeString = afkDate.toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+          });
+          const afkDateString = afkDate.toLocaleDateString('pt-BR');
+          
+          // Mensagem informando que o usuário está AFK
+          const afkNotification = `💤 @${mentionedJid.split('@')[0]} está AFK desde ${afkDateString} às ${afkTimeString}.
 
-        const sender =
-            m.sender || m.key?.participant || m.key?.remoteJid;
-        if (!sender) return;
+⏱️ Ausente há: ${duration}
+💭 Motivo: ${afkData.reason}`;
 
-        let afkData = loadAfk();
-
-        // Se o usuário está AFK e mandou mensagem → ele voltou
-        if (afkData[sender]) {
-            const { time, reason } = afkData[sender];
-            const duration = ((Date.now() - time) / 1000).toFixed(0);
-
-            delete afkData[sender];
-            saveAfk(afkData);
-
-            const mention = "@" + sender.split("@")[0];
-
-            await sock.sendMessage(m.chat, {
-                text: `👋 ${mention} voltou!\n⏳ Ficou AFK por ${duration}s\n📌 Motivo: ${reason}`,
-                mentions: [sender]
-            });
+          await socket.sendMessage(remoteJid, {
+            text: afkNotification,
+            mentions: [mentionedJid]
+          }, { quoted: webMessage });
         }
-
-        // Verifica se a mensagem tem menções a alguém
-        const mentions =
-            m.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-
-        for (const jid of mentions) {
-            if (afkData[jid]) {
-                const { time, reason } = afkData[jid];
-                const duration = ((Date.now() - time) / 1000).toFixed(0);
-                const mention = "@" + jid.split("@")[0];
-
-                await sock.sendMessage(m.chat, {
-                    text: `💤 ${mention} está AFK\n📌 Motivo: ${reason}\n⏰ Desde: ${new Date(time).toLocaleString()}`,
-                    mentions: [jid]
-                });
-            }
-        }
-    } catch (err) {
-        console.error("[AFK Middleware] Erro:", err);
+      }
+      
+    } catch (error) {
+      console.error('❌ [AFK] Erro no middleware AFK:', error.message);
     }
+  }
 };
