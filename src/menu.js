@@ -25,6 +25,7 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DONO ⪨━━
 
+ • ${prefix}avisoG
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}get-sticker
@@ -46,6 +47,8 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
+ • ${prefix}anti-fake (1/0)
+ • ${prefix}anti-flood (1/0)
  • ${prefix}anti-image (1/0)
  • ${prefix}anti-link (1/0)
  • ${prefix}anti-product (1/0)
@@ -53,28 +56,31 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-video (1/0)
  • ${prefix}auto-responder (1/0)
  • ${prefix}ban
+ • ${prefix}banghost 
  • ${prefix}delete
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}get-sticker 
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}mute
+ • ${prefix}muteall 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
  • ${prefix}regras
  • ${prefix}revelar
  • ${prefix}unmute
+ • ${prefix}unmuteall 
  • ${prefix}welcome (1/0)
 
 ╰━━─「⭐」─━━
 
 ╭━━⪩ PRINCIPAL ⪨━━
 
+ • ${prefix}afk
  • ${prefix}attp
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
