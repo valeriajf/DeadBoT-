@@ -2,10 +2,6 @@
  * Evento chamado quando uma mensagem
  * é enviada para o grupo do WhatsApp
  *
- * Adaptado para o DeadBoT com sistema de rastreamento de atividade
- * + Sistema Muteall integrado
- * + Sistema Anti-Fake integrado
- *
  * @author VaL (DeadBoT)
  */
 const {
@@ -29,7 +25,7 @@ const path = require("path");
 //  SISTEMA DE RASTREAMENTO DE ATIVIDADE - DeadBoT
 const activityTracker = require("../utils/activityTracker");
 
-//  SISTEMA AFK - DeadBoT
+// 💤 SISTEMA AFK - DeadBoT
 const afkCommand = require("../commands/member/afk");
 
 // Importa o comando get-sticker
@@ -38,14 +34,11 @@ const getStickerCommand = require("../commands/admin/get-sticker");
 // Importa o middleware AFK
 const afkMiddleware = require("../middlewares/afkMiddleware");
 
-//  SISTEMA MUTEALL - DeadBoT
+// 🔇 SISTEMA MUTEALL - DeadBoT
 const muteallCommand = require("../commands/admin/muteall");
 
-//  SISTEMA ANTIFLOOD - DeadBoT  
+// 🚫 SISTEMA ANTIFLOOD - DeadBoT  
 const antifloodCommand = require("../commands/admin/anti-flood");
-
-//  SISTEMA ANTI-FAKE - DeadBoT
-const antiFakeCommand = require("../commands/admin/anti-fake");
 
 
 // ====================================
@@ -70,8 +63,6 @@ const BAN_STICKERS = [
     "110,11,5,78,194,46,187,71,228,153,221,44,222,240,45,65,230,165,89,27,102,99,251,35,0,219,106,44,71,200,61,12",
     
     "175,221,247,131,100,69,195,209,114,62,32,252,128,73,199,157,250,84,85,119,141,132,11,206,203,169,176,251,18,104,66,226",
-    
-    "250,120,76,140,149,22,8,29,160,215,161,58,100,246,196,23,59,149,207,119,236,231,130,175,234,152,21,79,148,109,109,193",
 ];
 
 // ====================================
@@ -381,133 +372,6 @@ try {
     console.error('❌ [ANTIFLOOD] Erro no sistema antiflood:', antifloodError.message);
 }
 // 🚫 FIM DO SISTEMA ANTIFLOOD
-
-// Adicione este código no seu onMessagesUpsert.js
-// Logo após as outras verificações de comandos especiais
-
-// 🚫 SISTEMA BANGHOST - Detecção de confirmação SIM/NÃO
-if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
-    const userJid = webMessage.key.participant || webMessage.key.remoteJid;
-    const chatId = webMessage.key.remoteJid;
-    const msgText = webMessage.message?.extendedTextMessage?.text || webMessage.message?.conversation || "";
-    const textUpper = msgText.trim().toUpperCase();
-    
-    // Verifica se é uma resposta SIM/NÃO para confirmação de banimento
-    if (textUpper === 'SIM' || textUpper === 'NÃO' || textUpper === 'NAO') {
-        try {
-            // Importa o sistema de confirmações pendentes do banghost
-            const banghostCommand = require('../commands/admin/banghost');
-            
-            // Procura confirmação pendente para este grupo e usuário
-            const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
-            
-            let targetConfirmation = null;
-            for (const [id, data] of pendingBans.entries()) {
-                if (data.chatId === chatId && data.adminJid === userJid) {
-                    targetConfirmation = { id, data };
-                    break;
-                }
-            }
-            
-            if (targetConfirmation) {
-                const { id: confirmationId, data } = targetConfirmation;
-                
-                if (textUpper === 'SIM') {
-                    pendingBans.delete(confirmationId);
-                    
-                    // Executa o banimento
-                    await socket.sendMessage(chatId, {
-                        text: `🔨 Iniciando banimento de ${data.ghostMembers.length} membro(s) fantasma(s)...\n⏳ Por favor, aguarde...`
-                    });
-                    
-                    let successCount = 0;
-                    let failCount = 0;
-                    
-                    // Bane os membros em lotes pequenos
-                    const batchSize = 3;
-                    for (let i = 0; i < data.ghostMembers.length; i += batchSize) {
-                        const batch = data.ghostMembers.slice(i, i + batchSize);
-                        
-                        for (const member of batch) {
-                            try {
-                                await socket.groupParticipantsUpdate(chatId, [member.jid], 'remove');
-                                successCount++;
-                                console.log(`🚪 [BANGHOST] ${member.name} foi banido do grupo`);
-                                
-                                // Remove do sistema de rastreamento
-                                const activityTracker = require('../utils/activityTracker');
-                                if (activityTracker && typeof activityTracker.removeUser === 'function') {
-                                    activityTracker.removeUser(chatId, member.jid);
-                                }
-                            } catch (error) {
-                                failCount++;
-                                console.error(`❌ [BANGHOST] Falha ao banir ${member.name}:`, error.message);
-                            }
-                            
-                            // Aguarda entre banimentos
-                            await new Promise(resolve => setTimeout(resolve, 1500));
-                        }
-                        
-                        // Pausa entre lotes
-                        if (i + batchSize < data.ghostMembers.length) {
-                            await new Promise(resolve => setTimeout(resolve, 3000));
-                        }
-                    }
-                    
-                    // Envia relatório final
-                    const reportText = `📊 **RELATÓRIO DE BANIMENTO CONCLUÍDO**\n\n` +
-                                     `✅ Banidos com sucesso: ${successCount}\n` +
-                                     `❌ Falharam: ${failCount}\n` +
-                                     `📋 Critério usado: ${data.minMessages} mensagem(s) ou menos\n` +
-                                     `⏰ Concluído em: ${new Date().toLocaleString('pt-BR')}`;
-                    
-                    await socket.sendMessage(chatId, { text: reportText });
-                    
-                } else if (textUpper === 'NÃO' || textUpper === 'NAO') {
-                    pendingBans.delete(confirmationId);
-                    await socket.sendMessage(chatId, {
-                        text: "✅ Banimento cancelado com sucesso!"
-                    });
-                }
-            }
-            
-        } catch (error) {
-            console.error('❌ [BANGHOST] Erro na confirmação:', error.message);
-        }
-    }
-}
-
-// 🚫 SISTEMA BANGHOST - Limpeza automática de confirmações expiradas
-setInterval(() => {
-    try {
-        const banghostCommand = require('../commands/admin/banghost');
-        const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
-        
-        const now = Date.now();
-        let expiredCount = 0;
-        
-        for (const [id, data] of pendingBans.entries()) {
-            if (now - data.timestamp > 60000) { // 1 minuto
-                pendingBans.delete(id);
-                expiredCount++;
-                
-                // Envia mensagem de timeout
-                if (data.chatId) {
-                    socket.sendMessage(data.chatId, {
-                        text: '⏰ Tempo esgotado! Banimento cancelado automaticamente.'
-                    }).catch(() => {}); // Ignora erros de envio
-                }
-            }
-        }
-        
-        if (expiredCount > 0) {
-            console.log(`🔄 [BANGHOST] ${expiredCount} confirmações expiradas removidas`);
-        }
-        
-    } catch (error) {
-        console.error('❌ [BANGHOST] Erro na limpeza de confirmações:', error.message);
-    }
-}, 30000); // Verifica a cada 30 segundos
 
             if (webMessage?.message) {
                 messageHandler(socket, webMessage);
