@@ -53,16 +53,12 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
   const activeGroup = isActiveGroup(remoteJid);
 
   if (activeGroup && isActiveAntiLinkGroup(remoteJid) && isLink(fullMessage)) {
-    if (!userJid) {
-      return;
-    }
+    if (!userJid) return;
 
     if (!(await isAdmin({ remoteJid, userJid, socket }))) {
       await socket.groupParticipantsUpdate(remoteJid, [userJid], "remove");
 
-      await sendReply(
-        "Anti-link ativado! Você foi removido por enviar um link!"
-      );
+      await sendReply("Anti-link ativado! Você foi removido por enviar um link!");
 
       await socket.sendMessage(remoteJid, {
         delete: {
@@ -84,44 +80,27 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
   }
 
   if (activeGroup) {
-    if (
-      !verifyPrefix(prefix, remoteJid) ||
-      !hasTypeAndCommand({ type, command })
-    ) {
+    if (!verifyPrefix(prefix, remoteJid) || !hasTypeAndCommand({ type, command })) {
       if (isActiveAutoResponderGroup(remoteJid)) {
         const response = getAutoResponderResponse(fullMessage);
-
-        if (response) {
-          await sendReply(response);
-        }
+        if (response) await sendReply(response);
       }
-
       return;
     }
 
     if (!(await checkPermission({ type, ...paramsHandler }))) {
-      await sendErrorReply(
-        "Você não tem permissão para executar este comando!"
-      );
+      await sendErrorReply("Você não tem permissão para executar este comando!");
       return;
     }
 
-    if (
-      isActiveOnlyAdmins(remoteJid) &&
-      !(await isAdmin({ remoteJid, userJid, socket }))
-    ) {
-      await sendWarningReply(
-        "Somente administradores podem executar comandos!"
-      );
+    if (isActiveOnlyAdmins(remoteJid) && !(await isAdmin({ remoteJid, userJid, socket }))) {
+      await sendWarningReply("Somente administradores podem executar comandos!");
       return;
     }
   }
 
   if (!isBotOwner({ userJid, isLid }) && !activeGroup) {
-    if (
-      verifyPrefix(prefix, remoteJid) &&
-      hasTypeAndCommand({ type, command })
-    ) {
+    if (verifyPrefix(prefix, remoteJid) && hasTypeAndCommand({ type, command })) {
       if (command.name !== "on") {
         await sendWarningReply(
           "Este grupo está desativado! Peça para o dono do grupo ativar o bot!"
@@ -130,9 +109,7 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
       }
 
       if (!(await checkPermission({ type, ...paramsHandler }))) {
-        await sendErrorReply(
-          "Você não tem permissão para executar este comando!"
-        );
+        await sendErrorReply("Você não tem permissão para executar este comando!");
         return;
       }
     } else {
@@ -151,7 +128,6 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     await sendReply(
       `Este é meu prefixo! Use ${groupPrefix}menu para ver os comandos disponíveis!`
     );
-
     return;
   }
 
@@ -159,15 +135,29 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     await sendWarningReply(
       `Comando não encontrado! Use ${groupPrefix}menu para ver os comandos disponíveis!`
     );
-
     return;
   }
 
   try {
+    // 🔥 Aqui injetamos groupMetadata e participants
+    let groupMetadata = null;
+    let participants = [];
+
+    if (remoteJid && remoteJid.endsWith("@g.us")) {
+      try {
+        groupMetadata = await socket.groupMetadata(remoteJid);
+        participants = groupMetadata?.participants?.map((p) => p.id) || [];
+      } catch (e) {
+        console.error("Erro ao obter groupMetadata:", e?.message || e);
+      }
+    }
+
     await command.handle({
       ...paramsHandler,
       type,
       startProcess,
+      groupMetadata,
+      participants,
     });
   } catch (error) {
     if (badMacHandler.handleError(error, `command:${command?.name}`)) {
@@ -196,7 +186,6 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     } else if (error.isAxiosError) {
       const messageText = error.response?.data?.message || error.message;
       const url = error.config?.url || "URL não disponível";
-
       const isSpiderAPIError = url.includes("api.spiderx.com.br");
 
       await sendErrorReply(
