@@ -1,36 +1,93 @@
-module.exports = {
-    commands: ["voltei"],
-    description: "Marca você como de volta (remove AFK)",
-    category: "member",
-    handle: async (m, { sock }) => {
-        const fs = require("fs");
-        const path = require("path");
+/**
+ * Comando Voltei - Versão limpa sem problemas de módulos
+ * Crie/substitua o arquivo src/commands/member/voltei.js
+ * 
+ * @author Val (DeadBoT)
+ */
 
-        const afkFile = path.resolve(__dirname, "../../afk.json");
-        if (!fs.existsSync(afkFile)) return;
+const volteiCommand = {
+  name: "voltei",
+  description: "Remove você do status AFK",
+  commands: ["voltei", "back"],
+  usage: "#voltei",
+  
+  handle: async (webMessage, params) => {
+    try {
+      if (!params || !params.socket) {
+        console.log("Parâmetros inválidos para comando voltei");
+        return;
+      }
 
-        let afkData = JSON.parse(fs.readFileSync(afkFile));
+      const { socket } = params;
+      const remoteJid = webMessage.key.remoteJid;
+      const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+      const isGroup = remoteJid?.endsWith("@g.us");
 
-        const sender = m.sender || m.key?.participant || m.key?.remoteJid;
-        if (!sender) return;
-
-        if (!afkData[sender]) {
-            return sock.sendMessage(m.chat, {
-                text: "⚠️ Você não está marcado como AFK."
-            });
-        }
-
-        const { time } = afkData[sender];
-        const duration = ((Date.now() - time) / 1000).toFixed(0);
-
-        delete afkData[sender];
-        fs.writeFileSync(afkFile, JSON.stringify(afkData, null, 2));
-
-        const mention = "@" + sender.split("@")[0];
-
-        await sock.sendMessage(m.chat, {
-            text: `👋 ${mention} voltou!\n⏳ Ficou AFK por ${duration}s`,
-            mentions: [sender]
+      if (!isGroup) {
+        await socket.sendMessage(remoteJid, {
+          text: "Este comando só funciona em grupos!"
         });
+        return;
+      }
+
+      // Carrega o comando AFK para verificar status
+      const afkCommand = require("./afk");
+      
+      // Verifica se o usuário estava AFK
+      if (!afkCommand.isAFK(userJid)) {
+        await socket.sendMessage(remoteJid, {
+          text: `@${userJid.split('@')[0]}, você não estava AFK!`,
+          mentions: [userJid]
+        });
+        return;
+      }
+
+      // Remove o usuário do AFK
+      const afkData = afkCommand.removeAFK(userJid);
+      
+      // Calcula duração
+      const now = new Date();
+      const duration = Math.floor((now.getTime() - afkData.startTime) / 1000);
+      
+      let durationText = "";
+      if (duration >= 3600) {
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        durationText = `${hours}h ${minutes}m`;
+      } else if (duration >= 60) {
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+        durationText = `${minutes}m ${seconds}s`;
+      } else {
+        durationText = `${duration}s`;
+      }
+      
+      // Formata data/hora atual
+      const timeString = now.toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+      });
+      const dateString = now.toLocaleDateString('pt-BR');
+      
+      // Mensagem de volta
+      const message = `👋 @${userJid.split('@')[0]} voltou!
+
+🕐 ${timeString} | 📅 ${dateString}
+⏱️ Ficou ausente por: ${durationText}
+💭 Motivo anterior: ${afkData.reason}`;
+
+      await socket.sendMessage(remoteJid, {
+        text: message,
+        mentions: [userJid]
+      });
+
+      console.log("Comando voltei executado com sucesso para:", userJid.split('@')[0]);
+
+    } catch (error) {
+      console.error("Erro no comando voltei:", error.message);
     }
+  }
 };
+
+module.exports = volteiCommand;
