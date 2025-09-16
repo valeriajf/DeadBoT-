@@ -28,12 +28,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}aviso-geral
  • ${prefix}exec
  • ${prefix}get-id
- • ${prefix}get-sticker
  • ${prefix}off
  • ${prefix}on
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
- • ${prefix}zerar-rank
 
 ╰━━─「🌌」─━━
 
@@ -61,7 +59,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}figtag
+ • ${prefix}fig-ban-add 
+ • ${prefix}fig-ban-delete 
+ • ${prefix}fig-tag
+ • ${prefix}get-sticker
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
@@ -76,13 +77,15 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}regras
  • ${prefix}revelar
  • ${prefix}roleta-russa 
+ • ${prefix}set-name
  • ${prefix}unmute
  • ${prefix}unmuteall 
  • ${prefix}welcome (1/0)
+ • ${prefix}zerar-rank
 
 ╰━━─「⭐」─━━
 
-╭━━⪩ PRINCIPAL ⪨━━
+╭━━⪩ MEMBROS ⪨━━
 
  • ${prefix}afk
  • ${prefix}attp

@@ -1,24 +1,40 @@
 exports.commands = ["get-sticker"];
 
-exports.handle = async (message, { socket, args }) => {
+exports.handle = async (message, ctx = {}) => {
+  const { socket } = ctx || {};
   try {
-    const chatId = message.key.remoteJid;
-
-    // Só funciona se for reply a uma figurinha
-    if (!message.message.extendedTextMessage?.contextInfo?.quotedMessage?.stickerMessage) {
-      await socket.sendMessage(chatId, { text: "❌ Por favor, responda a uma figurinha para obter o ID dela." }, { quoted: message });
+    if (!socket) {
+      console.error("[get-sticker] contexto inválido: socket não fornecido");
       return;
     }
 
-    const quotedSticker = message.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage;
-    const stickerID = quotedSticker.fileSha256.toString("base64");
+    const chatId = message.key.remoteJid;
+
+    // Só funciona se for reply a uma figurinha ou se a mensagem atual for uma figurinha
+    const quoted = message.message.extendedTextMessage?.contextInfo?.quotedMessage?.stickerMessage;
+    const sticker = quoted || message.message.stickerMessage;
+
+    if (!sticker) {
+      await socket.sendMessage(chatId, { text: "❌ Por favor, responda a uma figurinha (ou envie a figurinha junto) para obter o ID dela." }, { quoted: message });
+      return;
+    }
+
+    const fileSha = sticker.fileSha256;
+    if (!fileSha || (fileSha.length === 0)) {
+      await socket.sendMessage(chatId, { text: "❌ Não consegui ler o identificador da figurinha." }, { quoted: message });
+      return;
+    }
+
+    const buf = Buffer.from(fileSha);
+    const base64 = buf.toString("base64");
+    const numeric = Array.from(buf).join(",");
 
     await socket.sendMessage(chatId, {
-      text: `🪙 ID da figurinha:\n${stickerID}`
+      text: `🪙 ID da figurinha:\n\nNumérico:\n${numeric}\n\nBase64:\n${base64}`
     }, { quoted: message });
 
   } catch (error) {
     console.error("Erro no comando get-sticker:", error);
-    await socket.sendMessage(message.key.remoteJid, { text: "❌ Ocorreu um erro ao obter o ID da figurinha." });
+    try { await ctx.socket?.sendMessage(message.key.remoteJid, { text: "❌ Ocorreu um erro ao obter o ID da figurinha." }); } catch {}
   }
 };

@@ -1,12 +1,7 @@
 /**
  * Comando anti-flood para DeadBoT
- * Limita figurinhas por usuário e aplica punições progressivas
- * 10 figurinhas: aviso
- * 11 figurinhas: 1ª advertência
- * 12 figurinhas: 2ª advertência  
- * 13 figurinhas: ban automático
- *
- * @author Adaptado para DeadBoT
+ * 
+ * @author VaL
  */
 const { PREFIX } = require("../../config");
 
@@ -18,30 +13,49 @@ function initGroupData(groupId) {
   if (!global.antifloodData.has(groupId)) {
     global.antifloodData.set(groupId, {
       active: false,
-      users: new Map()
+      users: new Map() // Armazena { userId: { count: number, lastStickerTime: timestamp, timestamps: [] } }
     });
   }
 }
 
-// Função para verificar e resetar contador se passou 30 minutos
-function checkAndResetUser(groupId, userId) {
-  const groupData = global.antifloodData.get(groupId);
-  if (!groupData) return;
-  
+// Função para verificar se usuário é admin
+async function isUserAdmin(socket, groupId, userId) {
+  try {
+    const groupMetadata = await socket.groupMetadata(groupId);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+    return groupAdmins.includes(userId);
+  } catch (error) {
+    console.log('[ANTI-FLOOD] Erro ao verificar admin:', error);
+    return false;
+  }
+}
+
+// Função para detectar flood (figurinhas em sequência)
+function isFlooding(userData) {
   const now = Date.now();
-  const thirtyMinutes = 30 * 60 * 1000;
+  const floodWindow = 30 * 1000; // 30 segundos para detectar flood
+  const maxStickerInterval = 3 * 1000; // 3 segundos entre figurinhas para considerar sequência
   
-  if (!groupData.users.has(userId)) {
-    groupData.users.set(userId, { count: 0, lastReset: now });
-    return;
+  // Se passou muito tempo desde a última figurinha, não é flood
+  if (now - userData.lastStickerTime > maxStickerInterval) {
+    // Reset contador se não há sequência
+    userData.count = 1;
+    userData.timestamps = [now];
+    userData.lastStickerTime = now;
+    return false;
   }
   
-  const userData = groupData.users.get(userId);
+  // Adiciona timestamp atual
+  userData.timestamps.push(now);
+  userData.lastStickerTime = now;
   
-  if (now - userData.lastReset >= thirtyMinutes) {
-    userData.count = 0;
-    userData.lastReset = now;
-  }
+  // Remove timestamps antigos (fora da janela de flood)
+  userData.timestamps = userData.timestamps.filter(timestamp => now - timestamp <= floodWindow);
+  
+  // Atualiza contador
+  userData.count = userData.timestamps.length;
+  
+  return userData.count >= 10; // Considera flood se 10+ figurinhas em sequência rápida
 }
 
 // Middleware para processar figurinhas
@@ -62,43 +76,61 @@ function processSticker({ socket, message, from }) {
         return resolve();
       }
       
-      checkAndResetUser(groupId, userId);
+      // Verifica se é admin (admins são imunes ao anti-flood)
+      const isAdmin = await isUserAdmin(socket, groupId, userId);
+      if (isAdmin) {
+        return resolve();
+      }
+      
+      // Inicializa dados do usuário se não existir
+      if (!groupData.users.has(userId)) {
+        groupData.users.set(userId, { 
+          count: 0, 
+          lastStickerTime: 0,
+          timestamps: []
+        });
+      }
       
       const userData = groupData.users.get(userId);
-      userData.count += 1;
       
-      switch (userData.count) {
-        case 10:
-          await socket.sendMessage(groupId, { 
-            text: "⚠️ Limite de 10 figurinhas atingido!\n\n⏰ Aguarde 30 minutos para enviar mais figurinhas." 
-          });
-          break;
-          
-        case 11:
-          await socket.sendMessage(groupId, { 
-            text: "🚨 Anti-flood ativado, máximo de figurinhas atingido!\n\n⚠️ Pare de enviar figurinhas ou será punido!" 
-          });
-          break;
-          
-        case 12:
-          await socket.sendMessage(groupId, { 
-            text: "⛔ Anti-flood ativado: você será banido!\n\n🚫 Última advertência!" 
-          });
-          break;
-          
-        case 13:
-          try {
-            await socket.groupParticipantsUpdate(groupId, [userId], 'remove');
+      // Verifica se está fazendo flood
+      if (isFlooding(userData)) {
+        // Aplicar punições baseado no contador
+        switch (userData.count) {
+          case 10:
             await socket.sendMessage(groupId, { 
-              text: "🔨 Usuário banido por spam de figurinhas" 
+              text: "⚠️ Flood de figurinhas detectado!\n\n🚫 Pare de enviar figurinhas rapidamente ou será punido." 
             });
-          } catch (error) {
-            console.log('[ANTI-FLOOD] Erro ao banir usuário:', error);
+            break;
+            
+          case 11:
             await socket.sendMessage(groupId, { 
-              text: "❌ Erro ao banir usuário. Verifique as permissões do bot." 
+              text: "🚨 Anti-flood ativado!\n\n⚠️ Primeira advertência - pare o flood de figurinhas!" 
             });
-          }
-          break;
+            break;
+            
+          case 12:
+            await socket.sendMessage(groupId, { 
+              text: "⛔ Anti-flood: você será banido!\n\n🚫 Última advertência - pare o flood!" 
+            });
+            break;
+            
+          case 13:
+            try {
+              await socket.groupParticipantsUpdate(groupId, [userId], 'remove');
+              await socket.sendMessage(groupId, { 
+                text: "🔨 Usuário banido por flood de figurinhas (anti-flood)" 
+              });
+              // Remove usuário dos dados
+              groupData.users.delete(userId);
+            } catch (error) {
+              console.log('[ANTI-FLOOD] Erro ao banir usuário:', error);
+              await socket.sendMessage(groupId, { 
+                text: "❌ Erro ao banir usuário. Verifique as permissões do bot." 
+              });
+            }
+            break;
+        }
       }
       
       resolve();
@@ -135,12 +167,11 @@ module.exports = {
       const status = groupData.active ? "🟢 ATIVO" : "🔴 INATIVO";
       const totalUsers = groupData.users.size;
       
-      const now = Date.now();
-      const thirtyMinutes = 30 * 60 * 1000;
       let activeUsers = 0;
+      const now = Date.now();
       
       groupData.users.forEach(userData => {
-        if (userData.count > 0 && (now - userData.lastReset) < thirtyMinutes) {
+        if (userData.timestamps.length > 0 && (now - userData.lastStickerTime) < 30000) {
           activeUsers++;
         }
       });
@@ -148,18 +179,18 @@ module.exports = {
       await sendText(
         `📊 *Status do Anti-flood*\n\n` +
         `• Status: ${status}\n` +
-        `• Usuários no sistema: ${totalUsers}\n` +
-        `• Usuários ativos (30min): ${activeUsers}\n` +
-        `• Limite: 10 figurinhas a cada 30 minutos\n\n` +
+        `• Usuários monitorados: ${totalUsers}\n` +
+        `• Usuários ativos recentes: ${activeUsers}\n\n` +
         `💡 *Como usar:*\n` +
         `• ${PREFIX}anti-flood 1 - Ativar\n` +
         `• ${PREFIX}anti-flood 0 - Desativar\n\n` +
-        `⚠️ *Sistema de punições (flood):*\n` +
-        `• 10 figurinhas: Aviso (aguarde 30min)\n` +
+        `⚠️ *Sistema de punições (flood real):*\n` +
+        `• 10 figurinhas em sequência: Aviso\n` +
         `• 11 figurinhas: 1ª advertência\n` +
         `• 12 figurinhas: 2ª advertência\n` +
         `• 13 figurinhas: Ban automático\n\n` +
-        `⏰ *Contador reseta automaticamente em 30 minutos*`
+        `🛡️ *Administradores são imunes ao sistema*\n` +
+        `⏱️ *Flood = figurinhas enviadas com menos de 3s de intervalo*`
       );
       return;
     }
@@ -173,10 +204,10 @@ module.exports = {
         groupData.active = true;
         await sendText(
           "✅ *Anti-flood ativado!*\n\n" +
-          "🔍 O sistema monitorará figurinhas:\n" +
-          "• Máximo: 10 figurinhas a cada 30 minutos\n" +
-          "• Punições aplicadas apenas em caso de flood\n" +
-          "• Contador reseta automaticamente"
+          "🔍 O sistema detectará flood real:\n" +
+          "• Figurinhas enviadas com menos de 3s de intervalo\n" +
+          "• Administradores são imunes\n" +
+          "• Punições aplicadas apenas para flood verdadeiro"
         );
         break;
         
@@ -184,7 +215,7 @@ module.exports = {
       case 'off':
       case 'desativar':
         groupData.active = false;
-        await sendText("❌ *Anti-flood desativado!*\n\nO sistema não monitorará mais as figurinhas.");
+        await sendText("❌ *Anti-flood desativado!*\n\nO sistema não monitorará mais flood de figurinhas.");
         break;
         
       default:

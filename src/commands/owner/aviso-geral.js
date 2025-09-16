@@ -11,7 +11,7 @@ const { PREFIX, OWNER_JID } = require(`${BASE_DIR}/config`);
 module.exports = {
   name: "aviso-geral",
   description: "Dono envia mensagem em todos os grupos com menção a todos",
-  commands: ["aviso-geral"],
+  commands: ["aviso-geral", "a-g"],
   usage: `${PREFIX}aviso-geral <mensagem>`,
   handle: async ({
     socket,
