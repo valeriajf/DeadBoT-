@@ -1,9 +1,8 @@
 /**
  * Comando Anti-Fake - Impede entrada de números estrangeiros (não +55)
  * Remove automaticamente membros com DDI diferente de +55 (Brasil)
- * Apenas administradores podem ativar/desativar este comando
  *
- * @author Assistente Claude
+ * @author VaL
  */
 const { PREFIX } = require("../../config");
 const fs = require('fs');
