@@ -9,7 +9,7 @@ const { DangerError } = require(`${BASE_DIR}/errors`);
 
 module.exports = {
   name: "link-grupo",
-  description: "Obtém o link do grupo com informações detalhadas",
+  description: "Obtém o link do grupo",
   commands: ["link-grupo", "link-gp"],
   usage: `${PREFIX}link-grupo`,
   /**
