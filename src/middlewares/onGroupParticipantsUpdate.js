@@ -41,22 +41,18 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
   try {
     const blacklist = loadBlacklist();
     
-    // Verifica se o grupo tem lista negra
     if (!blacklist[remoteJid] || blacklist[remoteJid].length === 0) {
-      return false; // Não há lista negra para este grupo
+      return false;
     }
 
     const userNumber = userJid.replace('@s.whatsapp.net', '');
     
-    // Verifica se o usuário está na lista negra
     if (blacklist[remoteJid].includes(userNumber)) {
       console.log(`[BLACKLIST] Detectado usuário ${userNumber} na lista negra do grupo ${remoteJid}`);
       
       try {
-        // Bane o usuário imediatamente
         await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
         
-        // Envia mensagem informando sobre o banimento automático
         const banMessage = 
           `🚫 *BANIMENTO AUTOMÁTICO*\n\n` +
           `👤 *Usuário:* ${userNumber}\n` +
@@ -67,12 +63,9 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
         await socket.sendMessage(remoteJid, { text: banMessage });
         
         console.log(`[BLACKLIST] Usuário ${userNumber} banido automaticamente do grupo ${remoteJid}`);
-        return true; // Usuário foi banido
-        
+        return true;
       } catch (error) {
         console.error(`[BLACKLIST] Erro ao banir usuário ${userNumber}:`, error);
-        
-        // Se falhar ao banir, pelo menos avisa os admins
         try {
           const warningMessage = 
             `⚠️ *ALERTA - LISTA NEGRA*\n\n` +
@@ -87,10 +80,44 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
       }
     }
     
-    return false; // Usuário não está na lista negra
+    return false;
     
   } catch (error) {
     console.error('[BLACKLIST] Erro no checkAndBanBlacklistedUser:', error);
+    return false;
+  }
+}
+
+// 🚫 ANTIFAKE - bloqueia números que não são do Brasil
+async function checkAndBanAntifake(socket, remoteJid, userJid) {
+  try {
+    const userNumber = userJid.replace('@s.whatsapp.net', '');
+
+    // Permite apenas números que começam com 55 (Brasil)
+    if (!userNumber.startsWith("55")) {
+      console.log(`[ANTIFAKE] Detectado número estrangeiro: ${userNumber}`);
+
+      try {
+        await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
+
+        const banMessage = 
+          `🚫 *ANTIFAKE ATIVADO*\n\n` +
+          `👤 *Usuário:* ${userNumber}\n` +
+          `⚠️ *Motivo:* Número não é brasileiro\n` +
+          `🔒 *Ação:* Banido automaticamente`;
+
+        await socket.sendMessage(remoteJid, { text: banMessage });
+        
+        console.log(`[ANTIFAKE] Usuário ${userNumber} banido do grupo ${remoteJid}`);
+        return true;
+      } catch (error) {
+        console.error(`[ANTIFAKE] Erro ao banir ${userNumber}:`, error);
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.error('[ANTIFAKE] Erro no checkAndBanAntifake:', error);
     return false;
   }
 }
@@ -110,11 +137,16 @@ exports.onGroupParticipantsUpdate = async ({
       return;
     }
 
-    // 🚫 VERIFICAÇÃO DE LISTA NEGRA - Primeira prioridade!
     if (action === "add") {
+      // 🚫 Primeiro verifica o antifake
+      const fakeBanned = await checkAndBanAntifake(socket, remoteJid, userJid);
+      if (fakeBanned) {
+        console.log(`[ANTIFAKE] Usuário banido, pulando mensagem de boas-vindas`);
+        return;
+      }
+
+      // 🚫 Depois verifica a lista negra
       const wasBanned = await checkAndBanBlacklistedUser(socket, remoteJid, userJid);
-      
-      // Se o usuário foi banido, não executa o resto da função (welcome, etc.)
       if (wasBanned) {
         console.log(`[BLACKLIST] Usuário banido, pulando mensagem de boas-vindas`);
         return;
@@ -148,7 +180,6 @@ exports.onGroupParticipantsUpdate = async ({
               caption: finalWelcomeMessage,
               mentions,
             });
-
             return;
           }
 

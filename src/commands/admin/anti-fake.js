@@ -94,7 +94,7 @@ module.exports = {
         console.log(`🛡️ [ANTI-FAKE] Desativado no grupo ${remoteJid.split('@')[0]}`);
         
       } else {
-        await sendText(`🛡️ *Anti-Fake - Proteção contra números estrangeiros*\n\n*Uso:*\n• ${PREFIX}antifake 1 - Ativa a proteção\n• ${PREFIX}antifake 0 - Desativa a proteção\n\n*Descrição:*\nQuando ativado, apenas números brasileiros (+55) podem entrar no grupo. Números estrangeiros são automaticamente removidos.\n\n⚠️ *Importante:* O bot precisa ser administrador para funcionar corretamente.`);
+        await sendText(`🛡️ *Anti-Fake*\n\n*Descrição:*\nQuando ativado, apenas números brasileiros (+55) podem entrar no grupo. Números estrangeiros são automaticamente removidos.`);
       }
 
     } catch (error) {
@@ -123,15 +123,10 @@ module.exports = {
         try {
           console.log(`🛡️ [ANTI-FAKE] Removendo número estrangeiro: ${participantNumber}`);
           
-          // Remover participante
+          // Remover participante (sem enviar mensagem)
           await client.groupParticipantsUpdate(groupId, [participantId], "remove");
           
-          // Enviar mensagem de aviso
-          await client.sendMessage(groupId, {
-            text: `🛡️ *Anti-Fake Ativo*\n\n❌ Número estrangeiro ${participantNumber} foi removido automaticamente.\n\n🇧🇷 Apenas números brasileiros (+55) são permitidos neste grupo.`
-          });
-          
-          console.log(`🛡️ [ANTI-FAKE] Removido número estrangeiro ${participantNumber} do grupo ${groupId}`);
+          console.log(`🛡️ [ANTI-FAKE] Removido número estrangeiro ${participantNumber} do grupo ${groupId} (silencioso)`);
         } catch (error) {
           console.error(`❌ [ANTI-FAKE] Erro ao remover número estrangeiro ${participantNumber}:`, error);
         }
