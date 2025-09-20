@@ -1,5 +1,6 @@
 /**
  * Comando BanGhost - Lista e bane membros fantasmas (inativos)
+ * Usa a mesma estrutura e sistema do rank-inativo para identificar membros fantasmas
  * 
  * @author VaL (DeadBoT)
  */

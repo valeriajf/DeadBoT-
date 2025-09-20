@@ -306,7 +306,7 @@ try {
 }
 // 🚫 FIM ANTI-MÍDIA
 
-            // 🚫 SISTEMA BANGHOST - Detecção de confirmação SIM/NÃO
+ // 🚫 SISTEMA BANGHOST - Detecção de confirmação SIM/NÃO
 if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
     const userJid = webMessage.key.participant || webMessage.key.remoteJid;
     const chatId = webMessage.key.remoteJid;
@@ -527,7 +527,7 @@ setInterval(() => {
                     oremos: "ferrolhos.ogg",
                     sexo: "love.ogg",
                     dracarys: "dracarys.ogg",
-                    teste: "plantao.ogg",
+                    atenção: "plantao.ogg",
                     
                 };
                 const msgLower = msgText.toLowerCase();
