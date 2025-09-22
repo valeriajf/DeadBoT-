@@ -8,7 +8,7 @@
 
 <div align="center">
     <a href="https://github.com/guiireal/takeshi-bot">
-        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.2.3-blue">
+        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.2.6-blue">
     </a>
 </div>
 
@@ -16,9 +16,9 @@
 
 > Base para bots de WhatsApp multifuncional com diversos comandos prontos.
 
-[![Node.js](https://img.shields.io/badge/Node.js-22.14-green?logo=node.js)](https://nodejs.org/en)
+[![Node.js](https://img.shields.io/badge/Node.js-22.19-green?logo=node.js)](https://nodejs.org/en)
 [![Axios](https://img.shields.io/badge/Axios-1.10-blue?logo=axios)](https://axios-http.com/ptbr/docs/intro)
-[![Baileys](https://img.shields.io/badge/Baileys-6.7.18-purple?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
+[![Baileys](https://img.shields.io/badge/Baileys-6.7.19-purple?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
 [![FFMPEG](https://img.shields.io/badge/FFMPEG-Latest-orange?logo=ffmpeg)](https://ffmpeg.org/)
 [![Spider X API](https://img.shields.io/badge/Spider_X-API-green?logo=api)](https://api.spiderx.com.br)
 
@@ -72,9 +72,11 @@
 
 ## ⚠ Atenção
 
-Nós não prestamos suporte gratuíto caso você tenha adquirido esta base com terceiros e tenha pago por isso. 
-Solicite que **a pessoa que te vendeu, forneça suporte**.
-Nós não temos vínculo nenhum com terceiros e não nos responsabilizamos por isso, nem prestamos suporte nessas condições.
+Nós não prestamos suporte gratuíto caso você tenha adquirido esta base com terceiros e tenha pago por isso.<br/>
+Este bot sempre foi e sempre será **gratuíto**.<br/>
+Caso você tenha pago para utilizar este bot, do jeito que ele está hoje, saiba que você **foi enganado**.<br/>
+Nós não temos vínculo nenhum com terceiros e não nos responsabilizamos por isso, também não prestamos suporte nessas condições.<br/>
+Os únicos recursos pagos deste bot são pertencentes à https://api.spiderx.com.br, nossa API oficial.
 
 ## Sobre este projeto
 
