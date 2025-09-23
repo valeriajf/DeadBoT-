@@ -86,6 +86,7 @@ exports.menuMessage = (groupJid) => {
 ╭━━⪩ MEMBROS ⪨━━
 
  • ${prefix}afk
+ • ${prefix}adms
  • ${prefix}attp
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
