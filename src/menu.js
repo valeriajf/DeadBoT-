@@ -25,15 +25,12 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DONO ⪨━━
 
- • ${prefix}aviso-geral
  • ${prefix}exec
  • ${prefix}get-id
- • ${prefix}get-sticker
  • ${prefix}off
  • ${prefix}on
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
- • ${prefix}zerar-rank
 
 ╰━━─「🌌」─━━
 
@@ -51,6 +48,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-flood (1/0)
  • ${prefix}anti-image (1/0)
  • ${prefix}anti-link (1/0)
+ • ${prefix}anti-midia (1/0)
  • ${prefix}anti-product (1/0)
  • ${prefix}anti-sticker (1/0)
  • ${prefix}anti-video (1/0)
@@ -61,7 +59,8 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}figtag
+ • ${prefix}fig-tag
+ • ${prefix}get-sticker
  • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
@@ -76,13 +75,15 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}regras
  • ${prefix}revelar
  • ${prefix}roleta-russa 
+ • ${prefix}set-name
  • ${prefix}unmute
  • ${prefix}unmuteall 
  • ${prefix}welcome (1/0)
+ • ${prefix}zerar-rank
 
 ╰━━─「⭐」─━━
 
-╭━━⪩ PRINCIPAL ⪨━━
+╭━━⪩ MEMBROS ⪨━━
 
  • ${prefix}afk
  • ${prefix}attp

@@ -1,9 +1,7 @@
 /**
  * Comando Anti-Fake - Impede entrada de números estrangeiros (não +55)
- * Remove automaticamente membros com DDI diferente de +55 (Brasil)
- * Apenas administradores podem ativar/desativar este comando
  *
- * @author Assistente Claude
+ * @author VaL
  */
 const { PREFIX } = require("../../config");
 const fs = require('fs');
@@ -94,7 +92,7 @@ module.exports = {
         console.log(`🛡️ [ANTI-FAKE] Desativado no grupo ${remoteJid.split('@')[0]}`);
         
       } else {
-        await sendText(`🛡️ *Anti-Fake - Proteção contra números estrangeiros*\n\n*Uso:*\n• ${PREFIX}antifake 1 - Ativa a proteção\n• ${PREFIX}antifake 0 - Desativa a proteção\n\n*Descrição:*\nQuando ativado, apenas números brasileiros (+55) podem entrar no grupo. Números estrangeiros são automaticamente removidos.\n\n⚠️ *Importante:* O bot precisa ser administrador para funcionar corretamente.`);
+        await sendText(`🛡️ *Anti-Fake*\n\n*Descrição:*\nQuando ativado, apenas números brasileiros (+55) podem entrar no grupo. Números estrangeiros são automaticamente removidos.`);
       }
 
     } catch (error) {
@@ -123,13 +121,13 @@ module.exports = {
         try {
           console.log(`🛡️ [ANTI-FAKE] Removendo número estrangeiro: ${participantNumber}`);
           
+          // Enviar mensagem melhorada
+          await client.sendMessage(groupId, {
+            text: `🚫 *ANTIFAKE ATIVADO*\n\n⚠️ *Banindo estrangeiro automaticamente*`
+          });
+          
           // Remover participante
           await client.groupParticipantsUpdate(groupId, [participantId], "remove");
-          
-          // Enviar mensagem de aviso
-          await client.sendMessage(groupId, {
-            text: `🛡️ *Anti-Fake Ativo*\n\n❌ Número estrangeiro ${participantNumber} foi removido automaticamente.\n\n🇧🇷 Apenas números brasileiros (+55) são permitidos neste grupo.`
-          });
           
           console.log(`🛡️ [ANTI-FAKE] Removido número estrangeiro ${participantNumber} do grupo ${groupId}`);
         } catch (error) {
