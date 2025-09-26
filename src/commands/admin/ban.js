@@ -1,6 +1,9 @@
-const { OWNER_NUMBER } = require("../../config");
-
-const { PREFIX, BOT_NUMBER } = require(`${BASE_DIR}/config`);
+const {
+  PREFIX,
+  BOT_NUMBER,
+  OWNER_NUMBER,
+  ONWER_LID,
+} = require(`${BASE_DIR}/config`);
 const { DangerError, InvalidParameterError } = require(`${BASE_DIR}/errors`);
 const { toUserJid, onlyNumbers } = require(`${BASE_DIR}/utils`);
 
@@ -70,7 +73,7 @@ ${PREFIX}ban (mencionando uma mensagem)`,
 
     await socket.groupParticipantsUpdate(
       remoteJid,
-      [memberToRemoveId],
+      [memberToRemoveJid],
       "remove"
     );
 

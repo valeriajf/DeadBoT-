@@ -8,7 +8,7 @@
 
 <div align="center">
     <a href="https://github.com/guiireal/takeshi-bot">
-        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.2.6-blue">
+        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.3.1-blue">
     </a>
 </div>
 
@@ -666,6 +666,10 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
 - 📝 package.json ➔ _arquivo de definição das dependências do bot_
 - 📝 README.md ➔ _esta documentação_
 - 📝 reset-qr-auth.sh ➔ _arquivo para excluir as credenciais do bot_
+
+## Testes
+
+Execute `npm run test:all`
 
 ## Erros comuns
 
