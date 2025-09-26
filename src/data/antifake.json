@@ -25,5 +25,22 @@
     "enabled": true,
     "enabledBy": "5511976270649@s.whatsapp.net",
     "enabledAt": "2025-09-07T01:53:04.248Z"
+  },
+  "555184033465-1558458733@g.us": {
+    "enabled": true,
+    "enabledBy": "555184033465@s.whatsapp.net",
+    "enabledAt": "2025-09-25T01:32:38.735Z"
+  },
+  "120363420697129208@g.us": {
+    "enabled": false,
+    "enabledBy": "148743693320404@lid",
+    "enabledAt": "2025-09-25T14:05:07.143Z",
+    "disabledBy": "148743693320404@lid",
+    "disabledAt": "2025-09-25T16:30:16.503Z"
+  },
+  "120363421730595808@g.us": {
+    "enabled": true,
+    "enabledBy": "5521974344254@s.whatsapp.net",
+    "enabledAt": "2025-09-25T16:05:38.805Z"
   }
 }

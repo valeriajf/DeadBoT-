@@ -124,19 +124,14 @@ exports.menuMessage = (groupJid) => {
 
  • ${prefix}abracar
  • ${prefix}beijar
- • ${prefix}calvo
  • ${prefix}casal
- • ${prefix}corno
  • ${prefix}dado
- • ${prefix}gado
- • ${prefix}gay
  • ${prefix}golpe
  • ${prefix}jantar
  • ${prefix}lutar
  • ${prefix}matar
  • ${prefix}socar
  • ${prefix}tapa
- • ${prefix}tinder
 
 ╰━━─「🎡」─━━
 

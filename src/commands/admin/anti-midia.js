@@ -100,28 +100,19 @@ module.exports = {
         // Se é mídia mas NÃO é visualização única, deletar
         if (isMedia && !isViewOnce) {
             try {
-                // PRIMEIRO avisa o usuário marcando a mensagem original
-                await sendText(
-                    "⚠️ *Mídia não permitida!*\n" +
-                    "Mande somente em *visualização única*",
-                    { 
-                        quoted: webMessage,
-                        contextInfo: {
-                            stanzaId: webMessage.key.id,
-                            participant: webMessage.key.participant || webMessage.key.remoteJid,
-                            quotedMessage: webMessage.message
-                        }
-                    }
-                );
-                
-                // Aguarda para garantir que a resposta seja processada
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                
-                // DEPOIS deleta a mensagem
+                // Deleta PRIMEIRO para evitar rate limit
                 await deleteMessage();
                 
+                // DEPOIS envia o aviso (sem marcar para evitar problemas)
+                await sendText("⚠️ *Mídia não permitida!*\nMande somente em *visualização única*");
+                
             } catch (error) {
-                console.error("❌ [ANTI-MÍDIA] Erro ao deletar mídia:", error);
+                // Se for erro de rate limit, só loga sem tentar novamente
+                if (error.message?.includes('rate-overlimit')) {
+                    console.error("⚠️ [ANTI-MÍDIA] Rate limit atingido, operação ignorada");
+                } else {
+                    console.error("❌ [ANTI-MÍDIA] Erro ao deletar mídia:", error);
+                }
             }
         }
     },

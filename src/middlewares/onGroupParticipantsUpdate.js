@@ -21,6 +21,9 @@ const {
 } = require("../services/spider-x-api");
 const { upload } = require("../services/upload");
 
+// 🎉 WELCOME2 - Sistema de boas-vindas personalizado
+const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
+
 // 🚫 LISTA NEGRA - Funções para banimento automático
 const BLACKLIST_FILE = path.join(__dirname, '..', 'data', 'blacklist.json');
 
@@ -162,8 +165,59 @@ exports.onGroupParticipantsUpdate = async ({
         console.log(`[BLACKLIST] Usuário banido, pulando mensagem de boas-vindas`);
         return;
       }
+
+      // 🎉 WELCOME2 - Sistema personalizado (executa antes do welcome padrão)
+      try {
+        const groupMetadata = await socket.groupMetadata(remoteJid);
+        
+        // CORREÇÃO: Tratamento correto do número baseado no tipo de JID
+        let userNumber;
+        if (userJid.includes('@lid')) {
+          userNumber = userJid.replace('@lid', '');
+        } else {
+          userNumber = userJid.replace('@s.whatsapp.net', '');
+        }
+        
+        console.log(`[WELCOME2] Dados do novo membro:`);
+        console.log(`  - userJid: ${userJid}`);
+        console.log(`  - userNumber: ${userNumber}`);
+        console.log(`  - groupName: ${groupMetadata.subject}`);
+        
+        await handleWelcome2NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          sendImageWithCaption: async ({ image, caption, mentions }) => {
+            console.log(`[WELCOME2] Enviando mensagem com menções: ${mentions}`);
+            await socket.sendMessage(remoteJid, {
+              image: { url: image },
+              caption: caption,
+              mentions: mentions
+            });
+          },
+          sendTextWithMention: async ({ caption, mentions }) => {
+            console.log(`[WELCOME2] Enviando apenas texto com menções: ${mentions}`);
+            await socket.sendMessage(remoteJid, {
+              text: caption,
+              mentions: mentions
+            });
+          },
+          getProfilePicture: async (userId) => {
+            try {
+              return await socket.profilePictureUrl(userId, 'image');
+            } catch (error) {
+              console.log('[WELCOME2] Erro ao obter foto de perfil:', error.message);
+              return null;
+            }
+          }
+        });
+      } catch (error) {
+        console.error('[WELCOME2] Erro no sistema welcome2:', error);
+      }
     }
 
+    // 🎉 SISTEMA WELCOME PADRÃO (mantido como estava)
     if (isActiveWelcomeGroup(remoteJid) && action === "add") {
       const { buffer, profileImage } = await getProfileImageData(
         socket,
