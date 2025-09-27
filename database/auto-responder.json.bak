@@ -1,0 +1,19 @@
+[
+  {
+    "match": "Dead",
+    "answer": "Fala comigo"
+  }
+  {
+    "match": "Bom dia",
+    "answer": "Bom dia"
+  }
+  {
+     "match": "Boa tarde",
+     "answer": "Boa tarde"
+  }
+  {
+      "match": "Boa noite",
+      "answer": "Boa noite"
+  }
+     
+]

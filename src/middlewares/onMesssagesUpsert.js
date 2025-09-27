@@ -175,6 +175,91 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             }
             // 🔇 FIM DO SISTEMA MUTEALL
 
+
+// ====================================
+// SISTEMA DE COMANDOS POR FIGURINHA
+// Adicione este código no onMessagesUpsert.js, logo após o sistema MUTEALL
+// ====================================
+
+// Importa comandos de figurinha
+const abrirFigCommand = require("../commands/admin/abrir-fig");
+const fecharFigCommand = require("../commands/admin/fechar-fig");
+
+// Função para verificar se usuário é admin (pode reutilizar a que já existe)
+async function isUserAdminFig(socket, groupId, userJid) {
+    try {
+        const groupMetadata = await socket.groupMetadata(groupId);
+        const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+        return groupAdmins.includes(userJid);
+    } catch (error) {
+        console.error("❌ [FIG-COMMANDS] Erro ao verificar admin:", error.message);
+        return false;
+    }
+}
+
+// ====================================
+// ADICIONE ESTE BLOCO LOGO APÓS O SISTEMA MUTEALL NO onMessagesUpsert
+// ====================================
+
+// 🖼️ SISTEMA DE COMANDOS POR FIGURINHA - VERIFICAÇÃO PRIORITÁRIA
+if (webMessage?.message?.stickerMessage && !webMessage.key.fromMe) {
+    const remoteJid = webMessage.key.remoteJid;
+    const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+
+    // Só verifica em grupos
+    if (remoteJid?.includes('@g.us')) {
+        try {
+            console.log("🖼️ [FIG-COMMANDS] Processando figurinha de:", userJid);
+            
+            const isAdmin = await isUserAdminFig(socket, remoteJid, userJid);
+            const isOwner = OWNER_NUMBER && userJid.includes(OWNER_NUMBER);
+            
+            // Só admins e owner podem usar comandos de figurinha
+            if (isAdmin || isOwner) {
+                console.log("🖼️ [FIG-COMMANDS] Usuário autorizado, verificando comandos...");
+                
+                // Cria objeto compatível com a estrutura de comandos
+                const commonFunctions = {
+                    sendReply: async (text) => {
+                        return await socket.sendMessage(remoteJid, {
+                            text: text
+                        }, { quoted: webMessage });
+                    },
+                    sendErrorReply: async (text) => {
+                        return await socket.sendMessage(remoteJid, {
+                            text: text
+                        }, { quoted: webMessage });
+                    },
+                    socket: socket,
+                    webMessage: webMessage,
+                    isGroupMessage: true,
+                    isFromAdmins: isAdmin || isOwner,
+                    groupId: remoteJid
+                };
+
+                // Tenta executar comando de fechar grupo
+                try {
+                    await fecharFigCommand.handle(commonFunctions);
+                } catch (error) {
+                    console.error("🖼️ [FIG-COMMANDS] Erro no comando fechar-fig:", error.message);
+                }
+
+                // Tenta executar comando de abrir grupo
+                try {
+                    await abrirFigCommand.handle(commonFunctions);
+                } catch (error) {
+                    console.error("🖼️ [FIG-COMMANDS] Erro no comando abrir-fig:", error.message);
+                }
+            } else {
+                console.log("🖼️ [FIG-COMMANDS] Usuário não autorizado:", userJid);
+            }
+        } catch (error) {
+            console.error("🖼️ [FIG-COMMANDS] Erro geral:", error.message);
+        }
+    }
+}
+// 🖼️ FIM DO SISTEMA DE COMANDOS POR FIGURINHA
+
             // 🔥 SISTEMA DE RASTREAMENTO DE ATIVIDADE
             if (webMessage?.message && !webMessage.key.fromMe) {
                 const remoteJid = webMessage.key.remoteJid;
@@ -534,6 +619,7 @@ setInterval(() => {
                     fofoca: "plantao.ogg",
                     tecnologia: "tecnologia.ogg",
                     removido: "banido.ogg",
+                    confusão: "confusão.ogg"
                     
                 };
                 const msgLower = msgText.toLowerCase();

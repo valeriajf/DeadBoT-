@@ -68,7 +68,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}listanegra-add
  • ${prefix}listanegra-remover 
  • ${prefix}mute
- • ${prefix}muteall 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -77,7 +76,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}roleta-russa 
  • ${prefix}set-name
  • ${prefix}unmute
- • ${prefix}unmuteall 
  • ${prefix}welcome (1/0)
  • ${prefix}zerar-rank
 
@@ -88,10 +86,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}afk
  • ${prefix}adms
  • ${prefix}attp
+ • ${prefix}beck
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
- • ${prefix}fumar
  • ${prefix}gerar-link
  • ${prefix}get-lid
  • ${prefix}google-search
@@ -135,6 +133,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}lutar
  • ${prefix}matar
  • ${prefix}socar
+ • ${prefix}superlike
  • ${prefix}tapa
  • ${prefix}tinder
 

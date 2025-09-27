@@ -42,5 +42,12 @@
     "enabled": true,
     "enabledBy": "5521974344254@s.whatsapp.net",
     "enabledAt": "2025-09-25T16:05:38.805Z"
+  },
+  "120363420228171892@g.us": {
+    "enabled": false,
+    "enabledBy": "553291945133@s.whatsapp.net",
+    "enabledAt": "2025-09-27T00:42:54.521Z",
+    "disabledBy": "5511959110308@s.whatsapp.net",
+    "disabledAt": "2025-09-27T14:58:38.959Z"
   }
 }

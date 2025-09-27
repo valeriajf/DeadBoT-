@@ -1,18 +1,22 @@
 [
   {
-    "match": "Olá",
-    "answer": "!figurinhas 10"
+    "match": "Oi",
+    "answer": "Olá, tudo bem?"
   },
   {
     "match": "Dead",
     "answer": "Fala comigo"
   },
   {
-    "match": "boa noite",
-    "answer": "Good night"
+    "match": "Bom dia",
+    "answer": "Tenha um bom dia"
   },
   {
     "match": "Boa tarde",
-    "answer": "Boa é vc"
+    "answer": "Opa, boa tarde"
+  },
+  {
+    "match": "Boa noite",
+    "answer": "Boa noite pra você também"
   }
 ]
