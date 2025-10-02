@@ -1,7 +1,9 @@
 /**
  * Comando Anti-Fake - Impede entrada de números estrangeiros (não +55)
+ * Remove automaticamente membros com DDI diferente de +55 (Brasil)
+ * Apenas administradores podem ativar/desativar este comando
  *
- * @author VaL
+ * @author Assistente Claude
  */
 const { PREFIX } = require("../../config");
 const fs = require('fs');
@@ -123,7 +125,7 @@ module.exports = {
           
           // Enviar mensagem melhorada
           await client.sendMessage(groupId, {
-            text: `🚫 *ANTIFAKE ATIVADO*\n\n⚠️ *Banindo estrangeiro automaticamente*`
+            text: `⚠️ *Banindo estrangeiro automaticamente*`
           });
           
           // Remover participante

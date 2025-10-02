@@ -1,12 +1,37 @@
 /**
  * Comando Anti-Mídia para DeadBoT
  * 
- * @author VaL
+ * Este comando ativa/desativa a proteção contra mídia no grupo.
+ * Quando ativo, apenas permite imagens, vídeos e GIFs em visualização única.
+ * Qualquer mídia normal será deletada automaticamente.
+ * 
+ * @author Dev VaL 
  */
 const { PREFIX } = require("../../config");
 
 // Armazenar grupos com anti-mídia ativo (em produção, usar banco de dados)
 const antiMediaGroups = new Set();
+
+// Sistema de controle de rate limit com delay obrigatório
+const rateLimitControl = new Map();
+
+// Função para verificar e controlar rate limit com delay
+async function checkRateLimitWithDelay(groupId) {
+    const now = Date.now();
+    const groupData = rateLimitControl.get(groupId) || { lastAction: 0 };
+    
+    // Força um delay mínimo de 5 segundos entre ações no mesmo grupo
+    const timeSinceLastAction = now - groupData.lastAction;
+    if (timeSinceLastAction < 5000) {
+        const waitTime = 5000 - timeSinceLastAction;
+        console.log(`⏳ [ANTI-MÍDIA] Aguardando ${waitTime}ms para evitar rate limit...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    
+    groupData.lastAction = Date.now();
+    rateLimitControl.set(groupId, groupData);
+    return true;
+}
 
 module.exports = {
     name: "anti-midia",

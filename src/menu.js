@@ -29,8 +29,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
+ • ${prefix}saldo
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
+ • ${prefix}zerar-rank
 
 ╰━━─「🌌」─━━
 
@@ -48,13 +50,12 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-flood (1/0)
  • ${prefix}anti-image (1/0)
  • ${prefix}anti-link (1/0)
- • ${prefix}anti-midia (1/0)
  • ${prefix}anti-product (1/0)
  • ${prefix}anti-sticker (1/0)
  • ${prefix}anti-video (1/0)
  • ${prefix}auto-responder (1/0)
+ • ${prefix}auto-sticker (1/0)
  • ${prefix}ban
- • ${prefix}banghost 
  • ${prefix}delete
  • ${prefix}delete-auto-responder
  • ${prefix}exit (1/0)
@@ -65,10 +66,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}limpar
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
- • ${prefix}listanegra-add
- • ${prefix}listanegra-remover 
  • ${prefix}mute
- • ${prefix}muteall 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -77,9 +75,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}roleta-russa 
  • ${prefix}set-name
  • ${prefix}unmute
- • ${prefix}unmuteall 
  • ${prefix}welcome (1/0)
- • ${prefix}zerar-rank
 
 ╰━━─「⭐」─━━
 
@@ -88,10 +84,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}afk
  • ${prefix}adms
  • ${prefix}attp
+ • ${prefix}beck
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
- • ${prefix}fumar
  • ${prefix}gerar-link
  • ${prefix}get-lid
  • ${prefix}google-search
@@ -135,6 +131,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}lutar
  • ${prefix}matar
  • ${prefix}socar
+ • ${prefix}superlike
  • ${prefix}tapa
  • ${prefix}tinder
 

@@ -9,5 +9,5 @@
  */
 module.exports = {
   welcomeMessage: "Bem vindo ao grupo, @member. Se liga nas regras !!!",
-  exitMessage: "Poxa, @member saiu",
+  exitMessage: "@member saiu do grupo",
 };

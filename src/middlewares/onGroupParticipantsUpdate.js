@@ -27,6 +27,9 @@ const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 // 🚫 LISTA NEGRA - Funções para banimento automático
 const BLACKLIST_FILE = path.join(__dirname, '..', 'data', 'blacklist.json');
 
+// Função delay para evitar flood e rate limit
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 function loadBlacklist() {
   try {
     if (!fs.existsSync(BLACKLIST_FILE)) {
@@ -63,6 +66,7 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
           `🔒 *Ação:* Banido automaticamente\n\n` +
           `💡 Para remover da lista negra, use lista-negra-remover`;
         
+        await delay(1500);
         await socket.sendMessage(remoteJid, { text: banMessage });
         
         console.log(`[BLACKLIST] Usuário ${userNumber} banido automaticamente do grupo ${remoteJid}`);
@@ -76,6 +80,7 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
             `🚨 *Status:* Na lista negra mas não foi possível banir automaticamente\n` +
             `💡 *Ação recomendada:* Bana manualmente ou verifique as permissões do bot`;
           
+          await delay(1500);
           await socket.sendMessage(remoteJid, { text: warningMessage });
         } catch (msgError) {
           console.error('[BLACKLIST] Erro ao enviar mensagem de aviso:', msgError);
@@ -91,10 +96,9 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
   }
 }
 
-      // 🚫 ANTIFAKE - bloqueia números que não são do Brasil (APENAS SE ATIVADO)
+// 🚫 ANTIFAKE - bloqueia números que não são do Brasil (APENAS SE ATIVADO)
 async function checkAndBanAntifake(socket, remoteJid, userJid) {
   try {
-    // VERIFICAR SE O ANTI-FAKE ESTÁ ATIVO NESTE GRUPO
     const ANTIFAKE_CONFIG_PATH = path.join(__dirname, '..', 'data', 'antifake.json');
     
     let config = {};
@@ -107,7 +111,6 @@ async function checkAndBanAntifake(socket, remoteJid, userJid) {
       console.error('[ANTIFAKE] Erro ao carregar configurações:', error);
     }
     
-    // SE NÃO ESTIVER ATIVO NESTE GRUPO, RETORNA FALSE
     if (!config[remoteJid]?.enabled) {
       console.log(`[ANTIFAKE] Desativado no grupo ${remoteJid}, permitindo entrada`);
       return false;
@@ -115,13 +118,11 @@ async function checkAndBanAntifake(socket, remoteJid, userJid) {
 
     const userNumber = userJid.replace('@s.whatsapp.net', '');
 
-    // Permite apenas números que começam com 55 (Brasil)
     if (!userNumber.startsWith("55")) {
       console.log(`[ANTIFAKE] Detectado número estrangeiro: ${userNumber}`);
 
       try {
         await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
-        
         console.log(`[ANTIFAKE] Usuário ${userNumber} banido silenciosamente do grupo ${remoteJid}`);
         return true;
       } catch (error) {
@@ -152,25 +153,17 @@ exports.onGroupParticipantsUpdate = async ({
     }
 
     if (action === "add") {
-      // 🚫 Primeiro verifica o antifake
       const fakeBanned = await checkAndBanAntifake(socket, remoteJid, userJid);
-      if (fakeBanned) {
-        console.log(`[ANTIFAKE] Usuário banido, pulando mensagem de boas-vindas`);
-        return;
-      }
+      if (fakeBanned) return;
 
-      // 🚫 Depois verifica a lista negra
       const wasBanned = await checkAndBanBlacklistedUser(socket, remoteJid, userJid);
-      if (wasBanned) {
-        console.log(`[BLACKLIST] Usuário banido, pulando mensagem de boas-vindas`);
-        return;
-      }
+      if (wasBanned) return;
 
-      // 🎉 WELCOME2 - Sistema personalizado (executa antes do welcome padrão)
+      // 🎉 WELCOME2 - Sistema personalizado
       try {
         const groupMetadata = await socket.groupMetadata(remoteJid);
+        await delay(1000);
         
-        // CORREÇÃO: Tratamento correto do número baseado no tipo de JID
         let userNumber;
         if (userJid.includes('@lid')) {
           userNumber = userJid.replace('@lid', '');
@@ -178,10 +171,7 @@ exports.onGroupParticipantsUpdate = async ({
           userNumber = userJid.replace('@s.whatsapp.net', '');
         }
         
-        console.log(`[WELCOME2] Dados do novo membro:`);
-        console.log(`  - userJid: ${userJid}`);
-        console.log(`  - userNumber: ${userNumber}`);
-        console.log(`  - groupName: ${groupMetadata.subject}`);
+        console.log(`[WELCOME2] Novo membro: ${userNumber} no grupo ${groupMetadata.subject}`);
         
         await handleWelcome2NewMember({
           groupId: remoteJid,
@@ -189,18 +179,18 @@ exports.onGroupParticipantsUpdate = async ({
           newMemberId: userJid,
           newMemberNumber: userNumber,
           sendImageWithCaption: async ({ image, caption, mentions }) => {
-            console.log(`[WELCOME2] Enviando mensagem com menções: ${mentions}`);
+            await delay(1500);
             await socket.sendMessage(remoteJid, {
               image: { url: image },
-              caption: caption,
-              mentions: mentions
+              caption,
+              mentions
             });
           },
           sendTextWithMention: async ({ caption, mentions }) => {
-            console.log(`[WELCOME2] Enviando apenas texto com menções: ${mentions}`);
+            await delay(1500);
             await socket.sendMessage(remoteJid, {
               text: caption,
-              mentions: mentions
+              mentions
             });
           },
           getProfilePicture: async (userId) => {
@@ -217,12 +207,9 @@ exports.onGroupParticipantsUpdate = async ({
       }
     }
 
-    // 🎉 SISTEMA WELCOME PADRÃO (mantido como estava)
+    // 🎉 SISTEMA WELCOME PADRÃO
     if (isActiveWelcomeGroup(remoteJid) && action === "add") {
-      const { buffer, profileImage } = await getProfileImageData(
-        socket,
-        userJid
-      );
+      const { buffer, profileImage } = await getProfileImageData(socket, userJid);
 
       const hasMemberMention = welcomeMessage.includes("@member");
       const mentions = [];
@@ -240,6 +227,7 @@ exports.onGroupParticipantsUpdate = async ({
       if (spiderAPITokenConfigured) {
         try {
           if (!buffer) {
+            await delay(1500);
             await socket.sendMessage(remoteJid, {
               image: buffer,
               caption: finalWelcomeMessage,
@@ -253,11 +241,7 @@ exports.onGroupParticipantsUpdate = async ({
             `${getRandomNumber(10_000, 99_9999)}.png`
           );
 
-          if (!link) {
-            throw new Error(
-              "Não consegui fazer o upload da imagem, tente novamente mais tarde!"
-            );
-          }
+          if (!link) throw new Error("Falha no upload da imagem!");
 
           const url = welcome(
             "participante",
@@ -265,6 +249,7 @@ exports.onGroupParticipantsUpdate = async ({
             link
           );
 
+          await delay(1500);
           await socket.sendMessage(remoteJid, {
             image: { url },
             caption: finalWelcomeMessage,
@@ -272,6 +257,7 @@ exports.onGroupParticipantsUpdate = async ({
           });
         } catch (error) {
           console.error("Erro ao fazer upload da imagem:", error);
+          await delay(1500);
           await socket.sendMessage(remoteJid, {
             image: buffer,
             caption: finalWelcomeMessage,
@@ -279,6 +265,7 @@ exports.onGroupParticipantsUpdate = async ({
           });
         }
       } else {
+        await delay(1500);
         await socket.sendMessage(remoteJid, {
           image: buffer,
           caption: finalWelcomeMessage,
@@ -290,10 +277,7 @@ exports.onGroupParticipantsUpdate = async ({
         fs.unlinkSync(profileImage);
       }
     } else if (isActiveExitGroup(remoteJid) && action === "remove") {
-      const { buffer, profileImage } = await getProfileImageData(
-        socket,
-        userJid
-      );
+      const { buffer, profileImage } = await getProfileImageData(socket, userJid);
 
       const hasMemberMention = exitMessage.includes("@member");
       const mentions = [];
@@ -315,14 +299,11 @@ exports.onGroupParticipantsUpdate = async ({
             `${getRandomNumber(10_000, 99_9999)}.png`
           );
 
-          if (!link) {
-            throw new Error(
-              "Não consegui fazer o upload da imagem, tente novamente mais tarde!"
-            );
-          }
+          if (!link) throw new Error("Falha no upload da imagem!");
 
           const url = exit("membro", "Você foi um bom membro", link);
 
+          await delay(1500);
           await socket.sendMessage(remoteJid, {
             image: { url },
             caption: finalExitMessage,
@@ -330,6 +311,7 @@ exports.onGroupParticipantsUpdate = async ({
           });
         } catch (error) {
           console.error("Erro ao fazer upload da imagem:", error);
+          await delay(1500);
           await socket.sendMessage(remoteJid, {
             image: buffer,
             caption: finalExitMessage,
@@ -337,6 +319,7 @@ exports.onGroupParticipantsUpdate = async ({
           });
         }
       } else {
+        await delay(1500);
         await socket.sendMessage(remoteJid, {
           image: buffer,
           caption: finalExitMessage,
@@ -349,7 +332,11 @@ exports.onGroupParticipantsUpdate = async ({
       }
     }
   } catch (error) {
-    console.error("Erro ao processar evento onGroupParticipantsUpdate:", error);
-    process.exit(1);
+    if (error?.data === 429) {
+      console.warn("⚠️ Rate limit atingido no onGroupParticipantsUpdate, aguardando 5s...");
+      await delay(5000);
+    } else {
+      console.error("Erro ao processar evento onGroupParticipantsUpdate:", error);
+    }
   }
 };

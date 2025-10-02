@@ -44,8 +44,9 @@ const antifloodCommand = require("../commands/admin/anti-flood");
 //  SISTEMA ANTI-FAKE - DeadBoT
 const antiFakeCommand = require("../commands/admin/anti-fake");
 
-//  SISTEMA ANTI-MÍDIA - DeadBoT
-const antiMediaCommand = require("../commands/admin/anti-midia");
+// Importa o comando auto-sticker
+const autoStickerCommand = require("../commands/admin/auto-sticker");
+
 
 //  Comandos fig-ban
 const figBanAddCommand = require("../commands/admin/fig-ban-add");
@@ -175,6 +176,91 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             }
             // 🔇 FIM DO SISTEMA MUTEALL
 
+
+// ====================================
+// SISTEMA DE COMANDOS POR FIGURINHA
+// Adicione este código no onMessagesUpsert.js, logo após o sistema MUTEALL
+// ====================================
+
+// Importa comandos de figurinha
+const abrirFigCommand = require("../commands/admin/abrir-fig");
+const fecharFigCommand = require("../commands/admin/fechar-fig");
+
+// Função para verificar se usuário é admin (pode reutilizar a que já existe)
+async function isUserAdminFig(socket, groupId, userJid) {
+    try {
+        const groupMetadata = await socket.groupMetadata(groupId);
+        const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+        return groupAdmins.includes(userJid);
+    } catch (error) {
+        console.error("❌ [FIG-COMMANDS] Erro ao verificar admin:", error.message);
+        return false;
+    }
+}
+
+// ====================================
+// ADICIONE ESTE BLOCO LOGO APÓS O SISTEMA MUTEALL NO onMessagesUpsert
+// ====================================
+
+// 🖼️ SISTEMA DE COMANDOS POR FIGURINHA - VERIFICAÇÃO PRIORITÁRIA
+if (webMessage?.message?.stickerMessage && !webMessage.key.fromMe) {
+    const remoteJid = webMessage.key.remoteJid;
+    const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+
+    // Só verifica em grupos
+    if (remoteJid?.includes('@g.us')) {
+        try {
+            console.log("🖼️ [FIG-COMMANDS] Processando figurinha de:", userJid);
+            
+            const isAdmin = await isUserAdminFig(socket, remoteJid, userJid);
+            const isOwner = OWNER_NUMBER && userJid.includes(OWNER_NUMBER);
+            
+            // Só admins e owner podem usar comandos de figurinha
+            if (isAdmin || isOwner) {
+                console.log("🖼️ [FIG-COMMANDS] Usuário autorizado, verificando comandos...");
+                
+                // Cria objeto compatível com a estrutura de comandos
+                const commonFunctions = {
+                    sendReply: async (text) => {
+                        return await socket.sendMessage(remoteJid, {
+                            text: text
+                        }, { quoted: webMessage });
+                    },
+                    sendErrorReply: async (text) => {
+                        return await socket.sendMessage(remoteJid, {
+                            text: text
+                        }, { quoted: webMessage });
+                    },
+                    socket: socket,
+                    webMessage: webMessage,
+                    isGroupMessage: true,
+                    isFromAdmins: isAdmin || isOwner,
+                    groupId: remoteJid
+                };
+
+                // Tenta executar comando de fechar grupo
+                try {
+                    await fecharFigCommand.handle(commonFunctions);
+                } catch (error) {
+                    console.error("🖼️ [FIG-COMMANDS] Erro no comando fechar-fig:", error.message);
+                }
+
+                // Tenta executar comando de abrir grupo
+                try {
+                    await abrirFigCommand.handle(commonFunctions);
+                } catch (error) {
+                    console.error("🖼️ [FIG-COMMANDS] Erro no comando abrir-fig:", error.message);
+                }
+            } else {
+                console.log("🖼️ [FIG-COMMANDS] Usuário não autorizado:", userJid);
+            }
+        } catch (error) {
+            console.error("🖼️ [FIG-COMMANDS] Erro geral:", error.message);
+        }
+    }
+}
+// 🖼️ FIM DO SISTEMA DE COMANDOS POR FIGURINHA
+
             // 🔥 SISTEMA DE RASTREAMENTO DE ATIVIDADE
             if (webMessage?.message && !webMessage.key.fromMe) {
                 const remoteJid = webMessage.key.remoteJid;
@@ -207,6 +293,57 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                 }
             }
             // 🔥 FIM RASTREAMENTO
+            
+            // 🖼️ SISTEMA AUTO-STICKER
+            try {
+                const autoStickerCmd = require("../commands/admin/auto-sticker");
+                
+                const hasImage = !!(
+                    webMessage?.message?.imageMessage ||
+                    webMessage?.message?.viewOnceMessage?.message?.imageMessage
+                );
+                
+                if (hasImage && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
+                    const groupId = webMessage.key.remoteJid;
+                    const isActive = autoStickerCmd.isActive(groupId);
+                    
+                    if (isActive) {
+                        console.log('[AUTO-STICKER] Processando imagem diretamente...');
+                        
+                        // Importa as funções necessárias diretamente
+                        const { download } = require("../utils");
+                        const { getRandomName } = require("../utils");
+                        
+                        // Cria funções customizadas
+                        const downloadImage = async (msg, filename) => {
+                            return await download(msg, filename, "image", "png");
+                        };
+                        
+                        const sendStickerFromFile = async (filePath) => {
+                            return await socket.sendMessage(groupId, {
+                                sticker: fs.readFileSync(filePath)
+                            }, { quoted: webMessage });
+                        };
+                        
+                        await autoStickerCmd.processAutoSticker({
+                            isImage: true,
+                            isGroup: true,
+                            groupId: groupId,
+                            webMessage: webMessage,
+                            downloadImage: downloadImage,
+                            sendStickerFromFile: sendStickerFromFile,
+                            userJid: webMessage.key.participant || webMessage.key.remoteJid,
+                        });
+                        
+                        console.log('[AUTO-STICKER] ✅ Processamento concluído');
+                    }
+                }
+            } catch (autoStickerError) {
+                console.error('❌ [AUTO-STICKER] Erro:', autoStickerError.message);
+                console.error('❌ [AUTO-STICKER] Stack:', autoStickerError.stack);
+            }
+            // 🖼️ FIM AUTO-STICKER
+            
 
             // 💤 SISTEMA AFK - VERSÃO CORRIGIDA
 try {
@@ -258,58 +395,6 @@ try {
                 console.error('❌ [ANTIFLOOD] Erro:', antifloodError.message);
             }
             // 🚫 FIM ANTIFLOOD
-            
-            // 🚫 SISTEMA ANTI-MÍDIA 
-try {
-    if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
-        const messageType = Object.keys(webMessage.message)[0];
-        const isViewOnce = webMessage.message.viewOnceMessage ? true : false;
-        
-        // Verificação se bot é admin (corrigindo formato do ID)
-        const groupMetadata = await socket.groupMetadata(webMessage.key.remoteJid);
-        const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
-        const botId = socket.user?.id;
-        const botIdClean = botId?.split(':')[0] + '@s.whatsapp.net'; // Remove a parte ":8"
-        const isBotAdmin = groupAdmins.includes(botIdClean);
-        
-        // Função para deletar mensagem
-        const deleteMessage = async () => {
-            return await socket.sendMessage(webMessage.key.remoteJid, {
-                delete: webMessage.key
-            });
-        };
-        
-        // Função para enviar texto
-        const sendText = async (text, options = {}) => {
-            return await socket.sendMessage(webMessage.key.remoteJid, {
-                text: text,
-                ...options
-            });
-        };
-        
-        // Verificar se é mídia e se deve ser deletada
-        await antiMediaCommand.checkMedia({
-            message: {
-                type: messageType,
-                isViewOnce: isViewOnce
-            },
-            from: webMessage.key.remoteJid,
-            isGroupMsg: true,
-            deleteMessage,
-            sendText,
-            sender: {
-                id: webMessage.key.participant || webMessage.key.remoteJid,
-                pushname: webMessage.pushName,
-                shortName: webMessage.pushName?.split(' ')[0] || 'Usuario'
-            },
-            isBotGroupAdmins: isBotAdmin,
-            webMessage: webMessage // Adiciona o webMessage para poder marcar a mensagem
-        });
-    }
-} catch (antiMediaError) {
-    console.error('❌ [ANTI-MÍDIA] Erro:', antiMediaError.message);
-}
-            // 🚫 FIM ANTI-MÍDIA
 
             // 🚫 SISTEMA BANGHOST - Detecção de confirmação SIM/NÃO
 if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
@@ -452,6 +537,19 @@ setInterval(() => {
                         await getStickerCommand.handle(webMessage, { socket, args });
                         continue;
                     }
+                    
+                    // auto-sticker
+                    const autoStickerCmd = require("../commands/admin/auto-sticker");
+                    if (autoStickerCmd.commands.includes(command)) {
+                        const commonFunctions = loadCommonFunctions({ socket, webMessage });
+                        if (commonFunctions) {
+                            await autoStickerCmd.handle({
+                                ...commonFunctions,
+                                args: args
+                            });
+                        }
+                        continue;
+                    }
 
                     // fig-ban
                     if (command === "fig-ban-add") {
@@ -534,6 +632,7 @@ setInterval(() => {
                     fofoca: "plantao.ogg",
                     tecnologia: "tecnologia.ogg",
                     removido: "banido.ogg",
+                    confusão: "confusão.ogg"
                     
                 };
                 const msgLower = msgText.toLowerCase();

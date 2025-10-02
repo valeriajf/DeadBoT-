@@ -1,8 +1,10 @@
 {
   "120363420985411758@g.us": {
-    "enabled": true,
+    "enabled": false,
     "enabledBy": "553291945133@s.whatsapp.net",
-    "enabledAt": "2025-09-07T00:16:31.355Z"
+    "enabledAt": "2025-09-07T00:16:31.355Z",
+    "disabledBy": "163351011319890@lid",
+    "disabledAt": "2025-09-29T21:54:33.209Z"
   },
   "120363418448650760@g.us": {
     "enabled": true,
@@ -15,21 +17,25 @@
     "enabledAt": "2025-09-07T00:33:38.494Z"
   },
   "120363417816517583@g.us": {
-    "enabled": true,
+    "enabled": false,
     "enabledBy": "553291945133@s.whatsapp.net",
     "enabledAt": "2025-09-22T14:04:47.201Z",
-    "disabledBy": "553291945133@s.whatsapp.net",
-    "disabledAt": "2025-09-23T00:54:14.327Z"
+    "disabledBy": "163351011319890@lid",
+    "disabledAt": "2025-09-30T00:40:41.682Z"
   },
   "120363038706590596@g.us": {
-    "enabled": true,
-    "enabledBy": "5511976270649@s.whatsapp.net",
-    "enabledAt": "2025-09-07T01:53:04.248Z"
+    "enabled": false,
+    "enabledBy": "279254495457323@lid",
+    "enabledAt": "2025-09-28T16:15:59.412Z",
+    "disabledBy": "279254495457323@lid",
+    "disabledAt": "2025-09-29T14:14:16.836Z"
   },
   "555184033465-1558458733@g.us": {
-    "enabled": true,
+    "enabled": false,
     "enabledBy": "555184033465@s.whatsapp.net",
-    "enabledAt": "2025-09-25T01:32:38.735Z"
+    "enabledAt": "2025-09-25T01:32:38.735Z",
+    "disabledBy": "200776936882351@lid",
+    "disabledAt": "2025-09-29T21:56:52.205Z"
   },
   "120363420697129208@g.us": {
     "enabled": false,
@@ -42,5 +48,17 @@
     "enabled": true,
     "enabledBy": "5521974344254@s.whatsapp.net",
     "enabledAt": "2025-09-25T16:05:38.805Z"
+  },
+  "120363420228171892@g.us": {
+    "enabled": false,
+    "enabledBy": "553291945133@s.whatsapp.net",
+    "enabledAt": "2025-09-27T00:42:54.521Z",
+    "disabledBy": "5511959110308@s.whatsapp.net",
+    "disabledAt": "2025-09-27T14:58:38.959Z"
+  },
+  "120363262270840800@g.us": {
+    "enabled": true,
+    "enabledBy": "557599018503@s.whatsapp.net",
+    "enabledAt": "2025-09-29T22:14:54.624Z"
   }
 }
