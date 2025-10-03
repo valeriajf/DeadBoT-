@@ -246,6 +246,31 @@ function toUserJid(number) {
   return `${onlyNumbers(number)}@s.whatsapp.net`;
 }
 
+/**
+ * @deprecated O nome toUserOrGroupJid é meio ruim, em breve será substituído por toUserJidOrLid
+ */
+function toUserOrGroupJid(userArg) {
+  if (!userArg) {
+    return null;
+  }
+
+  const cleanArg = userArg.replace("@", "");
+  return cleanArg.length >= 14
+    ? `${cleanArg}@lid`
+    : `${cleanArg}@s.whatsapp.net`;
+}
+
+function toUserJidOrLid(userArg) {
+  if (!userArg) {
+    return null;
+  }
+
+  const cleanArg = userArg.replace("@", "");
+  return cleanArg.length >= 14
+    ? `${cleanArg}@lid`
+    : `${cleanArg}@s.whatsapp.net`;
+}
+
 exports.toUserLid = (value) => `${onlyNumbers(value)}@lid`;
 
 exports.getBuffer = (url, options) => {
@@ -446,6 +471,8 @@ exports.getRandomNumber = getRandomNumber;
 exports.getRandomName = getRandomName;
 exports.onlyNumbers = onlyNumbers;
 exports.toUserJid = toUserJid;
+exports.toUserJidOrLid = toUserJidOrLid;
+exports.toUserOrGroupJid = toUserOrGroupJid;
 
 exports.GROUP_PARTICIPANT_ADD = 27;
 exports.GROUP_PARTICIPANT_LEAVE = 32;

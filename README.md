@@ -8,7 +8,7 @@
 
 <div align="center">
     <a href="https://github.com/guiireal/takeshi-bot">
-        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.3.1-blue">
+        <img alt="Version" src="https://img.shields.io/badge/Vers%C3%A3o-6.4.0-blue">
     </a>
 </div>
 
@@ -377,6 +377,7 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 | Obter o link do grupo | Admin | ❌
 | Revelar | Admin | ❌
 | Somente admins | Admin | ❌
+| Ver saldo | Admin | ❌
 | Borrar imagem | Membro | ❌
 | Busca CEP | Membro | ❌
 | Canvas Bolsonaro | Membro | ✅
@@ -656,6 +657,7 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
     - 📝 index.js ➔ _script ponto de entrada do bot_
     - 📝 loader.js ➔ _script de carga de funções_
     - 📝 menu.js ➔ _menu do bot_
+    - 📝 messages.js ➔ _arquivos de mensagens de boas vindas e saída_
     - 📝 test.js ➔ _script de testes_
 - 📝 ⚡-cases-estao-aqui.js ➔ _easter egg_ 
 - 📝 CONTRIBUTING.md ➔ _eguia de contribuição_ 
@@ -666,6 +668,11 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
 - 📝 package.json ➔ _arquivo de definição das dependências do bot_
 - 📝 README.md ➔ _esta documentação_
 - 📝 reset-qr-auth.sh ➔ _arquivo para excluir as credenciais do bot_
+- 📝 update.sh ➔ _arquivo de atualização do bot_
+
+## Atualizar o bot
+
+Execute `bash update.sh`
 
 ## Testes
 
@@ -686,7 +693,7 @@ Para resolver, siga o [tutorial de instalação via git clone](#termux-new-setup
 Caso dê algum erro na conexão, digite o seguinte comando:
 
 ```sh
-sh reset-qr-auth.sh
+bash reset-qr-auth.sh
 ```
 
 Depois, remova o dispositivo do WhatsApp indo nas configurações do WhatsApp em "dispositivos conectados" e repita
