@@ -12,9 +12,11 @@
     "enabledAt": "2025-09-07T00:20:32.701Z"
   },
   "120363263881350369@g.us": {
-    "enabled": true,
+    "enabled": false,
     "enabledBy": "553291945133@s.whatsapp.net",
-    "enabledAt": "2025-09-07T00:33:38.494Z"
+    "enabledAt": "2025-09-07T00:33:38.494Z",
+    "disabledBy": "163351011319890@lid",
+    "disabledAt": "2025-10-02T21:57:49.277Z"
   },
   "120363417816517583@g.us": {
     "enabled": false,
