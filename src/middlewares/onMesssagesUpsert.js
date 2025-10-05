@@ -19,6 +19,7 @@ const { errorLog, infoLog } = require("../utils/logger");
 const { badMacHandler } = require("../utils/badMacHandler");
 const { checkIfMemberIsMuted } = require("../utils/database");
 const { messageHandler } = require("./messageHandler");
+const { updateCacheGroupMetadata } = require("../connection");
 
 const fs = require("fs");
 const path = require("path");
