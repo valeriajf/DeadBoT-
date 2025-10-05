@@ -48,6 +48,12 @@ const antiFakeCommand = require("../commands/admin/anti-fake");
 // Importa o comando auto-sticker
 const autoStickerCommand = require("../commands/admin/auto-sticker");
 
+// Importa o verificador de aniversários
+const { initNiverChecker } = require("./niverChecker");
+
+// Variável de controle para inicializar apenas uma vez
+let niverCheckerInitialized = false;
+
 
 //  Comandos fig-ban
 const figBanAddCommand = require("../commands/admin/fig-ban-add");
@@ -132,6 +138,17 @@ async function deleteForbiddenMessage(socket, webMessage, reason = "muteall ativ
 // ====================================
 exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
     if (!messages.length) return;
+
+    // Inicializa o verificador de aniversários apenas uma vez
+    if (!niverCheckerInitialized) {
+        try {
+            initNiverChecker(socket);
+            niverCheckerInitialized = true;
+            console.log("🎂 [NIVER] Sistema de verificação de aniversários iniciado!");
+        } catch (error) {
+            console.error("❌ [NIVER] Erro ao iniciar verificador:", error.message);
+        }
+    }
 
     const STICKER_KEYWORDS = loadStickerKeywords();
 

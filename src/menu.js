@@ -67,6 +67,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}mute
+ • ${prefix}niver 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
