@@ -58,6 +58,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}ban
  • ${prefix}delete
  • ${prefix}delete-auto-responder
+ • ${prefix}enquete 
  • ${prefix}exit (1/0)
  • ${prefix}fechar
  • ${prefix}fig-tag
@@ -79,6 +80,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}unmute
  • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0)
+ • ${prefix}welcome3 (1/0)
  
 
 ╰━━─「⭐」─━━
