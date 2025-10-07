@@ -75,8 +75,11 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}revelar
  • ${prefix}roleta-russa 
  • ${prefix}set-name
+ • ${prefix}totag (com img)
  • ${prefix}unmute
  • ${prefix}welcome (1/0)
+ • ${prefix}welcome2 (1/0)
+ 
 
 ╰━━─「⭐」─━━
 
