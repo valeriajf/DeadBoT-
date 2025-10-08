@@ -29,7 +29,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
- • ${prefix}saldo
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
  • ${prefix}zerar-rank
@@ -43,6 +42,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}adv
  • ${prefix}adv-reset
  • ${prefix}agendar-mensagem
+ • ${prefix}aluguel 
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
@@ -58,6 +58,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}ban
  • ${prefix}delete
  • ${prefix}delete-auto-responder
+ • ${prefix}enquete 
  • ${prefix}exit (1/0)
  • ${prefix}fechar
  • ${prefix}fig-tag
@@ -75,8 +76,12 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}revelar
  • ${prefix}roleta-russa 
  • ${prefix}set-name
+ • ${prefix}totag (com img)
  • ${prefix}unmute
  • ${prefix}welcome (1/0)
+ • ${prefix}welcome2 (1/0)
+ • ${prefix}welcome3 (1/0)
+ 
 
 ╰━━─「⭐」─━━
 

@@ -1,16 +1,14 @@
 /**
  * Sistema de verificação automática de aniversários.
- * Verifica diariamente e envia mensagens de parabéns às 9h da manhã.
+ * VERSÃO DE TESTE - 11:00 às 11:05
  * 
- * @author Dev VaL 
+ * @author DeadBoT Team
  */
 const fs = require("node:fs");
 const path = require("node:path");
 
-// Define o caminho correto para o database
 const DATABASE_PATH = path.join(__dirname, "..", "..", "database", "niver.json");
 
-// Calcula idade
 const calculateAge = (dateString) => {
   const [day, month, year] = dateString.split("/").map(Number);
   const today = new Date();
@@ -26,11 +24,10 @@ const calculateAge = (dateString) => {
   return age;
 };
 
-// Verifica aniversários do dia
 const checkBirthdays = async (socket) => {
   try {
     if (!fs.existsSync(DATABASE_PATH)) {
-      console.log("[NIVER] Arquivo de banco de dados não encontrado");
+      console.log("[NIVER] ❌ Arquivo de banco de dados não encontrado");
       return;
     }
 
@@ -39,18 +36,16 @@ const checkBirthdays = async (socket) => {
     const currentDay = String(today.getDate()).padStart(2, "0");
     const currentMonth = String(today.getMonth() + 1).padStart(2, "0");
 
-    console.log(`[NIVER] Verificando aniversários para ${currentDay}/${currentMonth}`);
+    console.log(`[NIVER] 🔍 Verificando aniversários para ${currentDay}/${currentMonth}`);
 
-    // Itera sobre todos os grupos
     for (const [groupJid, birthdays] of Object.entries(data)) {
       const todayBirthdays = Object.entries(birthdays).filter(([_, birthdayData]) => {
         const [day, month] = birthdayData.date.split("/");
         return day === currentDay && month === currentMonth;
       });
 
-      console.log(`[NIVER] Grupo ${groupJid}: ${todayBirthdays.length} aniversariante(s) encontrado(s)`);
+      console.log(`[NIVER] 📋 Grupo ${groupJid}: ${todayBirthdays.length} aniversariante(s) encontrado(s)`);
 
-      // Se houver aniversariantes, envia mensagem
       if (todayBirthdays.length > 0) {
         let message = `🎉🎂 *ANIVERSARIANTES DE HOJE!* 🎂🎉\n\n`;
         
@@ -64,52 +59,72 @@ const checkBirthdays = async (socket) => {
 
         const mentions = todayBirthdays.map(([userJid]) => userJid);
         
+        console.log(`[NIVER] 📤 Tentando enviar para ${groupJid} com ${mentions.length} menção(ões)...`);
+        
         try {
           await socket.sendMessage(groupJid, {
             text: message,
             mentions: mentions,
           });
-          console.log(`[NIVER] ✅ Lembrete enviado com sucesso para o grupo ${groupJid}`);
+          console.log(`[NIVER] ✅ MENSAGEM ENVIADA COM SUCESSO para ${groupJid}!`);
         } catch (sendError) {
-          console.error(`[NIVER] ❌ Erro ao enviar mensagem para ${groupJid}:`, sendError.message);
+          console.error(`[NIVER] ❌ ERRO ao enviar para ${groupJid}: ${sendError.message}`);
+          console.log(`[NIVER] 🔄 Tentando novamente SEM menções...`);
+          
+          try {
+            const messageWithoutMentions = message.replace(/@/g, '');
+            await socket.sendMessage(groupJid, {
+              text: messageWithoutMentions,
+            });
+            console.log(`[NIVER] ✅ Mensagem enviada SEM menções para ${groupJid}`);
+          } catch (fallbackError) {
+            console.error(`[NIVER] ❌ FALHA TOTAL para ${groupJid}: ${fallbackError.message}`);
+          }
         }
       }
     }
   } catch (error) {
-    console.error("[NIVER] ❌ Erro ao verificar aniversários:", error);
+    console.error("[NIVER] ❌ Erro geral ao verificar aniversários:", error);
   }
 };
 
-// Inicia o verificador de aniversários
 const initNiverChecker = (socket) => {
-  console.log("[NIVER] Iniciando verificador de aniversários...");
+  console.log("[NIVER] 🚀 Iniciando verificador de aniversários... (TESTE 11:00-11:05)");
 
-  // Verifica a cada 30 minutos
-  const checkInterval = 1800000; // 30 minutos
+  // Verifica a cada 1 minuto para não perder a janela
+  const checkInterval = 60000; // 1 minuto
 
-  // Variável para controlar se já enviou hoje
   let lastCheckDate = null;
 
   const runCheck = async () => {
     const today = new Date().toDateString();
     const currentHour = new Date().getHours();
+    const currentMinute = new Date().getMinutes();
     
-    // Envia entre 9h e 10h, apenas uma vez por dia
-    if (lastCheckDate !== today && currentHour >= 9 && currentHour <= 10) {
-      console.log(`[NIVER] 🎂 Horário de envio atingido! Verificando aniversários...`);
+    console.log(`[NIVER] ⏰ Verificação às ${currentHour}:${String(currentMinute).padStart(2, '0')}h`);
+    console.log(`[NIVER] 📅 Última verificação: ${lastCheckDate || 'Nenhuma ainda'}`);
+    
+    const isInTimeWindow = currentHour === 11 && currentMinute >= 0 && currentMinute <= 5;
+    console.log(`[NIVER] ✅ Está na janela 11:00-11:05? ${isInTimeWindow}`);
+    console.log(`[NIVER] ✅ Ainda não enviou hoje? ${lastCheckDate !== today}`);
+    
+    if (lastCheckDate !== today && isInTimeWindow) {
+      console.log(`[NIVER] 🎂🎂🎂 HORÁRIO ATINGIDO! ENVIANDO MENSAGENS... 🎂🎂🎂`);
       await checkBirthdays(socket);
       lastCheckDate = today;
-      console.log(`[NIVER] ✅ Verificação concluída para ${today}`);
+      console.log(`[NIVER] ✅✅✅ Verificação concluída para ${today} ✅✅✅`);
+    } else {
+      console.log(`[NIVER] ⏭️ Aguardando janela 11:00-11:05...`);
     }
   };
 
   // Executa imediatamente ao iniciar
   runCheck();
 
-  // Agenda verificações periódicas a cada 30 minutos
+  // Agenda verificações a cada 1 minuto
   setInterval(runCheck, checkInterval);
 
-  console.log("[NIVER] ✅ Verificador ativo! Mensagens serão enviadas entre 9h-10h diariamente.");
+  console.log("[NIVER] ✅ Sistema ativo! Verificando a cada 1 minuto na janela 11:00-11:05");
 };
 
 module.exports = {

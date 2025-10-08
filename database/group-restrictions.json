@@ -2,7 +2,7 @@
   "120363263881350369@g.us": {
     "anti-audio": false,
     "anti-image": true,
-    "anti-video": true
+    "anti-video": false
   },
   "120363420985411758@g.us": {
     "anti-image": false
