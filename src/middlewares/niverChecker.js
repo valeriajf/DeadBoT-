@@ -1,8 +1,8 @@
 /**
  * Sistema de verificação automática de aniversários.
- * Verifica diariamente e envia mensagens de parabéns às 9h da manhã.
+ * VERSÃO DE TESTE - 11:00 às 11:05
  * 
- * @author Dev VaL 
+ * @author DeadBoT Team
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -54,6 +54,8 @@ const checkBirthdays = async (socket) => {
 
         const mentions = todayBirthdays.map(([userJid]) => userJid);
         
+        console.log(`[NIVER] 📤 Tentando enviar para ${groupJid} com ${mentions.length} menção(ões)...`);
+        
         try {
           await socket.sendMessage(groupJid, {
             text: message,
@@ -76,7 +78,7 @@ const checkBirthdays = async (socket) => {
       }
     }
   } catch (error) {
-    console.error("[NIVER] ❌ Erro ao verificar aniversários:", error);
+    console.error("[NIVER] ❌ Erro geral ao verificar aniversários:", error);
   }
 };
 
@@ -89,6 +91,7 @@ const initNiverChecker = (socket) => {
   const runCheck = async () => {
     const today = new Date().toDateString();
     const currentHour = new Date().getHours();
+    const currentMinute = new Date().getMinutes();
     
     if (lastCheckDate !== today && currentHour >= 9 && currentHour <= 10) {
       await checkBirthdays(socket);

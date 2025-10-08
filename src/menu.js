@@ -42,6 +42,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}adv
  • ${prefix}adv-reset
  • ${prefix}agendar-mensagem
+ • ${prefix}aluguel 
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
