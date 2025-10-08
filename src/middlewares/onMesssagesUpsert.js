@@ -649,8 +649,6 @@ setInterval(() => {
                     denise: "denise.ogg",
                     fofoca: "plantao.ogg",
                     tecnologia: "tecnologia.ogg",
-                    removido: "banido.ogg",
-                    confusão: "confusão.ogg"
                     
                 };
                 const msgLower = msgText.toLowerCase();

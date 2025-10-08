@@ -1,6 +1,8 @@
 /**
  * Comando: regras
  * Retorna a DESCRIÇÃO atual do grupo (ADM-only), opcionalmente com a foto do grupo.
+ * 
+ * @author Dev VaL 
  */
 const { PREFIX } = require(`${BASE_DIR}/config`);
 
