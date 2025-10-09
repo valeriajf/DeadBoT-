@@ -9,7 +9,7 @@ const {
   unmuteMember,
 } = require(`${BASE_DIR}/utils/database`);
 const { PREFIX } = require(`${BASE_DIR}/config`);
-const { toUserOrGroupJid } = require(`${BASE_DIR}/utils`);
+const { toUserJidOrLid } = require(`${BASE_DIR}/utils`);
 
 const { DangerError, WarningError } = require(`${BASE_DIR}/errors`);
 

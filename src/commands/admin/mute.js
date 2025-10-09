@@ -4,11 +4,7 @@
  *
  * @author Dev Gui
  */
-const {
-  toUserOrGroupJid,
-  onlyNumbers,
-  toUserJid,
-} = require(`${BASE_DIR}/utils`);
+const { toUserJidOrLid, onlyNumbers, toUserJid } = require(`${BASE_DIR}/utils`);
 const {
   checkIfMemberIsMuted,
   muteMember,
