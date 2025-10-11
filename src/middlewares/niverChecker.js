@@ -163,7 +163,10 @@ const initNiverChecker = (socket) => {
     }
   };
 
+  // Executa a primeira verificação
   runCheck();
+
+  // Agenda verificações periódicas
   setInterval(runCheck, checkInterval);
 
   console.log("[NIVER] ✅ Sistema de teste ativo!\n");
