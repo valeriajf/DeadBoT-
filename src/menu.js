@@ -46,7 +46,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
- • ${prefix}anti-fake (1/0)
  • ${prefix}anti-flood (1/0)
  • ${prefix}anti-image (1/0)
  • ${prefix}anti-link (1/0)
@@ -68,7 +67,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}mute
- • ${prefix}niver 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
