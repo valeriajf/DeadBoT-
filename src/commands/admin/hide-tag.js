@@ -3,9 +3,9 @@ const { downloadContentFromMessage } = require("baileys");
 
 module.exports = {
   name: "hide-tag",
-  description: "Este comando marcará todos do grupo com texto ou imagem",
+  description: "Este comando marcará todos do grupo com texto, imagem, vídeo ou áudio",
   commands: ["hide-tag", "to-tag"],
-  usage: `${PREFIX}hidetag motivo (ou envie/responda uma imagem)`,
+  usage: `${PREFIX}hidetag motivo (ou envie/responda uma mídia)`,
   /**
    * @param {CommandHandleProps} props
    * @returns {Promise<void>}
@@ -23,27 +23,42 @@ module.exports = {
 
     await sendReact("📢");
 
-    // Verifica imagem enviada diretamente
+    // Verifica mídias enviadas diretamente
     const directImage = webMessage?.message?.imageMessage;
+    const directVideo = webMessage?.message?.videoMessage;
+    const directAudio = webMessage?.message?.audioMessage;
     
-    // Verifica imagem citada (respondida)
+    // Verifica mídias citadas (respondidas)
     const quotedMessage = webMessage?.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const quotedImage = quotedMessage?.imageMessage;
+    const quotedVideo = quotedMessage?.videoMessage;
+    const quotedAudio = quotedMessage?.audioMessage;
 
-    // Pega a imagem (direta ou citada)
-    const imageMessage = directImage || quotedImage;
+    // Determina qual mídia usar e seu tipo
+    let mediaMessage = null;
+    let mediaType = null;
+
+    if (directImage || quotedImage) {
+      mediaMessage = directImage || quotedImage;
+      mediaType = "image";
+    } else if (directVideo || quotedVideo) {
+      mediaMessage = directVideo || quotedVideo;
+      mediaType = "video";
+    } else if (directAudio || quotedAudio) {
+      mediaMessage = directAudio || quotedAudio;
+      mediaType = "audio";
+    }
 
     console.log("=== DEBUG HIDETAG ===");
-    console.log("Imagem direta:", !!directImage);
-    console.log("Imagem citada:", !!quotedImage);
+    console.log("Tipo de mídia detectada:", mediaType || "nenhuma");
     console.log("====================");
 
-    if (imageMessage) {
+    if (mediaMessage && mediaType) {
       try {
-        console.log("Baixando imagem...");
+        console.log(`Baixando ${mediaType}...`);
         
-        // Baixa a imagem usando baileys
-        const stream = await downloadContentFromMessage(imageMessage, "image");
+        // Baixa a mídia usando baileys
+        const stream = await downloadContentFromMessage(mediaMessage, mediaType);
         
         // Converte stream para buffer
         let buffer = Buffer.from([]);
@@ -51,24 +66,43 @@ module.exports = {
           buffer = Buffer.concat([buffer, chunk]);
         }
 
-        console.log("Imagem baixada! Tamanho:", buffer.length);
-        console.log("Enviando imagem com menções...");
+        console.log(`${mediaType} baixada! Tamanho:`, buffer.length);
+        console.log("Enviando mídia com menções...");
         
-        // Envia a imagem com legenda e menções
-        await socket.sendMessage(remoteJid, {
-          image: buffer,
+        // Prepara o objeto de mensagem baseado no tipo
+        const messageContent = {
           caption: `📢 Marcando todos!\n\n${fullArgs || ''}`,
           mentions: mentions
-        });
+        };
+
+        // Define a mídia de acordo com o tipo
+        if (mediaType === "image") {
+          messageContent.image = buffer;
+        } else if (mediaType === "video") {
+          messageContent.video = buffer;
+        } else if (mediaType === "audio") {
+          messageContent.audio = buffer;
+          messageContent.mimetype = mediaMessage.mimetype || "audio/mp4";
+          messageContent.ptt = mediaMessage.ptt || false; // Se é mensagem de voz
+          delete messageContent.caption; // Áudio não tem caption, então removemos
+        }
+
+        // Envia a mídia com menções
+        await socket.sendMessage(remoteJid, messageContent);
         
-        console.log("✅ Imagem enviada com sucesso!");
+        // Se for áudio, envia a legenda separadamente
+        if (mediaType === "audio" && fullArgs) {
+          await sendText(`📢 Marcando todos!\n\n${fullArgs}`, mentions);
+        }
+        
+        console.log("✅ Mídia enviada com sucesso!");
         
       } catch (error) {
         console.error("ERRO:", error);
-        await sendText(`❌ Erro ao processar a imagem: ${error.message}`);
+        await sendText(`❌ Erro ao processar a mídia: ${error.message}`);
       }
     } else {
-      // Envia apenas texto se não houver imagem
+      // Envia apenas texto se não houver mídia
       await sendText(`📢 Marcando todos!\n\n${fullArgs}`, mentions);
     }
   },
