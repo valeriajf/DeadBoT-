@@ -3,7 +3,7 @@
  * Lista membros que não enviaram nenhuma mensagem no período de contagem
  * Ignora administradores do grupo
  * 
- * @author VaL
+ * @author Dev VaL
  */
 const { PREFIX } = require(`${BASE_DIR}/config`);
 
@@ -91,38 +91,43 @@ module.exports = {
       const shuffledInactive = inactiveMembers.sort(() => Math.random() - 0.5);
       const topInactive = shuffledInactive.slice(0, 5);
 
-      // Emojis para o ranking
-      const rankEmojis = ["💤", "😴", "🤐", "🙈", "👻"];
+      // Emojis para as posições
+      const positionEmojis = ["💤", "😴", "🤐", "🙈", "👻"];
       
       // Array para as menções (igual ao rankativo)
       const mentions = [];
       
       // Construir mensagem do ranking
-      let rankMessage = `
-╭─「 😴 *RANK DOS INATIVOS* 😴 」
-│
-├ 📊 *Top 5 Membros Silenciosos*
-├ 💬 Mensagens enviadas: *0*
-│`;
+      let rankMessage = `😴 *RANKING DE INATIVIDADE* 😴\n`;
+      
+      // Adicionar nome do grupo
+      try {
+        const groupMetadata = await socket.groupMetadata(remoteJid);
+        rankMessage += `📅 *Grupo:* ${groupMetadata.subject}\n\n`;
+      } catch (error) {
+        rankMessage += `📅 *Grupo:* ${remoteJid.split('@')[0]}\n\n`;
+      }
 
       topInactive.forEach((member, index) => {
-        const emoji = rankEmojis[index];
+        const emoji = positionEmojis[index];
         
         // Usar a mesma estrutura de menção do rankativo
         const userMention = `@${member.userId.split('@')[0]}`;
         mentions.push(member.userId);
         
-        rankMessage += `
-├ ${emoji} *${index + 1}º* - ${userMention}`;
+        rankMessage += `${emoji} 👤${userMention}\n`;
+        rankMessage += `   📝 0 mensagens\n`;
+        rankMessage += `   🎭 0 figurinhas\n`;
+        rankMessage += `   📊 0 total (0.0%)\n\n`;
       });
 
-      rankMessage += `
-│
-├ 💡 *Dica:* Que tal mandar um "Olá"?
-├ 🎯 Total de inativos: *${inactiveMembers.length}*
-├ 📈 Incentive a participação no grupo!
-│
-╰─「 *DeadBoT* 」`;
+      // Estatísticas gerais do bot (igual ao rankativo)
+      const generalStats = activityTracker.getGeneralStats();
+      rankMessage += `🌍 *ESTATÍSTICAS GLOBAIS:*\n`;
+      rankMessage += `📱 ${generalStats.totalGroups} grupos monitorados\n`;
+      rankMessage += `👤 ${generalStats.totalUsers} usuários ativos\n`;
+      rankMessage += `💬 ${generalStats.totalMessages} mensagens globais\n`;
+      rankMessage += `🎭 ${generalStats.totalStickers} figurinhas globais`;
 
       // Enviar com menções (igual ao rankativo)
       await sendReply(rankMessage, mentions);

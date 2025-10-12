@@ -2,7 +2,7 @@
  * Evento chamado quando um usuário
  * entra ou sai de um grupo de WhatsApp.
  *
- * @author VaL
+ * @author Dev VaL
  */
 const fs = require("node:fs");
 const path = require("path");
@@ -94,48 +94,6 @@ async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
   }
 }
 
-// 🚫 ANTIFAKE - bloqueia números que não são do Brasil (APENAS SE ATIVADO)
-async function checkAndBanAntifake(socket, remoteJid, userJid) {
-  try {
-    const ANTIFAKE_CONFIG_PATH = path.join(__dirname, '..', 'data', 'antifake.json');
-    
-    let config = {};
-    try {
-      if (fs.existsSync(ANTIFAKE_CONFIG_PATH)) {
-        const data = fs.readFileSync(ANTIFAKE_CONFIG_PATH, 'utf8');
-        config = JSON.parse(data);
-      }
-    } catch (error) {
-      console.error('[ANTIFAKE] Erro ao carregar configurações:', error);
-    }
-    
-    if (!config[remoteJid]?.enabled) {
-      console.log(`[ANTIFAKE] Desativado no grupo ${remoteJid}, permitindo entrada`);
-      return false;
-    }
-
-    const userNumber = userJid.replace('@s.whatsapp.net', '');
-
-    if (!userNumber.startsWith("55")) {
-      console.log(`[ANTIFAKE] Detectado número estrangeiro: ${userNumber}`);
-
-      try {
-        await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
-        
-        console.log(`[ANTIFAKE] Usuário ${userNumber} banido silenciosamente do grupo ${remoteJid}`);
-        return true;
-      } catch (error) {
-        console.error(`[ANTIFAKE] Erro ao banir ${userNumber}:`, error);
-      }
-    }
-
-    return false;
-  } catch (error) {
-    console.error('[ANTIFAKE] Erro no checkAndBanAntifake:', error);
-    return false;
-  }
-}
-
 exports.onGroupParticipantsUpdate = async ({
   userJid,
   remoteJid,
@@ -152,21 +110,14 @@ exports.onGroupParticipantsUpdate = async ({
     }
 
     if (action === "add") {
-      // 🚫 Primeiro verifica o antifake
-      const fakeBanned = await checkAndBanAntifake(socket, remoteJid, userJid);
-      if (fakeBanned) {
-        console.log(`[ANTIFAKE] Usuário banido, pulando mensagem de boas-vindas`);
-        return;
-      }
-
-      // 🚫 Depois verifica a lista negra
+      // 🚫 Verifica a lista negra
       const wasBanned = await checkAndBanBlacklistedUser(socket, remoteJid, userJid);
       if (wasBanned) {
         console.log(`[BLACKLIST] Usuário banido, pulando mensagem de boas-vindas`);
         return;
       }
 
-      // 🎉 WELCOME2 - Sistema com foto do membro (executa antes do welcome3 e welcome padrão)
+      // 🎉 WELCOME2 - Sistema com foto do membro
       try {
         const groupMetadata = await socket.groupMetadata(remoteJid);
         
@@ -178,18 +129,12 @@ exports.onGroupParticipantsUpdate = async ({
           userNumber = userJid.replace('@s.whatsapp.net', '');
         }
         
-        console.log(`[WELCOME2] Dados do novo membro:`);
-        console.log(`  - userJid: ${userJid}`);
-        console.log(`  - userNumber: ${userNumber}`);
-        console.log(`  - groupName: ${groupMetadata.subject}`);
-        
         await handleWelcome2NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
           newMemberId: userJid,
           newMemberNumber: userNumber,
           sendImageWithCaption: async ({ image, caption, mentions }) => {
-            console.log(`[WELCOME2] Enviando mensagem com menções: ${mentions}`);
             await socket.sendMessage(remoteJid, {
               image: { url: image },
               caption: caption,
@@ -197,7 +142,6 @@ exports.onGroupParticipantsUpdate = async ({
             });
           },
           sendTextWithMention: async ({ caption, mentions }) => {
-            console.log(`[WELCOME2] Enviando apenas texto com menções: ${mentions}`);
             await socket.sendMessage(remoteJid, {
               text: caption,
               mentions: mentions
@@ -207,13 +151,12 @@ exports.onGroupParticipantsUpdate = async ({
             try {
               return await socket.profilePictureUrl(userId, 'image');
             } catch (error) {
-              console.log('[WELCOME2] Erro ao obter foto de perfil:', error.message);
               return null;
             }
           }
         });
       } catch (error) {
-        console.error('[WELCOME2] Erro no sistema welcome2:', error);
+        console.error('[WELCOME2] ❌ Erro:', error.message);
       }
 
       // 🎉 WELCOME3 - Sistema com foto do grupo
@@ -228,19 +171,12 @@ exports.onGroupParticipantsUpdate = async ({
           userNumber = userJid.replace('@s.whatsapp.net', '');
         }
         
-        console.log(`[WELCOME3] Dados do novo membro:`);
-        console.log(`  - userJid: ${userJid}`);
-        console.log(`  - userNumber: ${userNumber}`);
-        console.log(`  - groupName: ${groupMetadata.subject}`);
-        
         await handleWelcome3NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
           newMemberId: userJid,
           newMemberNumber: userNumber,
           sendImageWithCaption: async ({ image, caption, mentions }) => {
-            console.log(`[WELCOME3] Enviando imagem com legenda embaixo`);
-            // CORREÇÃO: Igual ao comando regras - imagem em cima, caption embaixo
             await socket.sendMessage(remoteJid, {
               image: { url: image },
               caption: caption,
@@ -248,7 +184,6 @@ exports.onGroupParticipantsUpdate = async ({
             });
           },
           sendTextWithMention: async ({ caption, mentions }) => {
-            console.log(`[WELCOME3] Enviando apenas texto com menções: ${mentions}`);
             await socket.sendMessage(remoteJid, {
               text: caption,
               mentions: mentions
@@ -258,13 +193,12 @@ exports.onGroupParticipantsUpdate = async ({
             try {
               return await socket.profilePictureUrl(groupId, 'image');
             } catch (error) {
-              console.log('[WELCOME3] Erro ao obter foto do grupo:', error.message);
               return null;
             }
           }
         });
       } catch (error) {
-        console.error('[WELCOME3] Erro no sistema welcome3:', error);
+        console.error('[WELCOME3] ❌ Erro:', error.message);
       }
     }
 

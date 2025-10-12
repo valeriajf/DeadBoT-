@@ -127,14 +127,14 @@ module.exports = {
       // Escolher aleatoriamente um dos membros inativos
       const chosen = inactiveMembers[Math.floor(Math.random() * inactiveMembers.length)];
 
-      await sendText(`🔫 Girando o tambor da roleta...\n💤 Mira nos ${inactiveMembers.length} membros silenciosos...`);
+      await sendText(`🔫 Girando o tambor da roleta...\n`);
 
       // Remover o membro escolhido
       await socket.groupParticipantsUpdate(remoteJid, [chosen.id], "remove");
 
       // Mensagem final
       await socket.sendMessage(remoteJid, {
-        text: `☠️ A roleta dos inativos girou e @${chosen.id.split("@")[0]} foi o escolhido!\n💤 *Motivo:* 0 mensagens enviadas no grupo`,
+        text: `☠️ A roleta dos inativos girou e @${chosen.id.split("@")[0]} foi o escolhido!\n`,
         mentions: [chosen.id],
       });
 

@@ -2,7 +2,7 @@
  * Comando RankAtivo - Mostra os 5 membros mais ativos do grupo
  * Baseado no número de mensagens e figurinhas enviadas
  * 
- * @author Val (DeadBoT)
+ * @author Dev VaL
  */
 const { PREFIX } = require(`${BASE_DIR}/config`);
 

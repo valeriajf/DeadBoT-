@@ -46,7 +46,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
- • ${prefix}anti-fake (1/0)
  • ${prefix}anti-flood (1/0)
  • ${prefix}anti-image (1/0)
  • ${prefix}anti-link (1/0)
@@ -68,7 +67,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}mute
- • ${prefix}niver 
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -91,6 +89,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}adms
  • ${prefix}attp
  • ${prefix}beck
+ • ${prefix}brat
  • ${prefix}cep
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
@@ -126,20 +125,12 @@ exports.menuMessage = (groupJid) => {
 
  • ${prefix}abracar
  • ${prefix}beijar
- • ${prefix}calvo
- • ${prefix}casal
- • ${prefix}corno
  • ${prefix}dado
- • ${prefix}gado
- • ${prefix}gay
- • ${prefix}golpe
  • ${prefix}jantar
  • ${prefix}lutar
  • ${prefix}matar
  • ${prefix}socar
- • ${prefix}superlike
  • ${prefix}tapa
- • ${prefix}tinder
 
 ╰━━─「🎡」─━━
 

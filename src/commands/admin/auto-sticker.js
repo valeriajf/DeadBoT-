@@ -117,7 +117,6 @@ module.exports = {
 
 ✅ Todas as imagens enviadas neste grupo serão automaticamente convertidas em figurinhas.
 
-💡 *Dica:* Para desativar, use \`${PREFIX}autosticker 0\`
         `);
       }
 
@@ -138,7 +137,6 @@ module.exports = {
 
 ✅ As imagens não serão mais convertidas automaticamente em figurinhas.
 
-💡 *Dica:* Para reativar, use \`${PREFIX}autosticker 1\`
         `);
       }
 

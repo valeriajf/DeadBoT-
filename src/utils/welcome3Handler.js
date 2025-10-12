@@ -70,19 +70,16 @@ async function handleWelcome3NewMember({
   try {
     // Verifica se o welcome3 está ativo para este grupo
     if (!isActiveWelcome3Group(groupId)) {
-      console.log(`[WELCOME3] Desativado para o grupo ${groupId}`);
       return;
     }
 
-    console.log(`[WELCOME3] Processando novo membro ${newMemberNumber} no grupo ${groupId}`);
+    console.log(`[WELCOME3] ✅ Ativado - Novo membro: ${newMemberNumber}`);
 
     // Obtém a foto do GRUPO (não do membro)
     let groupPicture;
     try {
       groupPicture = await getGroupPicture(groupId);
-      console.log(`[WELCOME3] Foto do grupo obtida: ${groupPicture ? 'Sim' : 'Não'}`);
     } catch (error) {
-      console.log('[WELCOME3] Não foi possível obter a foto do grupo:', error.message);
       groupPicture = null;
     }
 
@@ -94,29 +91,24 @@ async function handleWelcome3NewMember({
       .replace(/{grupo}/g, groupName || 'Este Grupo')
       .replace(/{membro}/g, `@${newMemberNumber}`);
 
-    console.log(`[WELCOME3] Mensagem: "${welcomeMessage}"`);
-    console.log(`[WELCOME3] Menções: [${newMemberId}]`);
-
     // CORREÇÃO: Envia imagem em cima e legenda embaixo (igual comando regras)
     if (groupPicture) {
-      // Com foto do grupo - imagem em cima, legenda embaixo
       await sendImageWithCaption({
         image: groupPicture,
         caption: welcomeMessage,
         mentions: [newMemberId]
       });
-      console.log(`[WELCOME3] Mensagem com foto do grupo enviada para ${newMemberNumber}`);
+      console.log(`[WELCOME3] ✅ Enviado com foto do grupo`);
     } else {
-      // Sem foto do grupo - envia apenas o texto com menção
       await sendTextWithMention({
         caption: welcomeMessage,
         mentions: [newMemberId]
       });
-      console.log(`[WELCOME3] Mensagem de texto enviada para ${newMemberNumber}`);
+      console.log(`[WELCOME3] ✅ Enviado sem foto (texto)`);
     }
 
   } catch (error) {
-    console.error('[WELCOME3] Erro no handler:', error);
+    console.error('[WELCOME3] ❌ Erro:', error.message);
   }
 }
 

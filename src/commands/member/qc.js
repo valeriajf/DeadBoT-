@@ -57,9 +57,9 @@ module.exports = {
         "type": "quote",
         "format": "png",
         "backgroundColor": "#FFFFFF",
-        "width": 512,
-        "height": 768,
-        "scale": 2,
+        "width": 400,
+        "height": 400,
+        "scale": 1,
         "messages": [{
           "entities": [],
           "avatar": true,
