@@ -128,12 +128,37 @@ exports.onGroupParticipantsUpdate = async ({
         } else {
           userNumber = userJid.replace('@s.whatsapp.net', '');
         }
+
+        // Obtém o pushname (nome) do usuário
+        let pushname = null;
+        try {
+          if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
+            pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
+          }
+          
+          if (!pushname) {
+            const participant = groupMetadata.participants.find(p => p.id === userJid);
+            if (participant) {
+              pushname = participant.notify || participant.verifiedName || participant.name;
+            }
+          }
+          
+          if (!pushname && socket.authState?.creds?.contacts) {
+            const contact = socket.authState.creds.contacts[userJid];
+            if (contact) {
+              pushname = contact.notify || contact.name;
+            }
+          }
+        } catch (error) {
+          // Ignora erro
+        }
         
         await handleWelcome2NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
           newMemberId: userJid,
           newMemberNumber: userNumber,
+          pushname: pushname,
           sendImageWithCaption: async ({ image, caption, mentions }) => {
             await socket.sendMessage(remoteJid, {
               image: { url: image },
@@ -170,12 +195,37 @@ exports.onGroupParticipantsUpdate = async ({
         } else {
           userNumber = userJid.replace('@s.whatsapp.net', '');
         }
+
+        // Obtém o pushname (nome) do usuário
+        let pushname = null;
+        try {
+          if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
+            pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
+          }
+          
+          if (!pushname) {
+            const participant = groupMetadata.participants.find(p => p.id === userJid);
+            if (participant) {
+              pushname = participant.notify || participant.verifiedName || participant.name;
+            }
+          }
+          
+          if (!pushname && socket.authState?.creds?.contacts) {
+            const contact = socket.authState.creds.contacts[userJid];
+            if (contact) {
+              pushname = contact.notify || contact.name;
+            }
+          }
+        } catch (error) {
+          // Ignora erro
+        }
         
         await handleWelcome3NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
           newMemberId: userJid,
           newMemberNumber: userNumber,
+          pushname: pushname,
           sendImageWithCaption: async ({ image, caption, mentions }) => {
             await socket.sendMessage(remoteJid, {
               image: { url: image },

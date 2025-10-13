@@ -58,11 +58,24 @@ function getCustomWelcome3Message(groupId) {
  * @param {Function} params.sendTextWithMention - Função para enviar apenas texto com menção
  * @param {Function} params.getGroupPicture - Função para obter foto do grupo
  */
+/**
+ * Handler para processar novos membros no grupo (com foto do grupo)
+ * @param {Object} params
+ * @param {string} params.groupId - ID do grupo
+ * @param {string} params.groupName - Nome do grupo
+ * @param {string} params.newMemberId - ID do novo membro
+ * @param {string} params.newMemberNumber - Número do novo membro
+ * @param {string} params.pushname - Nome do novo membro
+ * @param {Function} params.sendImageWithCaption - Função para enviar imagem com legenda
+ * @param {Function} params.sendTextWithMention - Função para enviar apenas texto com menção
+ * @param {Function} params.getGroupPicture - Função para obter foto do grupo
+ */
 async function handleWelcome3NewMember({
   groupId,
   groupName,
   newMemberId,
   newMemberNumber,
+  pushname,
   sendImageWithCaption,
   sendTextWithMention,
   getGroupPicture
@@ -73,7 +86,7 @@ async function handleWelcome3NewMember({
       return;
     }
 
-    console.log(`[WELCOME3] ✅ Ativado - Novo membro: ${newMemberNumber}`);
+    console.log(`[WELCOME3] ✅ Ativado - Novo membro: ${pushname || newMemberNumber}`);
 
     // Obtém a foto do GRUPO (não do membro)
     let groupPicture;
@@ -87,9 +100,11 @@ async function handleWelcome3NewMember({
     const customMessage = getCustomWelcome3Message(groupId);
     
     // Substitui as variáveis na mensagem
+    // Se não tiver pushname, usa a menção também no lugar de {nome}
     const welcomeMessage = customMessage
       .replace(/{grupo}/g, groupName || 'Este Grupo')
-      .replace(/{membro}/g, `@${newMemberNumber}`);
+      .replace(/{membro}/g, `@${newMemberNumber}`)
+      .replace(/{nome}/g, pushname || `@${newMemberNumber}`);
 
     // CORREÇÃO: Envia imagem em cima e legenda embaixo (igual comando regras)
     if (groupPicture) {

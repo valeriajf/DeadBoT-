@@ -31,7 +31,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}on
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
- • ${prefix}zerar-rank
 
 ╰━━─「🌌」─━━
 
@@ -79,6 +78,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0)
  • ${prefix}welcome3 (1/0)
+ • ${prefix}zerar-rank
  
 
 ╰━━─「⭐」─━━

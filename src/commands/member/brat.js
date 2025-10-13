@@ -1,6 +1,6 @@
 /**
  * Comando Brat - Gera sticker com estilo Brat
- * Usa API própria do Brat (sem depender da Spider API)
+ * Cria uma figurinha com texto no estilo Brat usando API
  * 
  * @author Dev VaL 
  */
@@ -21,59 +21,57 @@ module.exports = {
     sendErrorReply,
     sendWaitReact,
     sendSuccessReact,
-    sendStickerFromBuffer
+    sendStickerFromBuffer,
+    sendImageFromBuffer
   }) => {
     try {
+      // Verifica se o texto foi fornecido
       if (!fullArgs || fullArgs.trim() === '') {
         return await sendErrorReply('❌ Falta o texto!\n\n💡 Uso correto:\n' + PREFIX + 'brat <seu texto aqui>\n\n📝 Exemplo:\n' + PREFIX + 'brat Charli XCX');
       }
 
+      // Envia reação de aguarde
       await sendWaitReact();
 
-      const texto = fullArgs.trim();
+      // Monta a URL da API com o texto
+      const apiUrl = `https://api.cognima.com.br/api/image/brat?key=CognimaTeamFreeKey&texto=${encodeURIComponent(fullArgs.trim())}`;
 
-      // APIs do Brat para tentar
-      const apis = [
-        `https://brat.caliphdev.com/api/brat?text=${encodeURIComponent(texto)}`,
-        `https://api.popcat.xyz/brat?text=${encodeURIComponent(texto)}`,
-        `https://api.ryzendesu.vip/api/maker/brat?text=${encodeURIComponent(texto)}`
-      ];
-
-      let imageBuffer = null;
-
-      for (const apiUrl of apis) {
-        try {
-          const response = await axios.get(apiUrl, {
-            responseType: 'arraybuffer',
-            timeout: 15000,
-            validateStatus: (status) => status >= 200 && status < 300
-          });
-
-          const buffer = Buffer.from(response.data);
-
-          if (buffer.length > 100) {
-            imageBuffer = buffer;
-            break;
+      try {
+        // Baixa a imagem da API
+        const response = await axios.get(apiUrl, {
+          responseType: 'arraybuffer',
+          timeout: 30000,
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
           }
-        } catch (error) {
-          continue;
+        });
+
+        // Converte para buffer
+        const imageBuffer = Buffer.from(response.data);
+
+        // Verifica se o buffer não está vazio
+        if (imageBuffer.length === 0) {
+          throw new Error('Imagem vazia retornada pela API');
         }
-      }
 
-      if (!imageBuffer) {
-        return await sendErrorReply(
-          '❌ Não foi possível gerar a imagem Brat!\n\n' +
-          '💡 Todas as APIs estão temporariamente indisponíveis.\n' +
-          '⏰ Tente novamente em alguns minutos!'
-        );
-      }
+        // Envia como sticker
+        await sendStickerFromBuffer(imageBuffer, true);
 
-      await sendStickerFromBuffer(imageBuffer, true);
-      await sendSuccessReact();
+        // Envia reação de sucesso
+        await sendSuccessReact();
+
+      } catch (apiError) {
+        // Se a API falhar, informa o usuário
+        if (apiError.response && apiError.response.status === 500) {
+          return await sendErrorReply('❌ A API está temporariamente indisponível.\n\n');
+        }
+
+        throw apiError;
+      }
 
     } catch (e) {
       console.error('Erro no comando brat:', e.message);
-      await sendErrorReply("❌ Erro ao gerar o sticker Brat.\n\n💡 Tente novamente!");
+      await sendErrorReply("❌ Erro ao gerar o sticker Brat.\n\n💡 Verifique se o texto está correto e tente novamente!");
     }
   },
 };

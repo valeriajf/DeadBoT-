@@ -82,10 +82,11 @@ module.exports = {
           `📝 *Legenda de Boas-vindas*\n\n` +
           `❌ Nenhuma legenda personalizada definida para este grupo.\n\n` +
           `💡 *Como usar:*\n` +
-          `${PREFIX}legenda-bv Bem-vindo ao {grupo}! Olá {membro}, seja bem-vindo!\n\n` +
+          `${PREFIX}legenda-bv Bem-vindo ao {grupo}! Olá {nome}, seja bem-vindo!\n\n` +
           `📋 *Variáveis disponíveis:*\n` +
           `• {grupo} - Nome do grupo\n` +
-          `• {membro} - Menção do membro\n\n` +
+          `• {membro} - Menção do membro (@numero)\n` +
+          `• {nome} - Nome do membro\n\n` +
           `Status do Welcome2: ${isActive ? '✅ Ativo' : '❌ Inativo'}`
         );
         return;
@@ -123,7 +124,8 @@ module.exports = {
     // Mostra preview da mensagem
     const previewMessage = customMessage
       .replace(/{grupo}/g, groupName || 'Nome do Grupo')
-      .replace(/{membro}/g, '@membro');
+      .replace(/{membro}/g, '@membro')
+      .replace(/{nome}/g, 'João');
 
     await sendReply(
       `✅ *Legenda personalizada definida com sucesso!*\n\n` +
@@ -131,7 +133,8 @@ module.exports = {
       `"${previewMessage}"\n\n` +
       `📝 *Variáveis usadas:*\n` +
       `• {grupo} = Nome do grupo\n` +
-      `• {membro} = Menção do novo membro\n\n` +
+      `• {membro} = Menção do novo membro\n` +
+      `• {nome} = Nome do novo membro\n\n` +
       `💡 *Dica:* ${!isActiveWelcome2Group(remoteJid) ? 
         `Use \`${PREFIX}welcome2 1\` para ativar as boas-vindas personalizadas!` : 
         'As boas-vindas personalizadas já estão ativas!'}`

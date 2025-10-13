@@ -2,7 +2,7 @@
  * Auto Sticker - Converte automaticamente imagens em figurinhas
  * Baseado no comando sticker.js original
  *
- * @author Dev VaL
+ * @author Dev VaL 
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -21,13 +21,11 @@ function loadActiveGroups() {
   try {
     if (fs.existsSync(CONFIG_PATH)) {
       const data = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-      console.log("[AUTO-STICKER] Grupos carregados do arquivo:", data.activeGroups);
       return new Set(data.activeGroups || []);
     }
   } catch (error) {
     console.error("[AUTO-STICKER] Erro ao carregar configuração:", error.message);
   }
-  console.log("[AUTO-STICKER] Nenhum grupo ativo encontrado, iniciando vazio");
   return new Set();
 }
 
@@ -36,7 +34,6 @@ function saveActiveGroups(groups) {
   try {
     const data = { activeGroups: Array.from(groups) };
     fs.writeFileSync(CONFIG_PATH, JSON.stringify(data, null, 2), "utf8");
-    console.log("[AUTO-STICKER] Configuração salva:", data);
   } catch (error) {
     console.error("[AUTO-STICKER] Erro ao salvar configuração:", error.message);
   }
@@ -62,10 +59,7 @@ module.exports = {
     remoteJid,
     userJid,
   }) => {
-    // USA REMOTEJID SEMPRE
     const actualGroupId = remoteJid;
-    console.log('[AUTO-STICKER] Handle - groupId original:', groupId);
-    console.log('[AUTO-STICKER] Handle - remoteJid (USANDO):', actualGroupId);
 
     if (!isGroup) {
       throw new InvalidParameterError("Este comando só pode ser usado em grupos!");
@@ -108,8 +102,6 @@ module.exports = {
 
         autoStickerGroups.add(actualGroupId);
         saveActiveGroups(autoStickerGroups);
-        console.log("[AUTO-STICKER] Ativado no grupo:", actualGroupId);
-        console.log("[AUTO-STICKER] Grupos ativos:", Array.from(autoStickerGroups));
         
         await sendSuccessReact();
         return sendReply(`
@@ -128,8 +120,6 @@ module.exports = {
 
         autoStickerGroups.delete(actualGroupId);
         saveActiveGroups(autoStickerGroups);
-        console.log("[AUTO-STICKER] Desativado no grupo:", actualGroupId);
-        console.log("[AUTO-STICKER] Grupos ativos:", Array.from(autoStickerGroups));
         
         await sendSuccessReact();
         return sendReply(`
@@ -172,8 +162,6 @@ module.exports = {
     }
 
     try {
-      console.log(`[AUTO-STICKER] Processando imagem no grupo: ${groupId}`);
-      
       const username = webMessage.pushName || webMessage.notifyName || userJid.replace(/@s.whatsapp.net/, "");
       const metadata = {
         username: username,
@@ -188,7 +176,6 @@ module.exports = {
           inputPath = await downloadImage(webMessage, getRandomName());
           break;
         } catch (downloadError) {
-          console.error(`[AUTO-STICKER] Download falhou (tentativa ${attempt}):`, downloadError.message);
           if (attempt === 3) return;
           await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
         }
@@ -198,7 +185,6 @@ module.exports = {
         const cmd = `ffmpeg -i "${inputPath}" -vf "scale=512:512:force_original_aspect_ratio=decrease" -f webp -quality 90 "${outputTempPath}"`;
         exec(cmd, (error, _, stderr) => {
           if (error) {
-            console.error("[AUTO-STICKER] FFmpeg error:", stderr);
             reject(error);
           } else {
             resolve();
@@ -222,10 +208,8 @@ module.exports = {
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
           await sendStickerFromFile(stickerPath);
-          console.log(`[AUTO-STICKER] Figurinha enviada com sucesso!`);
           break;
         } catch (stickerError) {
-          console.error(`[AUTO-STICKER] Envio falhou (tentativa ${attempt}):`, stickerError.message);
           if (attempt === 3) return;
           await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
         }
@@ -235,15 +219,12 @@ module.exports = {
       if (fs.existsSync(stickerPath)) fs.unlinkSync(stickerPath);
 
     } catch (error) {
-      console.error("[AUTO-STICKER] Erro:", error);
+      console.error("[AUTO-STICKER] Erro ao processar:", error.message);
     }
   },
 
   isActive: (groupId) => {
-    const isActive = autoStickerGroups.has(groupId);
-    console.log(`[AUTO-STICKER] Verificando se está ativo no grupo ${groupId}: ${isActive}`);
-    console.log(`[AUTO-STICKER] Todos os grupos ativos:`, Array.from(autoStickerGroups));
-    return isActive;
+    return autoStickerGroups.has(groupId);
   },
 
   getActiveGroups: () => Array.from(autoStickerGroups),
