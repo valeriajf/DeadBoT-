@@ -41,7 +41,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}adv
  • ${prefix}adv-reset
  • ${prefix}agendar-mensagem
- • ${prefix}aluguel 
  • ${prefix}anti-audio (1/0)
  • ${prefix}anti-document (1/0)
  • ${prefix}anti-event (1/0)
@@ -54,6 +53,8 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}auto-responder (1/0)
  • ${prefix}auto-sticker (1/0)
  • ${prefix}ban
+ • ${prefix}banghost 
+ • ${prefix}boasvindas-add
  • ${prefix}delete
  • ${prefix}delete-auto-responder
  • ${prefix}enquete 
@@ -61,10 +62,11 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}fechar
  • ${prefix}fig-tag
  • ${prefix}get-sticker
- • ${prefix}hidetag
  • ${prefix}limpar
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
+ • ${prefix}lista-negra-add
+ • ${prefix}lista-negra-remover
  • ${prefix}mute
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
@@ -73,7 +75,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}revelar
  • ${prefix}roleta-russa 
  • ${prefix}set-name
- • ${prefix}totag (com img)
  • ${prefix}unmute
  • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0)
@@ -100,6 +101,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}parabens
  • ${prefix}perfil
  • ${prefix}ping
+ • ${prefix}qc
  • ${prefix}rank-ativo
  • ${prefix}rank-inativo
  • ${prefix}raw-message
@@ -113,9 +115,12 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DOWNLOADS ⪨━━
 
+ • ${prefix}insta
  • ${prefix}play-audio
  • ${prefix}play-video
+ • ${prefix}spot-dl
  • ${prefix}tik-tok
+ • ${prefix}twitter 
  • ${prefix}yt-mp3
  • ${prefix}yt-mp4
 
@@ -126,6 +131,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}abracar
  • ${prefix}beijar
  • ${prefix}dado
+ • ${prefix}gartic
  • ${prefix}jantar
  • ${prefix}lutar
  • ${prefix}matar

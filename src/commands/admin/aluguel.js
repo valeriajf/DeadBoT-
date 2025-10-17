@@ -193,7 +193,7 @@ ${PREFIX}aluguel vencendo`,
       // Mostra ajuda se não houver subcomando
       if (!subCommand) {
         return await sendReply(
-          `🏠 *SISTEMA DE GESTÃO DE ALUGUÉIS*\n\n` +
+          `🤖 *SISTEMA DE GESTÃO DE ALUGUÉIS*\n\n` +
           `*Comandos disponíveis:*\n\n` +
           `▸ ${PREFIX}aluguel add @usuario DD/MM/AAAA\n` +
           `   Adiciona um vencimento de aluguel\n\n` +

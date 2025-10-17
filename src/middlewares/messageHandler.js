@@ -10,6 +10,7 @@ const {
   readRestrictedMessageTypes,
   checkIfMemberIsMuted,
   muteMember,
+  unmuteMember,
 } = require("../utils/database");
 const { BOT_NUMBER, OWNER_NUMBER, OWNER_LID } = require("../config");
 const fs = require('fs');
@@ -26,24 +27,27 @@ const STICKER_TRIGGER_IDS = [
 
 // Lista de figurinhas que deletam mensagens (use o get-sticker) - GLOBAL para todos os grupos
 const STICKER_DELETE_IDS = [
-  "55,34,160,197,224,119,254,146,74,95,29,248,50,94,78,234,249,52,170,236,55,18,121,162,186,179,73,247,175,4,43,65",
+  "16,115,187,157,108,244,163,167,150,93,60,215,218,51,92,149,43,107,120,57,5,117,129,120,128,170,228,32,1,70,59,61",
 ];
 
 // Lista de figurinhas que dão advertência (use o get-sticker)
 const STICKER_WARN_IDS = [
-  "125,25,26,73,157,3,235,215,28,175,13,142,244,107,111,94,249,240,238,129,75,130,118,211,148,89,193,124,220,63,216,64",
-  "40,174,232,220,174,0,221,145,132,95,162,92,246,204,159,169,92,59,229,105,200,128,255,50,147,11,235,208,223,225,210,61",
-  "109,147,125,95,170,62,65,69,31,59,163,20,124,180,102,110,129,112,149,168,159,134,178,1,105,108,11,108,61,101,237,55",
+  "24,96,237,225,180,46,39,196,56,131,208,61,28,194,84,123,165,216,71,191,10,241,201,231,65,108,251,252,44,2,83,62",
+  "57,42,201,167,195,12,123,106,81,170,103,55,49,173,177,82,248,58,219,89,120,50,191,207,168,0,2,161,82,199,62,101",
 ];
 
 // Lista de figurinhas que mutam usuários (use o get-sticker)
 const STICKER_MUTE_IDS = [
-  "22,222,12,197,90,49,113,84,147,37,44,94,233,54,187,39,104,97,187,179,66,113,198,213,80,172,160,197,152,178,113,78",
+  "69,148,108,127,91,47,253,91,121,79,9,189,37,245,99,205,48,29,211,47,183,162,88,235,110,27,255,205,29,100,43,92",
+];
+
+// Lista de figurinhas que desmutam usuários (use o get-sticker)
+const STICKER_UNMUTE_IDS = [
+  "144,135,209,13,225,158,253,24,180,169,221,127,22,140,83,132,14,235,191,220,10,19,185,244,24,77,65,134,226,187,228,195",
 ];
 
 const warnsFile = path.join(__dirname, '../warns.json');
 
-// Função auxiliar para ler warns
 function readWarns() {
   if (!fs.existsSync(warnsFile)) {
     return {};
@@ -55,7 +59,6 @@ function readWarns() {
   }
 }
 
-// Função auxiliar para salvar warns
 function saveWarns(warns) {
   try {
     fs.writeFileSync(warnsFile, JSON.stringify(warns, null, 2));
@@ -64,7 +67,6 @@ function saveWarns(warns) {
   }
 }
 
-// Função auxiliar para extrair número do JID
 function onlyNumbers(jid) {
   return jid.replace(/\D/g, '');
 }
@@ -80,68 +82,52 @@ async function handleStickerTrigger(socket, webMessage) {
       return;
     }
 
-    // Pega informações do grupo
     const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
-    // Verifica se quem enviou é ADM ou SUPERADM
     if (!participant?.admin) {
-      console.log("❌ Figurinha enviada por não-ADM, ignorando");
       return;
     }
-
-    console.log("✅ Figurinha reconhecida por ADM, disparando @all");
 
     const participants = metadata.participants.map(p => p.id);
     let mentionsText = "📢 *Marcação Geral*\n\n";
     mentionsText += participants.map(p => `@${p.split("@")[0]}`).join(" ");
 
-    // Envia apenas a mensagem com @all, sem reenviar a figurinha
     await socket.sendMessage(webMessage.key.remoteJid, {
       text: mentionsText,
       mentions: participants
     }, { quoted: webMessage });
 
   } catch (e) {
-    console.error("Erro no handleStickerTrigger:", e);
   }
 }
 
-// Função para lidar com figurinhas deletoras
 async function handleStickerDelete(socket, webMessage) {
   try {
-    // Verifica se a mensagem atual é uma figurinha
     if (!webMessage.message?.stickerMessage) return;
 
-    // Verifica se é uma resposta a outra mensagem
     const contextInfo = webMessage.message.stickerMessage.contextInfo;
     if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return; // Não é uma resposta, ignora
+      return;
     }
 
-    // Pega o ID da figurinha atual
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
-    // Converte para ID numérico (mesmo formato usado no tagall)
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
-    // Verifica se esta figurinha está na lista de deletoras
     if (!STICKER_DELETE_IDS.includes(numericId)) {
-      return; // Figurinha não está registrada como deletora
+      return;
     }
 
-    // Verificação de ADM (igual ao handleStickerTrigger)
     const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
-    // Verifica se quem enviou é ADM ou SUPERADM
     if (!participant?.admin) {
       return;
     }
 
-    // Deleta a mensagem respondida
     const { stanzaId, participant: targetParticipant } = contextInfo;
     const remoteJid = webMessage.key.remoteJid;
     
@@ -155,70 +141,54 @@ async function handleStickerDelete(socket, webMessage) {
     });
     
   } catch (error) {
-    // Log de erro silencioso - apenas para debug se necessário
   }
 }
 
-// Função para lidar com figurinhas de advertência
 async function handleStickerWarn(socket, webMessage) {
   try {
-    // Verifica se a mensagem atual é uma figurinha
     if (!webMessage.message?.stickerMessage) return;
 
-    // Verifica se é uma resposta a outra mensagem
     const contextInfo = webMessage.message.stickerMessage.contextInfo;
     if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return; // Não é uma resposta, ignora
+      return;
     }
 
-    // Pega o ID da figurinha atual
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
-    // Converte para ID numérico
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
-    // Verifica se esta figurinha está na lista de advertência
     if (!STICKER_WARN_IDS.includes(numericId)) {
-      return; // Figurinha não está registrada como de advertência
+      return;
     }
 
-    // Verificação de ADM
     const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
-    // Verifica se quem enviou é ADM ou SUPERADM
     if (!participant?.admin) {
       return;
     }
 
-    // Pega o alvo (quem recebeu reply)
     const targetJid = contextInfo.participant;
     const remoteJid = webMessage.key.remoteJid;
 
-    // Lê warns do arquivo
     let warns = readWarns();
     
-    // Adiciona advertência
     warns[targetJid] = (warns[targetJid] || 0) + 1;
     const count = warns[targetJid];
 
-    // Salva warns
     saveWarns(warns);
 
     if (count >= 3) {
-      // Usuário atingiu 3 advertências
       await socket.sendMessage(remoteJid, {
         text: `🚫 @${targetJid.split('@')[0]} atingiu 3 advertências e será removido.`,
         mentions: [targetJid]
       });
 
       try {
-        // Remove o usuário
         await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'remove');
         
-        // Reseta advertências
         warns[targetJid] = 0;
         saveWarns(warns);
       } catch (error) {
@@ -227,7 +197,6 @@ async function handleStickerWarn(socket, webMessage) {
         });
       }
     } else {
-      // Ainda não atingiu 3 advertências
       await socket.sendMessage(remoteJid, {
         text: `⚠️ @${targetJid.split('@')[0]} recebeu uma advertência.\n🔢 Total: ${count}/3`,
         mentions: [targetJid]
@@ -235,50 +204,39 @@ async function handleStickerWarn(socket, webMessage) {
     }
 
   } catch (error) {
-    console.error("Erro no handleStickerWarn:", error);
   }
 }
 
-// Função para lidar com figurinhas de mute
 async function handleStickerMute(socket, webMessage) {
   try {
-    // Verifica se a mensagem atual é uma figurinha
     if (!webMessage.message?.stickerMessage) return;
 
-    // Verifica se é uma resposta a outra mensagem
     const contextInfo = webMessage.message.stickerMessage.contextInfo;
     if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return; // Não é uma resposta, ignora
+      return;
     }
 
-    // Pega o ID da figurinha atual
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
-    // Converte para ID numérico
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
-    // Verifica se esta figurinha está na lista de mute
     if (!STICKER_MUTE_IDS.includes(numericId)) {
-      return; // Figurinha não está registrada como de mute
+      return;
     }
 
-    // Verificação de ADM
     const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
-    // Verifica se quem enviou é ADM ou SUPERADM
     if (!participant?.admin) {
       return;
     }
 
-    // Pega o alvo (quem recebeu reply)
     const targetJid = contextInfo.participant;
     const remoteJid = webMessage.key.remoteJid;
     const targetNumber = onlyNumbers(targetJid);
 
-    // Verifica se é o dono do bot
     if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
       await socket.sendMessage(remoteJid, {
         text: '❌ Você não pode mutar o dono do bot!',
@@ -286,7 +244,6 @@ async function handleStickerMute(socket, webMessage) {
       return;
     }
 
-    // Verifica se é o próprio bot
     if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
       await socket.sendMessage(remoteJid, {
         text: '❌ Você não pode mutar o bot.',
@@ -294,7 +251,6 @@ async function handleStickerMute(socket, webMessage) {
       return;
     }
 
-    // Verifica se o alvo é admin
     const isTargetAdmin = metadata.participants.some(
       p => p.id === targetJid && p.admin
     );
@@ -306,7 +262,6 @@ async function handleStickerMute(socket, webMessage) {
       return;
     }
 
-    // Verifica se já está mutado
     if (checkIfMemberIsMuted(remoteJid, targetJid)) {
       await socket.sendMessage(remoteJid, {
         text: `⚠️ @${targetNumber} já está mutado neste grupo.`,
@@ -315,7 +270,6 @@ async function handleStickerMute(socket, webMessage) {
       return;
     }
 
-    // Muta o usuário
     muteMember(remoteJid, targetJid);
 
     await socket.sendMessage(remoteJid, {
@@ -324,7 +278,55 @@ async function handleStickerMute(socket, webMessage) {
     });
 
   } catch (error) {
-    console.error("Erro no handleStickerMute:", error);
+  }
+}
+
+async function handleStickerUnmute(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      return;
+    }
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_UNMUTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
+    const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
+
+    if (!participant?.admin) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const remoteJid = webMessage.key.remoteJid;
+    const targetNumber = onlyNumbers(targetJid);
+
+    if (!checkIfMemberIsMuted(remoteJid, targetJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} não está mutado!`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    unmuteMember(remoteJid, targetJid);
+
+    await socket.sendMessage(remoteJid, {
+      text: `🔊 @${targetNumber} foi desmutado com sucesso!\n\n_Agora pode enviar mensagens normalmente._`,
+      mentions: [targetJid]
+    });
+
+  } catch (error) {
   }
 }
 
@@ -345,9 +347,7 @@ exports.messageHandler = async (socket, webMessage) => {
 
     if (isBotOrOwner) return;
 
-    // === VERIFICA SE O USUÁRIO ESTÁ MUTADO (deve vir ANTES de processar figurinhas) ===
     if (checkIfMemberIsMuted(remoteJid, userJid)) {
-      // Deleta QUALQUER mensagem de usuário mutado
       await socket.sendMessage(remoteJid, {
         delete: {
           remoteJid,
@@ -356,22 +356,15 @@ exports.messageHandler = async (socket, webMessage) => {
           participant: userJid,
         },
       });
-      return; // Importante: retorna aqui para não processar nada mais
+      return;
     }
 
-    // Checa se a figurinha é o gatilho do tagall (somente ADM)
     await handleStickerTrigger(socket, webMessage);
-
-    // Checa se a figurinha é deletora (somente ADM)
     await handleStickerDelete(socket, webMessage);
-
-    // Checa se a figurinha é de advertência (somente ADM)
     await handleStickerWarn(socket, webMessage);
-
-    // Checa se a figurinha é de mute (somente ADM)
     await handleStickerMute(socket, webMessage);
+    await handleStickerUnmute(socket, webMessage);
 
-    // === Roteamento de comandos com prefixo "#"
     const textMessage =
       webMessage.message?.extendedTextMessage?.text ||
       webMessage.message?.conversation ||
@@ -386,24 +379,20 @@ exports.messageHandler = async (socket, webMessage) => {
       if (command === "voltei") return voltei.handle(webMessage, { socket, args });
     }
 
-    // === Anti-grupo (restrições de tipos de mensagem)
     const antiGroups = readGroupRestrictions();
     const messageType = Object.keys(readRestrictedMessageTypes()).find(type =>
       getContent(webMessage, type)
     );
     
-    // Se não encontrou tipo de mensagem, retorna (não há nada para restringir)
     if (!messageType) return;
 
-    // CORREÇÃO: Não aplica anti-grupo para comandos
     if (textMessage.startsWith("#")) {
-      return; // Se for comando, não aplica restrições do anti-grupo
+      return;
     }
 
     const isAntiActive = !!antiGroups[remoteJid]?.[`anti-${messageType}`];
     if (!isAntiActive) return;
 
-    // Deleta a mensagem se a restrição estiver ativa
     await socket.sendMessage(remoteJid, {
       delete: {
         remoteJid,

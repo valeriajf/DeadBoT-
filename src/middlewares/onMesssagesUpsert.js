@@ -42,6 +42,10 @@ const antifloodCommand = require("../commands/admin/anti-flood");
 // Importa o comando auto-sticker
 const autoStickerCommand = require("../commands/admin/auto-sticker");
 
+// Importa o comando anti-pv
+const antiPvCommand = require("../commands/admin/anti-pv");
+
+
 //  Comandos fig-ban
 const figBanAddCommand = require("../commands/admin/fig-ban-add");
 const figBanDeleteCommand = require("../commands/admin/fig-ban-delete");
@@ -94,7 +98,6 @@ async function isUserAdminFig(socket, groupId, userJid) {
         const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
         return groupAdmins.includes(userJid);
     } catch (error) {
-        console.error("❌ [FIG-COMMANDS] Erro ao verificar admin:", error.message);
         return false;
     }
 }
@@ -111,6 +114,29 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
         if (DEVELOPER_MODE) {
             infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
         }
+        
+        // 🚫 SISTEMA ANTI-PV - Bloqueia mensagens privadas quando ativado
+if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
+    try {
+        const antiPvData = antiPvCommand.loadAntiPvData();
+        const isAntiPvActiveInAnyGroup = Object.values(antiPvData).some(value => value === true);
+        
+        if (isAntiPvActiveInAnyGroup) {
+            console.log(`🚫 [ANTI-PV] Mensagem privada bloqueada de: ${webMessage.key.remoteJid}`);
+            
+            // Opcional: Enviar mensagem automática informando que o bot não responde no privado
+            await socket.sendMessage(webMessage.key.remoteJid, {
+                text: "🚫 *Desculpe!*\n\nO bot está configurado para responder apenas em grupos.\n\nPor favor, use os comandos nos grupos onde o bot está ativo."
+            });
+            
+            // Pula para a próxima mensagem sem processar esta
+            continue;
+        }
+    } catch (antiPvError) {
+        console.error('❌ [ANTI-PV] Erro:', antiPvError.message);
+    }
+}
+// 🚫 FIM ANTI-PV
 
         try {
             const timestamp = webMessage.messageTimestamp;
@@ -125,14 +151,10 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
 
                 if (remoteJid?.includes('@g.us')) {
                     try {
-                        console.log("🖼️ [FIG-COMMANDS] Processando figurinha de:", userJid);
-                        
                         const isAdmin = await isUserAdminFig(socket, remoteJid, userJid);
                         const isOwner = OWNER_NUMBER && userJid.includes(OWNER_NUMBER);
                         
                         if (isAdmin || isOwner) {
-                            console.log("🖼️ [FIG-COMMANDS] Usuário autorizado, verificando comandos...");
-                            
                             const commonFunctions = {
                                 sendReply: async (text) => {
                                     return await socket.sendMessage(remoteJid, {
@@ -154,19 +176,17 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                             try {
                                 await fecharFigCommand.handle(commonFunctions);
                             } catch (error) {
-                                console.error("🖼️ [FIG-COMMANDS] Erro no comando fechar-fig:", error.message);
+                                // Silencioso
                             }
 
                             try {
                                 await abrirFigCommand.handle(commonFunctions);
                             } catch (error) {
-                                console.error("🖼️ [FIG-COMMANDS] Erro no comando abrir-fig:", error.message);
+                                // Silencioso
                             }
-                        } else {
-                            console.log("🖼️ [FIG-COMMANDS] Usuário não autorizado:", userJid);
                         }
                     } catch (error) {
-                        console.error("🖼️ [FIG-COMMANDS] Erro geral:", error.message);
+                        // Silencioso
                     }
                 }
             }
@@ -364,9 +384,7 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
                                 }
                                 
                                 const reportText = `📊 *BANIMENTO CONCLUÍDO*\n\n` +
-                                                 `✅ Banidos com sucesso: ${successCount}\n` +
-                                                 `📋 Critério usado: ${data.minMessages} mensagem(s) ou menos\n` +
-                                                 `⏰ Concluído em: ${new Date().toLocaleString('pt-BR')}`;
+                                                 `✅ Banidos com sucesso: ${successCount}\n`;                   
                                 
                                 await socket.sendMessage(chatId, { text: reportText });
                                 

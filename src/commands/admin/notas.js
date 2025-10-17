@@ -132,7 +132,7 @@ module.exports = {
         
         if (status === 'vencido') emoji = '🔴';
         else if (status === 'hoje') emoji = '🟡';
-        else if (status === 'proximo') emoji = '🟠';
+        else if (status === 'proximo') emoji = '🟢';
         
         mensagem += `${emoji} *ID*: ${nota.id}\n`;
         mensagem += `💬 ${nota.descricao}\n`;

@@ -1,6 +1,7 @@
 /**
  * Evento chamado quando um usuário
  * entra ou sai de um grupo de WhatsApp.
+ * ATUALIZADO: Suporta @lid (novo formato WhatsApp) + pushName via webMessage
  *
  * @author Dev VaL
  */
@@ -27,7 +28,7 @@ const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 // 🎉 WELCOME3 - Sistema de boas-vindas com foto do grupo
 const { handleWelcome3NewMember } = require("../utils/welcome3Handler");
 
-// 🚫 LISTA NEGRA - Funções para banimento automático
+// 🚫 LISTA NEGRA - Funções para banimento automático (ATUALIZADO PARA @LID)
 const BLACKLIST_FILE = path.join(__dirname, '..', 'data', 'blacklist.json');
 
 function loadBlacklist() {
@@ -43,39 +44,81 @@ function loadBlacklist() {
   }
 }
 
+// 🆕 Extrai o identificador único do JID (suporta @s.whatsapp.net e @lid)
+function extractUserId(jid) {
+  if (!jid) return null;
+  
+  // Se é LID (novo formato)
+  if (jid.includes('@lid')) {
+    return jid.split('@')[0];
+  }
+  
+  // Se é formato antigo
+  if (jid.includes('@s.whatsapp.net')) {
+    return jid.split('@')[0];
+  }
+  
+  // Se já é só o número/ID
+  return jid;
+}
+
 async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
   try {
     const blacklist = loadBlacklist();
     
+    // Verifica se o grupo tem lista negra
     if (!blacklist[remoteJid] || blacklist[remoteJid].length === 0) {
       return false;
     }
 
-    const userNumber = userJid.replace('@s.whatsapp.net', '');
+    // 🆕 Extrai o ID único (funciona com @s.whatsapp.net e @lid)
+    const userId = extractUserId(userJid);
     
-    if (blacklist[remoteJid].includes(userNumber)) {
-      console.log(`[BLACKLIST] Detectado usuário ${userNumber} na lista negra do grupo ${remoteJid}`);
+    if (!userId) {
+      console.log(`[BLACKLIST] Não foi possível extrair userId de: ${userJid}`);
+      return false;
+    }
+    
+    // Verifica se o usuário está na lista negra
+    if (blacklist[remoteJid].includes(userId)) {
+      console.log(`[BLACKLIST] Detectado usuário ${userId} (${userJid}) na lista negra do grupo ${remoteJid}`);
       
       try {
+        // Bane o usuário imediatamente usando o JID completo
         await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
+        
+        // 🆕 Formata a exibição do ID de forma amigável
+        let displayId = userId;
+        if (userId.length > 15) {
+          displayId = `LID: ${userId.substring(0, 12)}...`;
+        } else if (userId.startsWith('55') && userId.length >= 12) {
+          displayId = userId.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, '+55 ($1) $2-$3');
+        } else {
+          displayId = `+${userId}`;
+        }
         
         const banMessage = 
           `🚫 *BANIMENTO AUTOMÁTICO*\n\n` +
-          `👤 *Usuário:* ${userNumber}\n` +
+          `👤 *Usuário:* ${displayId}\n` +
+          `🆔 *ID:* ${userId}\n` +
+          `📋 *Tipo:* ${userJid.includes('@lid') ? 'LID' : 'Número'}\n` +
           `⚠️ *Motivo:* Usuário está na lista negra\n` +
           `🔒 *Ação:* Banido automaticamente\n\n` +
-          `💡 Para remover da lista negra, use lista-negra-remover`;
+          `💡 Para remover da lista negra, use #lista-negra-remover`;
         
         await socket.sendMessage(remoteJid, { text: banMessage });
         
-        console.log(`[BLACKLIST] Usuário ${userNumber} banido automaticamente do grupo ${remoteJid}`);
+        console.log(`[BLACKLIST] Usuário ${userId} banido automaticamente do grupo ${remoteJid}`);
         return true;
+        
       } catch (error) {
-        console.error(`[BLACKLIST] Erro ao banir usuário ${userNumber}:`, error);
+        console.error(`[BLACKLIST] Erro ao banir usuário ${userId}:`, error);
+        
+        // Se falhar ao banir, avisa os admins
         try {
           const warningMessage = 
             `⚠️ *ALERTA - LISTA NEGRA*\n\n` +
-            `👤 *Usuário:* ${userNumber}\n` +
+            `👤 *Usuário ID:* ${userId}\n` +
             `🚨 *Status:* Na lista negra mas não foi possível banir automaticamente\n` +
             `💡 *Ação recomendada:* Bana manualmente ou verifique as permissões do bot`;
           
@@ -99,6 +142,7 @@ exports.onGroupParticipantsUpdate = async ({
   remoteJid,
   socket,
   action,
+  webMessage,
 }) => {
   try {
     if (!remoteJid.endsWith("@g.us")) {
@@ -110,10 +154,10 @@ exports.onGroupParticipantsUpdate = async ({
     }
 
     if (action === "add") {
-      // 🚫 Verifica a lista negra
+      // 🚫 VERIFICAÇÃO DE LISTA NEGRA - Primeira prioridade!
       const wasBanned = await checkAndBanBlacklistedUser(socket, remoteJid, userJid);
       if (wasBanned) {
-        console.log(`[BLACKLIST] Usuário banido, pulando mensagem de boas-vindas`);
+        console.log(`[BLACKLIST] Usuário banido, pulando mensagens de boas-vindas`);
         return;
       }
 
@@ -121,36 +165,35 @@ exports.onGroupParticipantsUpdate = async ({
       try {
         const groupMetadata = await socket.groupMetadata(remoteJid);
         
-        // Tratamento correto do número baseado no tipo de JID
-        let userNumber;
-        if (userJid.includes('@lid')) {
-          userNumber = userJid.replace('@lid', '');
-        } else {
-          userNumber = userJid.replace('@s.whatsapp.net', '');
-        }
+        // 🆕 Tratamento unificado do número (suporta @s.whatsapp.net e @lid)
+        const userNumber = extractUserId(userJid);
 
-        // Obtém o pushname (nome) do usuário
-        let pushname = null;
-        try {
-          if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
-            pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
-          }
-          
-          if (!pushname) {
-            const participant = groupMetadata.participants.find(p => p.id === userJid);
-            if (participant) {
-              pushname = participant.notify || participant.verifiedName || participant.name;
+        // 🆕 Obtém o pushname - PRIORIDADE: webMessage.pushName (igual comando dado)
+        let pushname = webMessage?.pushName || null;
+        
+        // Se não veio do webMessage, tenta outras fontes
+        if (!pushname) {
+          try {
+            if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
+              pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
             }
-          }
-          
-          if (!pushname && socket.authState?.creds?.contacts) {
-            const contact = socket.authState.creds.contacts[userJid];
-            if (contact) {
-              pushname = contact.notify || contact.name;
+            
+            if (!pushname) {
+              const participant = groupMetadata.participants.find(p => p.id === userJid);
+              if (participant) {
+                pushname = participant.notify || participant.verifiedName || participant.name;
+              }
             }
+            
+            if (!pushname && socket.authState?.creds?.contacts) {
+              const contact = socket.authState.creds.contacts[userJid];
+              if (contact) {
+                pushname = contact.notify || contact.name;
+              }
+            }
+          } catch (error) {
+            // Ignora erro
           }
-        } catch (error) {
-          // Ignora erro
         }
         
         await handleWelcome2NewMember({
@@ -188,36 +231,35 @@ exports.onGroupParticipantsUpdate = async ({
       try {
         const groupMetadata = await socket.groupMetadata(remoteJid);
         
-        // Tratamento correto do número baseado no tipo de JID
-        let userNumber;
-        if (userJid.includes('@lid')) {
-          userNumber = userJid.replace('@lid', '');
-        } else {
-          userNumber = userJid.replace('@s.whatsapp.net', '');
-        }
+        // 🆕 Tratamento unificado do número (suporta @s.whatsapp.net e @lid)
+        const userNumber = extractUserId(userJid);
 
-        // Obtém o pushname (nome) do usuário
-        let pushname = null;
-        try {
-          if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
-            pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
-          }
-          
-          if (!pushname) {
-            const participant = groupMetadata.participants.find(p => p.id === userJid);
-            if (participant) {
-              pushname = participant.notify || participant.verifiedName || participant.name;
+        // 🆕 Obtém o pushname - PRIORIDADE: webMessage.pushName (igual comando dado)
+        let pushname = webMessage?.pushName || null;
+        
+        // Se não veio do webMessage, tenta outras fontes
+        if (!pushname) {
+          try {
+            if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
+              pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
             }
-          }
-          
-          if (!pushname && socket.authState?.creds?.contacts) {
-            const contact = socket.authState.creds.contacts[userJid];
-            if (contact) {
-              pushname = contact.notify || contact.name;
+            
+            if (!pushname) {
+              const participant = groupMetadata.participants.find(p => p.id === userJid);
+              if (participant) {
+                pushname = participant.notify || participant.verifiedName || participant.name;
+              }
             }
+            
+            if (!pushname && socket.authState?.creds?.contacts) {
+              const contact = socket.authState.creds.contacts[userJid];
+              if (contact) {
+                pushname = contact.notify || contact.name;
+              }
+            }
+          } catch (error) {
+            // Ignora erro
           }
-        } catch (error) {
-          // Ignora erro
         }
         
         await handleWelcome3NewMember({
