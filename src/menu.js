@@ -25,6 +25,8 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DONO ⪨━━
 
+ • ${prefix}aluguel 
+ • ${prefix}anti-pv (1/0)
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}off
@@ -68,6 +70,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}lista-negra-add
  • ${prefix}lista-negra-remover
  • ${prefix}mute
+ • ${prefix}notas
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -105,6 +108,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}rank-ativo
  • ${prefix}rank-inativo
  • ${prefix}raw-message
+ • ${prefix}refresh
  • ${prefix}rename
  • ${prefix}sticker
  • ${prefix}to-image
@@ -136,6 +140,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}lutar
  • ${prefix}matar
  • ${prefix}socar
+ • ${prefix}sorteio
  • ${prefix}tapa
 
 ╰━━─「🎡」─━━

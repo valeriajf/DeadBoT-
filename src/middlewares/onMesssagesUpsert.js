@@ -42,8 +42,9 @@ const antifloodCommand = require("../commands/admin/anti-flood");
 // Importa o comando auto-sticker
 const autoStickerCommand = require("../commands/admin/auto-sticker");
 
-// Importa o comando anti-pv
-const antiPvCommand = require("../commands/admin/anti-pv");
+//  Importa o comando anti-pv
+ const antiPvCommand = require("../commands/owner/anti-pv");
+
 
 
 //  Comandos fig-ban
@@ -115,21 +116,26 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
             infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
         }
         
-        // 🚫 SISTEMA ANTI-PV - Bloqueia mensagens privadas quando ativado
+         // 🚫 SISTEMA ANTI-PV - Bloqueia TUDO no privado quando ativado
 if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
     try {
         const antiPvData = antiPvCommand.loadAntiPvData();
         const isAntiPvActiveInAnyGroup = Object.values(antiPvData).some(value => value === true);
         
         if (isAntiPvActiveInAnyGroup) {
-            console.log(`🚫 [ANTI-PV] Mensagem privada bloqueada de: ${webMessage.key.remoteJid}`);
+            console.log(`🚫 [ANTI-PV] Mensagem privada BLOQUEADA de: ${webMessage.key.remoteJid}`);
             
-            // Opcional: Enviar mensagem automática informando que o bot não responde no privado
+            // Envia mensagem uma única vez e bloqueia o contato
             await socket.sendMessage(webMessage.key.remoteJid, {
-                text: "🚫 *Desculpe!*\n\nO bot está configurado para responder apenas em grupos.\n\nPor favor, use os comandos nos grupos onde o bot está ativo."
+                text: "🚫 *Antipv ativado!*\n\n❌ Mensagens privadas serão bloqueadas.\n\n✅ Use o bot apenas nos grupos."
             });
             
-            // Pula para a próxima mensagem sem processar esta
+            // BLOQUEIA o contato para não receber mais mensagens
+            await socket.updateBlockStatus(webMessage.key.remoteJid, 'block');
+            
+            console.log(`🔒 [ANTI-PV] Contato ${webMessage.key.remoteJid} foi BLOQUEADO`);
+            
+            // Pula COMPLETAMENTE esta mensagem
             continue;
         }
     } catch (antiPvError) {

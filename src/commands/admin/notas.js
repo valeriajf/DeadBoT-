@@ -55,10 +55,35 @@ function formatDate(date) {
   return `${day}/${month}/${year}`;
 }
 
-// Extrair data do texto (formato DD/MM/YYYY)
-function extractDate(text) {
-  const match = text.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-  return match ? match[0] : null;
+// Extrair data do texto (aceita DD/MM/YYYY ou DD MM YYYY) e retornar também a posição
+function extractDateInfo(text) {
+  // Primeiro tenta encontrar data com barras: DD/MM/YYYY
+  let regex = /\b(\d{2})\/(\d{2})\/(\d{4})\b/;
+  let match = text.match(regex);
+  
+  if (match) {
+    return {
+      date: match[0],
+      index: match.index,
+      originalFormat: match[0]
+    };
+  }
+  
+  // Se não encontrou, tenta encontrar data com espaços: DD MM YYYY
+  regex = /\b(\d{2})\s+(\d{2})\s+(\d{4})\b/;
+  match = text.match(regex);
+  
+  if (match) {
+    // Converte para formato DD/MM/YYYY
+    const dateFormatted = `${match[1]}/${match[2]}/${match[3]}`;
+    return {
+      date: dateFormatted,
+      index: match.index,
+      originalFormat: match[0]
+    };
+  }
+  
+  return { date: null, index: -1, originalFormat: null };
 }
 
 // Verificar se uma data está vencida ou vence hoje
@@ -95,8 +120,8 @@ module.exports = {
     args, 
     sendText 
   }) => {
-    // Separar os argumentos corretamente
-    const textoCompleto = args.length > 0 ? args[0] : '';
+    // Juntar todos os argumentos em um texto completo
+    const textoCompleto = args.join(' ').trim();
     const argsArray = textoCompleto.split(' ');
     const comando = argsArray[0]?.toLowerCase();
     
@@ -191,8 +216,18 @@ module.exports = {
     }
     
     // Se chegou aqui, é para criar uma nova nota
-    const vencimento = extractDate(textoCompleto);
-    const descricao = vencimento ? textoCompleto.replace(vencimento, '').trim() : textoCompleto;
+    const dateInfo = extractDateInfo(textoCompleto);
+    const vencimento = dateInfo.date;
+    
+    // Remover a data do texto da descrição de forma mais precisa
+    let descricao = textoCompleto;
+    if (vencimento && dateInfo.index !== -1) {
+      // Remove a data e limpa espaços extras
+      descricao = (
+        textoCompleto.substring(0, dateInfo.index) + 
+        textoCompleto.substring(dateInfo.index + vencimento.length)
+      ).trim().replace(/\s+/g, ' ');
+    }
     
     const notas = loadNotas();
     

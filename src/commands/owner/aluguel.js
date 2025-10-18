@@ -1,46 +1,24 @@
-// Sistema de lembrete de aluguel 
-//para o DeadBoT 
-//
-//@uthor Dev VaL 
-//
-const calculateValidity = (dateString) => {
-  const [day, month, year] = dateString.split("/").map(Number);
-  const dueDate = new Date(year, month - 1, day);
-  const today = new Date();
-  
-  const diffYears = dueDate.getFullYear() - today.getFullYear();
-  const diffMonths = dueDate.getMonth() - today.getMonth();
-  const diffDays = dueDate.getDate() - today.getDate();
-  
-  let totalMonths = diffYears * 12 + diffMonths;
-  
-  // Ajusta se os dias forem negativos
-  if (diffDays < 0) {
-    totalMonths--;
-  }
-  
-  if (totalMonths < 0) totalMonths = 0;
-  
-  if (totalMonths === 0) {
-    const days = calculateDaysUntil(dateString);
-    return days > 0 ? `${days} dia(s)` : "vencido";
-  } else if (totalMonths === 1) {
-    return "1 mês";
-  } else {
-    return `${totalMonths} meses`;
-  }
-};/**
+/**
  * Comando para gerenciar vencimentos de aluguel dos membros do grupo.
  * Permite adicionar, remover e listar datas de vencimento.
  * O bot enviará lembretes automáticos próximo ao vencimento.
+ * RESTRITO APENAS PARA O DONO DO BOT
  *
  * @author Dev VaL 
  */
-const { PREFIX } = require(`${BASE_DIR}/config`);
+const path = require("path");
+const BASE_DIR = path.resolve(__dirname, "../..");
+const { PREFIX, OWNER_NUMBER, OWNER_LID } = require(`${BASE_DIR}/config`);
+const { WarningError } = require(`${BASE_DIR}/errors`);
 const fs = require("node:fs");
-const path = require("node:path");
 
 const DATABASE_PATH = path.join(BASE_DIR, "database", "aluguel.json");
+
+// Valor fixo do aluguel
+const FIXED_VALUE = "R$ 20,00";
+
+// Validade fixa
+const FIXED_VALIDITY = "1 mês";
 
 // Garante que o arquivo existe
 const ensureDatabaseExists = () => {
@@ -126,12 +104,6 @@ const isValidDate = (dateString) => {
   return true;
 };
 
-// Valor fixo do aluguel
-const FIXED_VALUE = "R$ 20,00";
-
-// Validade fixa
-const FIXED_VALIDITY = "1 mês";
-
 // Formata a data para exibição
 const formatDate = (dateString) => {
   const [day, month, year] = dateString.split("/");
@@ -165,7 +137,8 @@ module.exports = {
 ${PREFIX}aluguel delete @usuario
 ${PREFIX}aluguel list
 ${PREFIX}aluguel hoje
-${PREFIX}aluguel vencendo`,
+${PREFIX}aluguel vencendo
+${PREFIX}aluguel limpar`,
   
   /**
    * @param {CommandHandleProps} props
@@ -176,6 +149,7 @@ ${PREFIX}aluguel vencendo`,
     fullArgs,
     isGroup,
     remoteJid,
+    userJid,
     webMessage,
     sendReply,
     sendSuccessReply,
@@ -183,6 +157,17 @@ ${PREFIX}aluguel vencendo`,
     sendWarningReply,
   }) => {
     try {
+      // Verifica se é o dono do bot
+      const cleanOwnerLid = OWNER_LID ? OWNER_LID.replace(/@lid@lid$/, '@lid') : '';
+      
+      const isOwnerByNumber = OWNER_NUMBER && userJid.includes(OWNER_NUMBER.split('@')[0]);
+      const isOwnerByLid = cleanOwnerLid && userJid === cleanOwnerLid;
+      const isOwner = isOwnerByNumber || isOwnerByLid;
+      
+      if (!isOwner) {
+        return await sendErrorReply("⛔ Este comando é exclusivo para o dono do bot!");
+      }
+
       if (!isGroup) {
         return await sendErrorReply("❌ Este comando só pode ser usado em grupos!");
       }
@@ -205,6 +190,8 @@ ${PREFIX}aluguel vencendo`,
           `   Mostra vencimentos de hoje\n\n` +
           `▸ ${PREFIX}aluguel vencendo\n` +
           `   Mostra vencimentos próximos (7 dias)\n\n` +
+          `▸ ${PREFIX}aluguel limpar\n` +
+          `   Remove todos os vencimentos do grupo\n\n` +
           `*Exemplo:*\n` +
           `${PREFIX}aluguel add @João 15/11/2025`
         );
@@ -287,9 +274,8 @@ ${PREFIX}aluguel vencendo`,
         return await sendSuccessReply(
           `✅ *Aluguel cadastrado com sucesso!*\n\n` +
           `👤 Usuário: @${mentionedJid.split("@")[0]}\n` +
-          `📅 Data: ${formattedDate}\n` +
-          `💰 Valor: ${FIXED_VALUE}\n` +
-          `⚠️ Válido: ${FIXED_VALIDITY}`,
+          `📅 Vencimento: ${formattedDate}\n` +
+          `⏰ Válido por: ${FIXED_VALIDITY}`,
           [mentionedJid]
         );
       }
@@ -423,9 +409,9 @@ ${PREFIX}aluguel vencendo`,
         upcomingRentals.forEach(([userJid, data]) => {
           const daysUntil = calculateDaysUntil(data.date);
           const formattedDate = formatDate(data.date);
-          const urgency = daysUntil === 0 ? "🔴 HOJE" :
-                         daysUntil === 1 ? "🟡 AMANHÃ" :
-                         daysUntil <= 3 ? "🟢 SEGUINTE" : "🔵 PRÓXIMO";
+          const urgency = daysUntil === 0 ? "⚠️ HOJE" :
+                         daysUntil === 1 ? "🔴 AMANHÃ" :
+                         daysUntil <= 3 ? "🟡 URGENTE" : "🟢 PRÓXIMO";
           
           message += `${urgency} @${userJid.split("@")[0]}\n`;
           message += `   📅 ${formattedDate} • ${FIXED_VALUE}\n`;
@@ -436,6 +422,27 @@ ${PREFIX}aluguel vencendo`,
 
         const mentions = upcomingRentals.map(([userJid]) => userJid);
         return await sendReply(message, mentions);
+      }
+
+      // Comando: LIMPAR
+      if (subCommand === "limpar" || subCommand === "clear" || subCommand === "reset") {
+        const rentals = db[remoteJid];
+        
+        if (!rentals || Object.keys(rentals).length === 0) {
+          return await sendWarningReply("⚠️ Não há aluguéis cadastrados para limpar!");
+        }
+
+        const totalRentals = Object.keys(rentals).length;
+        
+        // Limpa todos os aluguéis do grupo
+        db[remoteJid] = {};
+        saveDatabase(db);
+
+        return await sendSuccessReply(
+          `✅ *Todos os aluguéis foram removidos!*\n\n` +
+          `🗑️ Total removido: ${totalRentals} aluguel(is)\n\n` +
+          `_O banco de dados do grupo foi limpo com sucesso._`
+        );
       }
 
       // Subcomando desconhecido
