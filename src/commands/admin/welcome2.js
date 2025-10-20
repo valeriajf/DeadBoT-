@@ -14,24 +14,19 @@ function loadWelcome2Data() {
       return JSON.parse(data);
     }
     return {};
-  } catch (error) {
-    console.error('Erro ao carregar welcome2.json:', error);
+  } catch {
     return {};
   }
 }
 
 function saveWelcome2Data(data) {
   try {
-    // Garante que o diretório existe
     const dbDir = path.dirname(WELCOME2_DB_PATH);
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }
-    
     fs.writeFileSync(WELCOME2_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Erro ao salvar welcome2.json:', error);
-  }
+  } catch {}
 }
 
 function activateWelcome2Group(groupId) {
@@ -39,7 +34,7 @@ function activateWelcome2Group(groupId) {
   if (!data[groupId]) {
     data[groupId] = {
       active: true,
-      customMessage: null // Será definida pelo legenda-bv
+      customMessage: null
     };
   } else {
     data[groupId].active = true;

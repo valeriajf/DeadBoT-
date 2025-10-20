@@ -13,11 +13,9 @@ module.exports = {
     sendImageFromURL,
     sendErrorReply,
     sendWaitReact,
-    sendSuccessReact,
-    sendReply
+    sendSuccessReact
   }) => {
-    console.log("=== COMANDO SPOTDL INICIADO ===");
-    
+
     if (!fullArgs || fullArgs.trim() === "") {
       throw new InvalidParameterError(
         "Você precisa enviar um link do Spotify!\n\n" +
@@ -26,7 +24,6 @@ module.exports = {
     }
 
     const spotifyLink = fullArgs.trim();
-    console.log("Link recebido:", spotifyLink);
 
     if (!spotifyLink.includes("spotify")) {
       throw new WarningError("O link não é do Spotify!");
@@ -44,7 +41,6 @@ module.exports = {
       }
 
       if (!trackId && (spotifyLink.includes("spotify.link") || spotifyLink.includes("spotify.app.link"))) {
-        console.log("Extraindo Track ID do link curto...");
         const response = await fetch(spotifyLink, {
           headers: { 'User-Agent': 'WhatsApp/2.23.20 A' }
         });
@@ -57,10 +53,7 @@ module.exports = {
         throw new WarningError("Não foi possível extrair o ID da música!");
       }
 
-      console.log("✅ Track ID:", trackId);
-
       // Busca informações da música do Spotify
-      console.log("\n=== BUSCANDO INFORMAÇÕES DO SPOTIFY ===");
       let musicaInfo = null;
       
       try {
@@ -89,11 +82,7 @@ module.exports = {
             musicaInfo.artists = parts[0].trim();
           }
         }
-        
-        console.log("✅ Info do Spotify:", musicaInfo);
-      } catch (e) {
-        console.log("⚠️ Erro ao buscar info do Spotify:", e.message);
-      }
+      } catch {}
 
       if (!musicaInfo || !musicaInfo.title) {
         throw new WarningError("Não foi possível obter informações da música!");
@@ -103,13 +92,9 @@ module.exports = {
       const searchQuery = `${musicaInfo.artists} ${musicaInfo.title}`
         .replace(/ - Ao Vivo| \(Ao Vivo\)| - Remix/g, '')
         .trim();
-      
-      console.log("\n=== BUSCANDO NO YOUTUBE ===");
-      console.log("Query:", searchQuery);
 
       // Busca o vídeo no YouTube
       const ytSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-      
       const ytSearchResponse = await fetch(ytSearchUrl, {
         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
       });
@@ -118,7 +103,6 @@ module.exports = {
       const videoIdMatch = ytHtml.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
       
       if (!videoIdMatch) {
-        console.log("❌ Video ID não encontrado");
         throw new WarningError(
           `Não foi possível encontrar a música no YouTube!\n\n` +
           `🔍 Busca: ${searchQuery}`
@@ -127,19 +111,13 @@ module.exports = {
 
       const videoId = videoIdMatch[1];
       const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
-      console.log("✅ Video ID:", videoId);
-      console.log("✅ YouTube URL:", youtubeUrl);
 
-      // USA O MESMO SERVIÇO DO #yt-mp3
-      console.log("\n=== BAIXANDO VIA SPIDER X API (yt-mp3) ===");
+      // Faz o download via Spider X API
       const data = await download("yt-mp3", youtubeUrl);
 
       if (!data) {
         throw new WarningError("Não foi possível fazer o download!");
       }
-
-      console.log("✅ Download realizado com sucesso!");
-      console.log("Dados:", JSON.stringify(data, null, 2));
 
       await sendSuccessReact();
 
@@ -159,11 +137,9 @@ module.exports = {
             album = parts[1].trim(); // Segundo item é o álbum
           }
         }
-      } catch (e) {
-        console.log("Não foi possível obter álbum");
-      }
+      } catch {}
 
-      // Envia thumbnail com informações (sem referências ao YouTube)
+      // Envia thumbnail com informações
       await sendImageFromURL(
         musicaInfo.thumbnail || data.thumbnail,
         `🎵 *${musicaInfo.title}*
@@ -175,15 +151,9 @@ module.exports = {
       );
 
       // Envia o áudio
-      console.log("Enviando áudio...");
       await sendAudioFromURL(data.url);
-      console.log("✅ ÁUDIO ENVIADO COM SUCESSO!");
 
     } catch (error) {
-      console.error("\n=== ERRO ===");
-      console.error("Tipo:", error.name);
-      console.error("Mensagem:", error.message);
-      
       if (error instanceof WarningError || error instanceof InvalidParameterError) {
         throw error;
       }
