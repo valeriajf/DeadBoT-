@@ -105,6 +105,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}perfil
  • ${prefix}ping
  • ${prefix}qc
+ • ${prefix}qc2
  • ${prefix}rank-ativo
  • ${prefix}rank-inativo
  • ${prefix}raw-message

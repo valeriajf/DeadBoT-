@@ -50,7 +50,9 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
   } = paramsHandler;
 
   const activeGroup = isActiveGroup(remoteJid);
+  const isLid = false; // ✅ Corrige erro "isLid is not defined"
 
+  // 🔗 Sistema Anti-Link
   if (activeGroup && isActiveAntiLinkGroup(remoteJid) && isLink(fullMessage)) {
     if (!userJid) return;
 
@@ -98,6 +100,7 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     }
   }
 
+  // 🔐 Verificação de dono do bot (fora de grupo)
   if (!isBotOwner({ userJid, isLid }) && !activeGroup) {
     if (verifyPrefix(prefix, remoteJid) && hasTypeAndCommand({ type, command })) {
       if (command.name !== "on") {

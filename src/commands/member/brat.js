@@ -2,7 +2,7 @@
  * Comando Brat - Gera sticker com estilo Brat
  * Cria uma figurinha com texto no estilo Brat usando Jimp + FFmpeg
  * 
- * @author VaL 
+ * @author Dev VaL 
  */
 const fs = require("node:fs");
 const path = require("path");
@@ -37,7 +37,27 @@ module.exports = {
 
       await sendWaitReact();
 
-      const text = fullArgs.trim().toLowerCase();
+      // Remove emojis do texto (Jimp não suporta emojis)
+      let text = fullArgs.trim().toLowerCase();
+      
+      // Remove emojis usando regex
+      text = text.replace(/[\u{1F600}-\u{1F64F}]/gu, ''); // Emoticons
+      text = text.replace(/[\u{1F300}-\u{1F5FF}]/gu, ''); // Símbolos e pictogramas
+      text = text.replace(/[\u{1F680}-\u{1F6FF}]/gu, ''); // Transporte e símbolos de mapa
+      text = text.replace(/[\u{1F1E0}-\u{1F1FF}]/gu, ''); // Bandeiras
+      text = text.replace(/[\u{2600}-\u{26FF}]/gu, ''); // Símbolos diversos
+      text = text.replace(/[\u{2700}-\u{27BF}]/gu, ''); // Dingbats
+      text = text.replace(/[\u{FE00}-\u{FE0F}]/gu, ''); // Variações de seleção
+      text = text.replace(/[\u{1F900}-\u{1F9FF}]/gu, ''); // Símbolos e pictogramas suplementares
+      text = text.replace(/[\u{1FA00}-\u{1FA6F}]/gu, ''); // Símbolos e pictogramas estendidos
+      
+      // Remove espaços extras que podem ter sobrado
+      text = text.trim().replace(/\s+/g, ' ');
+      
+      if (!text || text === '') {
+        return await sendErrorReply('❌ O texto não pode conter apenas emojis!\n\n💡 Use: ' + PREFIX + 'brat <texto>\n\n⚠️ Nota: Emojis serão removidos automaticamente.');
+      }
+
       const width = 512;
       const height = 512;
       

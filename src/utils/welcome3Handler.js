@@ -11,8 +11,7 @@ function loadWelcome3Data() {
       return JSON.parse(data);
     }
     return {};
-  } catch (error) {
-    console.error('Erro ao carregar welcome3.json:', error);
+  } catch {
     return {};
   }
 }
@@ -23,11 +22,8 @@ function saveWelcome3Data(data) {
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }
-    
     fs.writeFileSync(WELCOME3_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Erro ao salvar welcome3.json:', error);
-  }
+  } catch {}
 }
 
 function getWelcome3Config(groupId) {
@@ -42,22 +38,11 @@ function isActiveWelcome3Group(groupId) {
 
 function getCustomWelcome3Message(groupId) {
   const data = loadWelcome3Data();
-  return data[groupId] && data[groupId].customMessage ? 
-    data[groupId].customMessage : 
-    'Bem-vindo ao {grupo}! Olá {membro}, seja bem-vindo(a)! 🎉';
+  return data[groupId] && data[groupId].customMessage
+    ? data[groupId].customMessage
+    : 'Bem-vindo ao {grupo}! Olá {membro}, seja bem-vindo(a)! 🎉';
 }
 
-/**
- * Handler para processar novos membros no grupo (com foto do grupo)
- * @param {Object} params
- * @param {string} params.groupId - ID do grupo
- * @param {string} params.groupName - Nome do grupo
- * @param {string} params.newMemberId - ID do novo membro
- * @param {string} params.newMemberNumber - Número do novo membro
- * @param {Function} params.sendImageWithCaption - Função para enviar imagem com legenda
- * @param {Function} params.sendTextWithMention - Função para enviar apenas texto com menção
- * @param {Function} params.getGroupPicture - Função para obter foto do grupo
- */
 /**
  * Handler para processar novos membros no grupo (com foto do grupo)
  * @param {Object} params
@@ -82,48 +67,39 @@ async function handleWelcome3NewMember({
 }) {
   try {
     // Verifica se o welcome3 está ativo para este grupo
-    if (!isActiveWelcome3Group(groupId)) {
-      return;
-    }
+    if (!isActiveWelcome3Group(groupId)) return;
 
-    console.log(`[WELCOME3] ✅ Ativado - Novo membro: ${pushname || newMemberNumber}`);
-
-    // Obtém a foto do GRUPO (não do membro)
+    // Obtém a foto do grupo
     let groupPicture;
     try {
       groupPicture = await getGroupPicture(groupId);
-    } catch (error) {
+    } catch {
       groupPicture = null;
     }
 
-    // Obtém a mensagem personalizada
+    // Obtém e monta a mensagem personalizada
     const customMessage = getCustomWelcome3Message(groupId);
-    
-    // Substitui as variáveis na mensagem
-    // Se não tiver pushname, usa a menção também no lugar de {nome}
     const welcomeMessage = customMessage
       .replace(/{grupo}/g, groupName || 'Este Grupo')
       .replace(/{membro}/g, `@${newMemberNumber}`)
       .replace(/{nome}/g, pushname || `@${newMemberNumber}`);
 
-    // CORREÇÃO: Envia imagem em cima e legenda embaixo (igual comando regras)
+    // Envia mensagem com ou sem imagem
     if (groupPicture) {
       await sendImageWithCaption({
         image: groupPicture,
         caption: welcomeMessage,
         mentions: [newMemberId]
       });
-      console.log(`[WELCOME3] ✅ Enviado com foto do grupo`);
     } else {
       await sendTextWithMention({
         caption: welcomeMessage,
         mentions: [newMemberId]
       });
-      console.log(`[WELCOME3] ✅ Enviado sem foto (texto)`);
     }
 
-  } catch (error) {
-    console.error('[WELCOME3] ❌ Erro:', error.message);
+  } catch {
+    // Silencioso: erros internos não aparecem no console
   }
 }
 
