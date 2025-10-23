@@ -403,9 +403,9 @@
   },
   "120363417816517583@g.us": {
     "163351011319890@lid": {
-      "messages": 101,
+      "messages": 105,
       "stickers": 17,
-      "lastActivity": "2025-10-21T15:49:27.149Z",
+      "lastActivity": "2025-10-23T14:12:14.321Z",
       "joinDate": "2025-10-13T10:31:33.365Z",
       "displayName": "Valéria",
       "lastKnownName": "Valéria"
@@ -465,6 +465,14 @@
       "joinDate": "2025-10-21T13:38:45.942Z",
       "displayName": "Thaís 🥰",
       "lastKnownName": "Thaís 🥰"
+    },
+    "42271772819706@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "lastActivity": "2025-10-23T14:04:47.533Z",
+      "joinDate": "2025-10-23T14:01:46.788Z",
+      "displayName": "Dead-v1",
+      "lastKnownName": "Dead-v1"
     }
   },
   "120363403667960531@g.us": {
@@ -883,17 +891,17 @@
   },
   "120363422201607745@g.us": {
     "163351011319890@lid": {
-      "messages": 504,
-      "stickers": 10,
-      "lastActivity": "2025-10-21T15:34:02.386Z",
+      "messages": 529,
+      "stickers": 15,
+      "lastActivity": "2025-10-23T14:23:58.743Z",
       "joinDate": "2025-10-14T10:38:53.523Z",
       "displayName": "Valéria",
       "lastKnownName": "Valéria"
     },
     "52674217148583@lid": {
-      "messages": 29,
-      "stickers": 0,
-      "lastActivity": "2025-10-18T10:46:41.876Z",
+      "messages": 30,
+      "stickers": 5,
+      "lastActivity": "2025-10-23T13:10:00.796Z",
       "joinDate": "2025-10-15T05:12:25.237Z",
       "displayName": "DeadBoT",
       "lastKnownName": "DeadBoT"
@@ -907,9 +915,9 @@
       "lastKnownName": "DeadBoT-v1"
     },
     "216895865250008@lid": {
-      "messages": 24,
-      "stickers": 2,
-      "lastActivity": "2025-10-21T09:48:34.258Z",
+      "messages": 33,
+      "stickers": 5,
+      "lastActivity": "2025-10-23T12:20:07.594Z",
       "joinDate": "2025-10-16T15:27:40.817Z",
       "displayName": "Giancarlo",
       "lastKnownName": "Giancarlo"
@@ -923,12 +931,20 @@
       "lastKnownName": "Isa"
     },
     "120363422201607745@g.us": {
-      "messages": 3,
+      "messages": 10,
       "stickers": 0,
-      "lastActivity": "2025-10-18T09:37:34.378Z",
+      "lastActivity": "2025-10-23T11:46:39.728Z",
       "joinDate": "2025-10-18T08:20:23.127Z",
       "displayName": null,
       "lastKnownName": null
+    },
+    "42271772819706@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "lastActivity": "2025-10-23T13:25:32.132Z",
+      "joinDate": "2025-10-23T13:25:11.992Z",
+      "displayName": "Dead-v1",
+      "lastKnownName": "Dead-v1"
     }
   },
   "120363047111989845@g.us": {

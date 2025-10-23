@@ -450,6 +450,21 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
                 if (msgText.startsWith("#")) {
                     const [cmd, ...args] = msgText.trim().slice(1).split(/\s+/);
                     const command = cmd.toLowerCase();
+                    
+                    // Reação ao símbolo # sozinho
+                    if (msgText.trim() === "#") {
+                        try {
+                            await socket.sendMessage(chatId, {
+                                react: {
+                                    text: "🤖",
+                                    key: webMessage.key
+                                }
+                            });
+                        } catch (reactError) {
+                            console.error("❌ Erro ao reagir:", reactError.message);
+                        }
+                        continue;
+                    }
 
                     // get-sticker
                     if (getStickerCommand.commands.includes(command)) {

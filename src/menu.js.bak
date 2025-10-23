@@ -131,5 +131,44 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}yt-mp3
  • ${prefix}yt-mp4
 
-╰━━─「🎶」─━━`;
+╰━━─「🎶」─━━
+
+╭━━⪩ BRINCADEIRAS ⪨━━
+
+ • ${prefix}abracar
+ • ${prefix}beijar
+ • ${prefix}dado
+ • ${prefix}gartic
+ • ${prefix}jantar
+ • ${prefix}lutar
+ • ${prefix}matar
+ • ${prefix}socar
+ • ${prefix}sorteio
+ • ${prefix}tapa
+
+╰━━─「🎡」─━━
+
+╭━━⪩ IA ⪨━━
+
+ • ${prefix}gemini
+ • ${prefix}ia-sticker
+ • ${prefix}pixart
+ • ${prefix}sora 
+ • ${prefix}stable-diffusion-turbo
+
+╰━━─「🚀」─━━
+
+╭━━⪩ CANVAS ⪨━━
+
+ • ${prefix}blur
+ • ${prefix}bolsonaro
+ • ${prefix}cadeia
+ • ${prefix}contraste
+ • ${prefix}espelhar
+ • ${prefix}gray
+ • ${prefix}inverter
+ • ${prefix}pixel
+ • ${prefix}rip
+
+╰━━─「❇」─━━`;
 };
