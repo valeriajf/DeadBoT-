@@ -146,7 +146,7 @@ module.exports = {
 🎤 *Artista:* ${musicaInfo.artists}
 💿 *${album}*
 ⏱️ *Duração:* ${data.total_duration_in_seconds}s
-
+«── « ↻ ◁ 𝐈𝐈 ▷ ↺ » ──»
 💚 by DeadBoT`
       );
 
