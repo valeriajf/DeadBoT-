@@ -121,7 +121,7 @@ exports.menuMessage = (groupJid) => {
 ╭━━⪩ DOWNLOADS ⪨━━
 
  • ${prefix}facebook
- • ${prefix}instagran
+ • ${prefix}instagram
  • ${prefix}play-audio
  • ${prefix}play-video
  • ${prefix}spot-dl
