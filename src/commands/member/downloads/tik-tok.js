@@ -5,8 +5,8 @@ const { WarningError, InvalidParameterError } = require(`${BASE_DIR}/errors`);
 module.exports = {
   name: "tik-tok",
   description: "Faço o download de vídeos do TikTok",
-  commands: ["tik-tok", "ttk"],
-  usage: `${PREFIX}tik-tok https://www.tiktok.com/@yrrefutavel/video/7359413022483287301`,
+  commands: ["tik-tok", "tiktok"],
+  usage: `${PREFIX}tik-tok https://www.tiktok.com/@exemplo/video/123456789`,
   /**
    * @param {CommandHandleProps} props
    * @returns {Promise<void>}
@@ -38,7 +38,10 @@ module.exports = {
 
       await sendSuccessReact();
 
-      await sendVideoFromURL(data.download_link);
+      const caption = "🎵 Vídeo do TikTok\n💚 by DeadBoT";
+
+      await sendVideoFromURL(data.download_link, caption);
+
     } catch (error) {
       console.log(error);
       await sendErrorReply(error.message);

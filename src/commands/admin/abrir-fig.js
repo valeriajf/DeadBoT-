@@ -42,7 +42,7 @@ module.exports = {
       }
 
       // ID da figurinha que abre o grupo (substitua pelos valores da sua figurinha)
-      const STICKER_ABRIR_ID = [131,228,126,173,110,186,69,110,149,246,195,183,212,251,82,5,166,29,180,34,162,111,71,51,56,151,85,167,200,187,102,45];
+      const STICKER_ABRIR_ID = [64,75,164,187,99,82,205,66,249,62,50,1,211,223,116,213,234,123,173,220,111,249,136,255,199,211,243,164,104,44,73,227];
       
       const fileSha = sticker.fileSha256;
       if (!fileSha || fileSha.length === 0) {

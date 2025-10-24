@@ -106,12 +106,13 @@ module.exports = {
       if (isVideo) {
         await sendVideoFromURL(
           mediaItem.url,
-          `📼 *Vídeo do Instagram*`
+          `📼 *Vídeo do Instagram*\n💚 by *DeadBoT*`
         );
       } else {
         await sendImageFromURL(
           mediaItem.url,
-          `🖼️ *Imagem do Instagram*`
+          `🖼️ *Imagem do Instagram*
+           💚 by *DeadBoT*`
         );
       }
 
