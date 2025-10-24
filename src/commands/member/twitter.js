@@ -5,7 +5,7 @@ const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 module.exports = {
   name: "twitter",
   description: "Faço o download de vídeos e imagens do Twitter/X!",
-  commands: ["twitter", "x", "tweet"],
+  commands: ["twitter", "x"],
   usage: `${PREFIX}twitter https://x.com/user/status/123456`,
   /**
    * @param {CommandHandleProps} props
@@ -105,7 +105,7 @@ module.exports = {
         if (typeof videoUrl === 'string') {
           await sendVideoFromURL(
             videoUrl,
-            `🎬 *Vídeo do Twitter*`
+            `🎬 *Vídeo do Twitter*\n💚 by *DeadBoT*`
           );
         } else {
           throw new Error("URL de vídeo inválida");
@@ -114,7 +114,8 @@ module.exports = {
         // Se não for array de vídeos, é uma imagem
         await sendImageFromURL(
           typeof mediaUrls === 'string' ? mediaUrls : mediaUrls[0],
-          `🖼️ *Imagem do Twitter*`
+          `🖼️ *Imagem do Twitter*
+           💚 by *DeadBoT*`
         );
       }
 

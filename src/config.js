@@ -17,11 +17,11 @@ exports.BOT_NUMBER = "5511933372131";
 // Número do dono bot.
 // Apenas números, exatamente como está no WhatsApp.
 // Se o seu número não exibir o nono dígito (9) no WhatsApp, não coloque-o.
-exports.OWNER_NUMBER = "6283183117279@s.whatsapp.net";
+exports.OWNER_NUMBER = "639307042474@s.whatsapp.net";
 
 // LID do dono do bot.
 // Para obter o LID do dono do bot, use o comando <prefixo>get-lid @marca ou +telefone do dono.
-exports.OWNER_LID = "113744289992885@lid";
+exports.OWNER_LID = "42271772819706@lid";
 
 // Diretório dos comandos
 exports.COMMANDS_DIR = path.join(__dirname, "commands");
@@ -36,7 +36,7 @@ exports.ASSETS_DIR = path.resolve(__dirname, "..", "assets");
 exports.TEMP_DIR = path.resolve(__dirname, "..", "assets", "temp");
 
 // Timeout em milissegundos por evento (evita banimento).
-exports.TIMEOUT_IN_MILLISECONDS_BY_EVENT = 1000;
+exports.TIMEOUT_IN_MILLISECONDS_BY_EVENT = 2000;
 
 // Plataforma de API's
 exports.SPIDER_API_BASE_URL = "https://api.spiderx.com.br/api";

@@ -5,7 +5,7 @@ const { WarningError, InvalidParameterError } = require(`../../errors`);
 module.exports = {
   name: "spotdl",
   description: "Faz download de música do Spotify via YouTube",
-  commands: ["spotdl", "spotifydownload", "downloadspotify"],
+  commands: ["spotdl"],
   usage: `${PREFIX}spotdl https://spotify.link/azIRLvE1vXb`,
   handle: async ({ 
     fullArgs,
@@ -147,7 +147,7 @@ module.exports = {
 💿 *${album}*
 ⏱️ *Duração:* ${data.total_duration_in_seconds}s
 
-💚 *Baixado do Spotify*`
+💚 by DeadBoT`
       );
 
       // Envia o áudio
