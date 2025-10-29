@@ -28,6 +28,9 @@ const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 // 🎉 WELCOME3 - Sistema de boas-vindas com foto do grupo
 const { handleWelcome3NewMember } = require("../utils/welcome3Handler");
 
+// 🎉 WELCOME4 - Sistema de boas-vindas apenas com texto (sem foto)
+const { handleWelcome4NewMember } = require("../utils/welcome4Handler");
+
 // 🚫 LISTA NEGRA - Funções para banimento automático (ATUALIZADO PARA @LID)
 const BLACKLIST_FILE = path.join(__dirname, '..', 'data', 'blacklist.json');
 
@@ -161,41 +164,42 @@ exports.onGroupParticipantsUpdate = async ({
         return;
       }
 
+      // 🆕 Obtém pushname e userNumber uma única vez (reutilizado por todos os sistemas)
+      const groupMetadata = await socket.groupMetadata(remoteJid);
+      const userNumber = extractUserId(userJid);
+      
+      let pushname = webMessage?.pushName || null;
+      if (!pushname) {
+        try {
+          if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
+            pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
+          }
+          
+          if (!pushname) {
+            const participant = groupMetadata.participants.find(p => p.id === userJid);
+            if (participant) {
+              pushname = participant.notify || participant.verifiedName || participant.name;
+            }
+          }
+          
+          if (!pushname && socket.authState?.creds?.contacts) {
+            const contact = socket.authState.creds.contacts[userJid];
+            if (contact) {
+              pushname = contact.notify || contact.name;
+            }
+          }
+          
+          // 🆕 Fallback final para "Novo Membro"
+          if (!pushname) {
+            pushname = "Novo Membro";
+          }
+        } catch (error) {
+          pushname = "Novo Membro";
+        }
+      }
+
       // 🎉 WELCOME2 - Sistema com foto do membro
       try {
-        const groupMetadata = await socket.groupMetadata(remoteJid);
-        
-        // 🆕 Tratamento unificado do número (suporta @s.whatsapp.net e @lid)
-        const userNumber = extractUserId(userJid);
-
-        // 🆕 Obtém o pushname - PRIORIDADE: webMessage.pushName (igual comando dado)
-        let pushname = webMessage?.pushName || null;
-        
-        // Se não veio do webMessage, tenta outras fontes
-        if (!pushname) {
-          try {
-            if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
-              pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
-            }
-            
-            if (!pushname) {
-              const participant = groupMetadata.participants.find(p => p.id === userJid);
-              if (participant) {
-                pushname = participant.notify || participant.verifiedName || participant.name;
-              }
-            }
-            
-            if (!pushname && socket.authState?.creds?.contacts) {
-              const contact = socket.authState.creds.contacts[userJid];
-              if (contact) {
-                pushname = contact.notify || contact.name;
-              }
-            }
-          } catch (error) {
-            // Ignora erro
-          }
-        }
-        
         await handleWelcome2NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
@@ -229,39 +233,6 @@ exports.onGroupParticipantsUpdate = async ({
 
       // 🎉 WELCOME3 - Sistema com foto do grupo
       try {
-        const groupMetadata = await socket.groupMetadata(remoteJid);
-        
-        // 🆕 Tratamento unificado do número (suporta @s.whatsapp.net e @lid)
-        const userNumber = extractUserId(userJid);
-
-        // 🆕 Obtém o pushname - PRIORIDADE: webMessage.pushName (igual comando dado)
-        let pushname = webMessage?.pushName || null;
-        
-        // Se não veio do webMessage, tenta outras fontes
-        if (!pushname) {
-          try {
-            if (socket.store && socket.store.contacts && socket.store.contacts[userJid]) {
-              pushname = socket.store.contacts[userJid].name || socket.store.contacts[userJid].notify;
-            }
-            
-            if (!pushname) {
-              const participant = groupMetadata.participants.find(p => p.id === userJid);
-              if (participant) {
-                pushname = participant.notify || participant.verifiedName || participant.name;
-              }
-            }
-            
-            if (!pushname && socket.authState?.creds?.contacts) {
-              const contact = socket.authState.creds.contacts[userJid];
-              if (contact) {
-                pushname = contact.notify || contact.name;
-              }
-            }
-          } catch (error) {
-            // Ignora erro
-          }
-        }
-        
         await handleWelcome3NewMember({
           groupId: remoteJid,
           groupName: groupMetadata.subject,
@@ -291,6 +262,25 @@ exports.onGroupParticipantsUpdate = async ({
         });
       } catch (error) {
         console.error('[WELCOME3] ❌ Erro:', error.message);
+      }
+
+      // 🎉 WELCOME4 - Sistema apenas com texto (sem foto)
+      try {
+        await handleWelcome4NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname: pushname,
+          sendTextWithMention: async ({ caption, mentions }) => {
+            await socket.sendMessage(remoteJid, {
+              text: caption,
+              mentions: mentions
+            });
+          }
+        });
+      } catch (error) {
+        console.error('[WELCOME4] ❌ Erro:', error.message);
       }
     }
 
