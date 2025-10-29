@@ -25,7 +25,6 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DONO ⪨━━
 
- • ${prefix}aluguel 
  • ${prefix}anti-pv (1/0)
  • ${prefix}exec
  • ${prefix}get-id
@@ -62,7 +61,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}enquete 
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}fig-tag
  • ${prefix}get-sticker
  • ${prefix}limpar
  • ${prefix}link-grupo
