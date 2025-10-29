@@ -77,9 +77,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}roleta-russa 
  • ${prefix}set-name
  • ${prefix}unmute
- • ${prefix}welcome (1/0)
- • ${prefix}welcome2 (1/0)
- • ${prefix}welcome3 (1/0)
+ • ${prefix}welcome (1/0) Padrão 
+ • ${prefix}welcome2 (1/0) Foto Usuário 
+ • ${prefix}welcome3 (1/0) Foto Grupo 
+ • ${prefix}welcome4 (1/0) Sem Foto 
  • ${prefix}zerar-rank
  
 
