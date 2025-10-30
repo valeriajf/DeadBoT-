@@ -25,7 +25,6 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ DONO ⪨━━
 
- • ${prefix}aluguel 
  • ${prefix}anti-pv (1/0)
  • ${prefix}exec
  • ${prefix}get-id
@@ -62,7 +61,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}enquete 
  • ${prefix}exit (1/0)
  • ${prefix}fechar
- • ${prefix}fig-tag
  • ${prefix}get-sticker
  • ${prefix}limpar
  • ${prefix}link-grupo
@@ -79,11 +77,10 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}roleta-russa 
  • ${prefix}set-name
  • ${prefix}unmute
- • ${prefix}welcome (1/0)
- • ${prefix}welcome2 (1/0)
- • ${prefix}welcome3 (1/0)
- • ${prefix}zerar-rank
- 
+ • ${prefix}welcome (1/0) Padrão 
+ • ${prefix}welcome2 (1/0) Foto Usuário 
+ • ${prefix}welcome3 (1/0) Foto Grupo 
+ • ${prefix}welcome4 (1/0) Sem Foto 
 
 ╰━━─「⭐」─━━
 
@@ -111,6 +108,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}raw-message
  • ${prefix}refresh
  • ${prefix}rename
+ • ${prefix}sorteio
  • ${prefix}sticker
  • ${prefix}to-image
  • ${prefix}ttp
@@ -125,7 +123,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}play-audio
  • ${prefix}play-video
  • ${prefix}spot-dl
- • ${prefix}spotify 
  • ${prefix}tik-tok
  • ${prefix}twitter 
  • ${prefix}yt-mp3
