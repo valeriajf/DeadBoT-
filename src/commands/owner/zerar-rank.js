@@ -1,61 +1,48 @@
 /**
  * Comando para zerar o ranking de atividade
- * Salve como: src/commands/owner/zerar-rank.js
- * 
  * @author Val (DeadBoT)
  */
 const { PREFIX } = require(`${BASE_DIR}/config`);
+const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 
 module.exports = {
   name: "zerar-rank",
   description: "Zera o ranking de atividade do grupo atual ou globalmente",
   commands: ["zerar-rank", "resetrank", "limpar-rank"],
   usage: `${PREFIX}zerar-rank [global]`,
-  
+  /**
+   * @param {CommandHandleProps} props
+   * @returns {Promise<void>}
+   */
   handle: async ({ 
     sendReply, 
+    sendSuccessReply,
     sendErrorReply,
     args,
     remoteJid,
-    isGroup 
+    isGroup
   }) => {
-    try {
-      const activityTracker = require(`${BASE_DIR}/utils/activityTracker`);
+    const activityTracker = require(`${BASE_DIR}/utils/activityTracker`);
+    
+    if (!isGroup && !args.includes('global')) {
+      throw new InvalidParameterError("Use este comando em um grupo ou adicione 'global' para zerar tudo!");
+    }
+
+    if (args.includes('global')) {
+      // Zera todos os dados globalmente
+      activityTracker.stats = {};
+      activityTracker.saveStats();
       
-      if (!isGroup && !args.includes('global')) {
-        return await sendErrorReply("❌ Use este comando em um grupo ou adicione 'global' para zerar tudo!");
-      }
-
-      if (args.includes('global')) {
-        // Zera todos os dados globalmente
-        activityTracker.stats = {};
+      await sendSuccessReply(`Ranking zerado globalmente! Todos os dados de atividade foram apagados.`);
+      
+    } else {
+      // Zera apenas o grupo atual
+      if (activityTracker.stats[remoteJid]) {
+        delete activityTracker.stats[remoteJid];
         activityTracker.saveStats();
-        
-        await sendReply(`🗑️ *RANKING ZERADO GLOBALMENTE* 🗑️
-
-✅ Todos os dados de atividade foram apagados de todos os grupos!
-
-O sistema continuará coletando novos dados automaticamente.`);
-        
-      } else {
-        // Zera apenas o grupo atual
-        if (activityTracker.stats[remoteJid]) {
-          delete activityTracker.stats[remoteJid];
-          activityTracker.saveStats();
-        }
-        
-        await sendReply(`🗑️ *RANKING ZERADO NESTE GRUPO* 🗑️
-
-✅ Todos os dados de atividade deste grupo foram apagados!
-
-O sistema continuará coletando novos dados automaticamente.
-
-💡 Para zerar dados globais use: ${PREFIX}zerar-rank global`);
       }
-
-    } catch (error) {
-      console.error("Erro ao zerar ranking:", error);
-      await sendErrorReply(`❌ Erro ao zerar ranking: ${error.message}`);
+      
+      await sendSuccessReply(`Ranking deste grupo zerado com sucesso!`);
     }
   },
 };

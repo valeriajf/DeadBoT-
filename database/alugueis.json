@@ -1,0 +1,18 @@
+{
+  "120363403694373910@g.us": {
+    "id": "AZMIOQNL",
+    "groupId": "120363403694373910@g.us",
+    "duracao": "30 dias",
+    "expira": "29/11/2025, 17:47:23",
+    "expiraTimestamp": 1764449243854,
+    "registradoEm": "2025-10-30T20:47:23.936Z"
+  },
+  "120363422201607745@g.us": {
+    "id": "9KFPAGIZ",
+    "groupId": "120363422201607745@g.us",
+    "duracao": "24 horas",
+    "expira": "02/11/2025, 03:10:00",
+    "expiraTimestamp": 1762063800695,
+    "registradoEm": "2025-11-01T06:10:00.728Z"
+  }
+}
