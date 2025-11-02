@@ -1,27 +1,67 @@
-/**
- * Converte vídeos em áudio MP3.
- * (Comando temporariamente desativado para manutenção)
- *
- * @author Val
- */
+const { PREFIX, TEMP_DIR } = require(`${BASE_DIR}/config`);
+const { exec } = require("child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+const { getRandomName } = require("../../utils");
+const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
+const { getRandomNumber } = require(`${BASE_DIR}/utils`);
 
-const { PREFIX } = require(`${BASE_DIR}/config`);
+async function extractAudio(videoPath) {
+  const audioPath = path.resolve(
+    TEMP_DIR,
+    `${getRandomNumber(10_000, 99_999)}.aac`
+  );
+
+  return new Promise((resolve, reject) => {
+    exec(
+      `ffmpeg -i ${videoPath} -vn -acodec copy ${audioPath}`,
+      async (error) => {
+        fs.unlinkSync(videoPath);
+
+        if (error) {
+          console.log(error);
+          reject(error);
+        }
+
+        resolve(audioPath);
+      }
+    );
+  });
+}
 
 module.exports = {
-  name: "tomp3",
-  description: "Converte um vídeo em áudio MP3 (em manutenção)",
-  commands: ["tomp3", "video2mp3"],
-  usage: `${PREFIX}tomp3`,
-  
+  name: "to-mp3",
+  description: "Converte vídeos para áudio MP3!",
+  commands: ["to-mp3", "video2mp3", "mp3"],
+  usage: `${PREFIX}to-mp3 (envie em cima de um vídeo ou responda um vídeo)`,
+
   /**
    * @param {CommandHandleProps} props
+   * @returns {Promise<void>}
    */
-  handle: async ({ sendReply }) => {
-    await sendReply(
-      "⚙️ O comando *#tomp3* está temporariamente em manutenção.\n\n" +
-      "🧩 A base de conversão e reconhecimento de vídeo já foi testada, mas está sendo ajustada " +
-      "para funcionar corretamente no ambiente do DeadBoT.\n\n" +
-      "💡 Assim que estiver estável, o comando será reativado!"
-    );
+  handle: async ({
+    isVideo,
+    webMessage,
+    sendWaitReact,
+    sendSuccessReact,
+    sendAudioFromFile,
+    downloadVideo,
+  }) => {
+    if (!isVideo) {
+      throw new InvalidParameterError(
+        "Por favor, envie este comando em resposta a um vídeo ou com um vídeo anexado."
+      );
+    }
+
+    await sendWaitReact();
+
+    const videoPath = await downloadVideo(webMessage, getRandomName());
+
+    const output = await extractAudio(videoPath);
+
+    await sendSuccessReact();
+    await sendAudioFromFile(output);
+
+    fs.unlinkSync(output);
   },
 };

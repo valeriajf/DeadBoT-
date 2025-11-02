@@ -38,7 +38,7 @@ module.exports = {
       await sendWaitReact();
 
       // Remove emojis do texto (Jimp não suporta emojis)
-      let text = fullArgs.trim().toLowerCase();
+      let text = fullArgs.trim();
       
       // Remove emojis usando regex
       text = text.replace(/[\u{1F600}-\u{1F64F}]/gu, ''); // Emoticons
@@ -50,12 +50,14 @@ module.exports = {
       text = text.replace(/[\u{FE00}-\u{FE0F}]/gu, ''); // Variações de seleção
       text = text.replace(/[\u{1F900}-\u{1F9FF}]/gu, ''); // Símbolos e pictogramas suplementares
       text = text.replace(/[\u{1FA00}-\u{1FA6F}]/gu, ''); // Símbolos e pictogramas estendidos
+      text = text.replace(/[\u{1F004}-\u{1F0CF}]/gu, ''); // Mahjong e cartas
+      text = text.replace(/[\u{1F170}-\u{1F251}]/gu, ''); // Símbolos alfanuméricos
       
       // Remove espaços extras que podem ter sobrado
       text = text.trim().replace(/\s+/g, ' ');
       
       if (!text || text === '') {
-        return await sendErrorReply('❌ O texto não pode conter apenas emojis!\n\n💡 Use: ' + PREFIX + 'brat <texto>\n\n⚠️ Nota: Emojis serão removidos automaticamente.');
+        return await sendErrorReply('❌ O texto não pode conter apenas emojis!\n\n💡 Use: ' + PREFIX + 'brat <seu texto>\n\n📝 Exemplo: ' + PREFIX + 'brat Charli XCX');
       }
 
       const width = 512;

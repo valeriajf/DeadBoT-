@@ -38,6 +38,7 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
   const {
     commandName,
     fullMessage,
+    isLid,
     prefix,
     remoteJid,
     sendErrorReply,
@@ -50,9 +51,7 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
   } = paramsHandler;
 
   const activeGroup = isActiveGroup(remoteJid);
-  const isLid = false; // ✅ Corrige erro "isLid is not defined"
 
-  // 🔗 Sistema Anti-Link
   if (activeGroup && isActiveAntiLinkGroup(remoteJid) && isLink(fullMessage)) {
     if (!userJid) return;
 
@@ -94,13 +93,18 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
       return;
     }
 
-    if (isActiveOnlyAdmins(remoteJid) && !(await isAdmin({ remoteJid, userJid, socket }))) {
-      await sendWarningReply("Somente administradores podem executar comandos!");
-      return;
+    if (isActiveOnlyAdmins(remoteJid)) {
+      if (!userJid) {
+        await sendWarningReply("Não foi possível identificar o usuário!");
+        return;
+      }
+      if (!(await isAdmin({ remoteJid, userJid, socket }))) {
+        await sendWarningReply("Somente administradores podem executar comandos!");
+        return;
+      }
     }
   }
 
-  // 🔐 Verificação de dono do bot (fora de grupo)
   if (!isBotOwner({ userJid, isLid }) && !activeGroup) {
     if (verifyPrefix(prefix, remoteJid) && hasTypeAndCommand({ type, command })) {
       if (command.name !== "on") {
@@ -137,6 +141,13 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     await sendWarningReply(
       `Comando não encontrado! Use ${groupPrefix}menu para ver os comandos disponíveis!`
     );
+    return;
+  }
+
+  // 🔒 VERIFICAÇÃO ESPECÍFICA PARA COMANDOS OWNER
+  // Garante que apenas o dono do bot pode executar comandos da pasta owner
+  if (type === 'owner' && !isBotOwner({ userJid, isLid })) {
+    await sendErrorReply("❌ Este comando é exclusivo para o dono do bot!");
     return;
   }
 

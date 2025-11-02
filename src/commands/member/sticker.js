@@ -2,9 +2,8 @@
  * Comando para criar figurinhas de imagem, gif ou vídeo
  * Adaptado para o formato DeadBoT
  * 
- * LIMITAÇÃO: Não funciona com mensagens de visualização única (viewOnce) já visualizadas
  *
- * @author Dev VaL 
+ * @author VaL 
  */
 const fs = require("node:fs");
 const path = require("node:path");

@@ -38,6 +38,7 @@ const {
 const NodeCache = require("node-cache");
 const { TEMP_DIR } = require("./config");
 const { badMacHandler } = require("./utils/badMacHandler");
+const { iniciarVerificador, pararVerificador } = require("./utils/verificadorAluguel");
 const fs = require("node:fs");
 
 if (!fs.existsSync(TEMP_DIR)) {
@@ -70,9 +71,9 @@ async function connect() {
   );
 
   const { state, saveCreds } = await useMultiFileAuthState(baileysFolder);
-
-  const { version, isLatest } = await fetchLatestBaileysVersion();
-
+  const version = [2, 3000, 1029037448];
+  const isLatest = true;
+  
   const socket = makeWASocket({
     version,
     logger,
@@ -119,6 +120,9 @@ async function connect() {
     const { connection, lastDisconnect } = update;
 
     if (connection === "close") {
+      // Para o verificador de aluguéis quando desconectar
+      pararVerificador();
+      
       const error = lastDisconnect?.error;
       const statusCode = error?.output?.statusCode;
 
@@ -196,6 +200,10 @@ async function connect() {
       );
       badMacErrorCount = 0;
       badMacHandler.resetErrorCount();
+      
+      // Inicia o verificador de aluguéis quando conectar
+      iniciarVerificador(socket);
+      infoLog("Sistema de verificação de aluguéis iniciado!");
     } else {
       infoLog("Atualizando conexão...");
     }
