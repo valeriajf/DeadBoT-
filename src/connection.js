@@ -36,7 +36,7 @@ const {
   successLog,
 } = require("./utils/logger");
 const NodeCache = require("node-cache");
-const { TEMP_DIR } = require("./config");
+const { TEMP_DIR, PREFIX } = require("./config");
 const { badMacHandler } = require("./utils/badMacHandler");
 const { iniciarVerificador, pararVerificador } = require("./utils/verificadorAluguel");
 const fs = require("node:fs");
@@ -197,6 +197,11 @@ async function connect() {
       infoLog("Versão do WhatsApp Web: " + version.join("."));
       infoLog(
         "É a última versão do WhatsApp Web?: " + (isLatest ? "Sim" : "Não")
+      );
+      successLog(
+        `✅ Estou pronto para uso! 
+Verifique o prefixo, digitando a palavra "prefixo" no WhatsApp. 
+O prefixo padrão definido no config.js é ${PREFIX}`
       );
       badMacErrorCount = 0;
       badMacHandler.resetErrorCount();
