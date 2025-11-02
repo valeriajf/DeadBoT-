@@ -1,2 +1,7 @@
 assets/auth/baileys
 .vscode
+node_modules/.bin/which~HEAD
+node_modules/.bin/which
+node_modules/.bin/which
+node_modules/.bin/which~HEAD
+node_modules/.bin/which
