@@ -2,7 +2,7 @@
  * Comando Brat - Gera sticker com estilo Brat
  * Cria uma figurinha com texto no estilo Brat usando Jimp + FFmpeg
  * 
- * @author Dev VaL 
+ * @author VaL 
  */
 const fs = require("node:fs");
 const path = require("path");

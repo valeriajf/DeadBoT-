@@ -645,6 +645,7 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
                 }
                 const commonFunctions = loadCommonFunctions({ socket, webMessage });
                 if (!commonFunctions) continue;
+
                 await dynamicCommand(commonFunctions, startProcess);
             }
         } catch (error) {

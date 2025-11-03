@@ -7,12 +7,20 @@
     "expiraTimestamp": 1764449243854,
     "registradoEm": "2025-10-30T20:47:23.936Z"
   },
-  "120363422201607745@g.us": {
-    "id": "9KFPAGIZ",
-    "groupId": "120363422201607745@g.us",
-    "duracao": "24 horas",
-    "expira": "02/11/2025, 03:10:00",
-    "expiraTimestamp": 1762063800695,
-    "registradoEm": "2025-11-01T06:10:00.728Z"
+  "120363419168076035@g.us": {
+    "id": "DD9A1Y4R",
+    "groupId": "120363419168076035@g.us",
+    "duracao": "32 dias",
+    "expira": "04/12/2025, 21:05:13",
+    "expiraTimestamp": 1764893113837,
+    "registradoEm": "2025-11-03T00:05:13.935Z"
+  },
+  "555184033465-1558458733@g.us": {
+    "id": "K11DEI2X",
+    "groupId": "555184033465-1558458733@g.us",
+    "duracao": "22 dias",
+    "expira": "24/11/2025, 22:08:29",
+    "expiraTimestamp": 1764032909581,
+    "registradoEm": "2025-11-03T01:08:29.659Z"
   }
 }

@@ -11,6 +11,16 @@ const { getPrefix, getOwnerNumber, getOwnerLid } = require("../utils/database");
 OWNER_NUMBER = getOwnerNumber() || OWNER_NUMBER;
 OWNER_LID = getOwnerLid() || OWNER_LID;
 
+/**
+ * 🔧 FIX: Função auxiliar para normalizar JIDs
+ * Remove sufixos como :0, :60 e garante formato consistente
+ */
+const normalizeJidForComparison = (jid) => {
+  if (!jid) return '';
+  // Remove sufixos (:0, :60, etc) e mantém apenas a parte principal
+  return jid.split(':')[0];
+};
+
 exports.verifyPrefix = (prefix, groupJid) => {
   const groupPrefix = getPrefix(groupJid);
 
@@ -151,7 +161,17 @@ exports.isBotOwner = ({ userJid }) => {
   });
 };
 
+/**
+ * 🔧 FIX COMPLETO: checkPermission com normalização robusta de JIDs
+ * 
+ * O problema era que a comparação de JIDs falhava quando:
+ * - UserJid tinha sufixo (ex: 110604585046097@lid)
+ * - Participant tinha sufixo diferente (ex: 110604585046097:60@lid)
+ * 
+ * Agora normalizamos TUDO antes de comparar!
+ */
 exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
+  // Comandos de membro podem ser executados por qualquer um
   if (type === "member") {
     return true;
   }
@@ -162,22 +182,54 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
     const { participants, owner } = await socket.groupMetadata(remoteJid);
     const normalizedUserJid = await normalizeToLid(socket, userJid);
 
-    const participant = participants.find((participant) => {
-      const pLid = participant.id.includes("@lid")
-        ? participant.id
-        : `${onlyNumbers(participant.id)}@lid`;
-      return pLid === normalizedUserJid;
+    // 🔧 FIX: Normaliza o JID do usuário removendo sufixos
+    const cleanUserJid = normalizeJidForComparison(normalizedUserJid);
+
+    console.log('🔍 [checkPermission] UserJid original:', userJid);
+    console.log('🔍 [checkPermission] UserJid normalizado:', normalizedUserJid);
+    console.log('🔍 [checkPermission] UserJid limpo:', cleanUserJid);
+
+    // 🔧 FIX: Busca participante com comparação normalizada
+    const participant = participants.find((p) => {
+      const pLid = p.id.includes("@lid")
+        ? p.id
+        : `${onlyNumbers(p.id)}@lid`;
+      
+      const cleanParticipantJid = normalizeJidForComparison(pLid);
+      
+      // Compara versões limpas (sem sufixos)
+      return cleanParticipantJid === cleanUserJid;
     });
 
-    if (!participant) {
-      return false;
+    console.log('🔍 [checkPermission] Participante encontrado?', participant ? 'SIM ✅' : 'NÃO ❌');
+    if (participant) {
+      console.log('🔍 [checkPermission] Admin status:', participant.admin);
     }
 
-    const ownerLid = owner.includes("@lid")
-      ? owner
-      : `${onlyNumbers(owner)}@lid`;
+    // Se não encontrou, verifica se é o OWNER do BOT
+    if (!participant) {
+      const isBotOwner = 
+        normalizedUserJid === OWNER_LID ||
+        compareUserJidWithOtherNumber({
+          userJid: normalizedUserJid,
+          otherNumber: OWNER_NUMBER,
+        });
+      
+      console.log('🔍 [checkPermission] É dono do bot?', isBotOwner ? 'SIM ✅' : 'NÃO ❌');
+      return isBotOwner && (type === "admin" || type === "owner");
+    }
 
-    const isOwner = normalizedUserJid === ownerLid;
+    // 🔧 FIX: Normaliza owner do grupo também (pode ser undefined!)
+    let isGroupOwner = false;
+    
+    if (owner) {
+      const ownerLid = owner.includes("@lid")
+        ? owner
+        : `${onlyNumbers(owner)}@lid`;
+      
+      const cleanOwnerJid = normalizeJidForComparison(ownerLid);
+      isGroupOwner = cleanUserJid === cleanOwnerJid;
+    }
 
     const isAdmin =
       participant.admin === "admin" || participant.admin === "superadmin";
@@ -189,16 +241,27 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
         otherNumber: OWNER_NUMBER,
       });
 
+    console.log('🔍 [checkPermission] É dono do grupo?', isGroupOwner ? 'SIM ✅' : 'NÃO ❌');
+    console.log('🔍 [checkPermission] É admin?', isAdmin ? 'SIM ✅' : 'NÃO ❌');
+    console.log('🔍 [checkPermission] É dono do bot?', isBotOwner ? 'SIM ✅' : 'NÃO ❌');
+
+    // Comandos de admin: aceita dono do grupo, admins ou dono do bot
     if (type === "admin") {
-      return isOwner || isAdmin || isBotOwner;
+      const hasPermission = isGroupOwner || isAdmin || isBotOwner;
+      console.log('🔍 [checkPermission] Tem permissão ADMIN?', hasPermission ? 'SIM ✅' : 'NÃO ❌');
+      return hasPermission;
     }
 
+    // Comandos owner: apenas dono do grupo ou dono do bot
     if (type === "owner") {
-      return isOwner || isBotOwner;
+      const hasPermission = isGroupOwner || isBotOwner;
+      console.log('🔍 [checkPermission] Tem permissão OWNER?', hasPermission ? 'SIM ✅' : 'NÃO ❌');
+      return hasPermission;
     }
 
     return false;
   } catch (error) {
+    console.error('❌ [checkPermission] Erro:', error.message);
     return false;
   }
 };

@@ -17,11 +17,11 @@ exports.BOT_NUMBER = "5511933372131";
 // Número do dono bot.
 // Apenas números, exatamente como está no WhatsApp.
 // Se o seu número não exibir o nono dígito (9) no WhatsApp, não coloque-o.
-exports.OWNER_NUMBER = "551134766953@s.whatsapp.net";
+exports.OWNER_NUMBER = "5532991945133@s.whatsapp.net";
 
 // LID do dono do bot.
 // Para obter o LID do dono do bot, use o comando <prefixo>get-lid @marca ou +telefone do dono.
-exports.OWNER_LID = "186152975896746@lid";
+exports.OWNER_LID = "163351011319890@lid";
 
 // Diretório dos comandos
 exports.COMMANDS_DIR = path.join(__dirname, "commands");
