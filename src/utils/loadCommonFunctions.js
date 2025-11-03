@@ -29,6 +29,7 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     remoteJid,
     replyJid,
     userJid,
+    replyText,
   } = extractDataFromMessage(webMessage);
 
   if (!remoteJid) {
@@ -137,7 +138,7 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     return await socket.sendMessage(
       remoteJid,
       { text: `${BOT_EMOJI} ${text}`, ...optionalParams },
-      { quoted: webMessage }
+      { quoted: JSON.parse(JSON.stringify(webMessage)) }
     );
   };
 
@@ -155,7 +156,7 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
         ...optionalParams,
         edit: messageToEdit.key,
       },
-      { quoted: webMessage }
+      { quoted: JSON.parse(JSON.stringify(webMessage)) }
     );
   };
 
@@ -235,7 +236,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
   };
 
   const sendStickerFromFile = async (file, quoted = true) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     return await socket.sendMessage(
       remoteJid,
       {
@@ -248,7 +251,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
   };
 
   const sendStickerFromURL = async (url, quoted = true) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     console.log({
       remoteJid,
       data: {
@@ -271,7 +276,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -300,7 +307,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -327,7 +336,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -356,7 +367,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -382,7 +395,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     asVoice = false,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     const audioBuffer = fs.readFileSync(filePath);
 
@@ -419,7 +434,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     asVoice = false,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     const {
       audioPath,
@@ -450,7 +467,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
   };
 
   const sendAudioFromURL = async (url, asVoice = false, quoted = true) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     const response = await fetch(url);
 
@@ -495,7 +514,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -520,7 +541,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     let optionalParams = {};
 
     if (mentions?.length) {
@@ -547,7 +570,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     let optionalParams = {};
 
     if (mentions?.length) {
@@ -572,7 +597,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     let optionalParams = {};
 
     if (mentions?.length) {
@@ -599,7 +626,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     fileName,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     return await socket.sendMessage(
       remoteJid,
       {
@@ -619,7 +648,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     fileName,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     return await socket.sendMessage(
       remoteJid,
       {
@@ -637,7 +668,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     fileName,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     return await socket.sendMessage(
       remoteJid,
       {
@@ -657,7 +690,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     mentions = null,
     quoted = true
   ) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
 
     let optionalParams = {};
 
@@ -679,7 +714,9 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
   };
 
   const sendStickerFromBuffer = async (buffer, quoted = true) => {
-    const quotedObject = quoted ? { quoted: webMessage } : {};
+    const quotedObject = quoted
+      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+      : {};
     return await socket.sendMessage(
       remoteJid,
       {
@@ -781,6 +818,7 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
     replyJid,
     socket,
     userJid,
+    replyText,
     webMessage,
     deleteMessage,
     downloadAudio,
