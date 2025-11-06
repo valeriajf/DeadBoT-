@@ -20,9 +20,7 @@ const {
   default: makeWASocket,
   DisconnectReason,
   useMultiFileAuthState,
-  fetchLatestBaileysVersion,
   isJidBroadcast,
-  makeCacheableSignalKeyStore,
   isJidStatusBroadcast,
   isJidNewsletter,
 } = require("baileys");
@@ -71,7 +69,7 @@ async function connect() {
   );
 
   const { state, saveCreds } = await useMultiFileAuthState(baileysFolder);
-  const version = [2, 3000, 1029297767];
+  const version = [2, 3000, 1029399661];
   const isLatest = true;
   
   const socket = makeWASocket({
@@ -79,10 +77,7 @@ async function connect() {
     logger,
     defaultQueryTimeoutMs: undefined,
     retryRequestDelayMs: 5000,
-    auth: {
-      creds: state.creds,
-      keys: makeCacheableSignalKeyStore(state.keys, logger),
-    },
+    auth: state,
     shouldIgnoreJid: (jid) =>
       isJidBroadcast(jid) || isJidStatusBroadcast(jid) || isJidNewsletter(jid),
     connectTimeoutMs: 20_000,
