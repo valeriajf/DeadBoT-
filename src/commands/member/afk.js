@@ -15,13 +15,31 @@ const afkCommand = {
   
   handle: async (webMessage, params) => {
     try {
-      // Validação de parâmetros aprimorada
-      if (!params?.socket) {
-        console.log("Parâmetros inválidos - socket não encontrado");
+      // Suporte para diferentes formatos de parâmetros
+      let socket, args;
+      
+      // Formato 1: params com socket direto
+      if (params?.socket) {
+        socket = params.socket;
+        args = params.args || [];
+      }
+      // Formato 2: webMessage é um objeto commonFunctions
+      else if (webMessage?.socket) {
+        socket = webMessage.socket;
+        args = webMessage.args || [];
+        webMessage = webMessage.webMessage;
+      }
+      // Formato 3: Erro - nenhum socket encontrado
+      else {
+        console.log("❌ [AFK] Parâmetros inválidos - socket não encontrado");
+        console.log("Params recebidos:", JSON.stringify(params, null, 2));
         return;
       }
-
-      const { socket, args = [] } = params;
+      
+      if (!socket) {
+        console.log("❌ [AFK] Socket ainda é undefined após validação");
+        return;
+      }
       const remoteJid = webMessage.key.remoteJid;
       const userJid = webMessage.key.participant || webMessage.key.remoteJid;
       const isGroup = remoteJid?.endsWith("@g.us");
@@ -123,7 +141,6 @@ const afkCommand = {
         delete afkUsersByGroup[groupJid];
       }
       
-      console.log(`✅ AFK removido: ${userJid.split('@')[0]} do grupo ${groupJid.split('@')[0]}`);
       return afkData;
     }
     
@@ -144,8 +161,6 @@ const afkCommand = {
       if (Object.keys(afkUsersByGroup[groupJid]).length === 0) {
         delete afkUsersByGroup[groupJid];
       }
-      
-      console.log(`🗑️ Usuário ${userJid.split('@')[0]} removido do AFK ao sair do grupo`);
     }
   },
 
@@ -201,10 +216,6 @@ const afkCommand = {
       if (Object.keys(afkUsersByGroup[groupJid]).length === 0) {
         delete afkUsersByGroup[groupJid];
       }
-    }
-
-    if (cleanedCount > 0) {
-      console.log(`🧹 Limpeza automática: ${cleanedCount} AFKs antigos removidos`);
     }
 
     return cleanedCount;

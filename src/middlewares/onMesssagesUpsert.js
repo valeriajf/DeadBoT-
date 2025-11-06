@@ -279,42 +279,51 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
             }
             // 🖼️ FIM AUTO-STICKER
 
-            // 💤 SISTEMA AFK
-            try {
-                if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
-                    const userJid = webMessage.key.participant || webMessage.key.remoteJid;
-                    const remoteJid = webMessage.key.remoteJid;
-                    
-                    if (afkCommand.isAFK(remoteJid, userJid)) {
-                        const afkData = afkCommand.removeAFK(remoteJid, userJid);
-                        if (afkData) {
-                            const timeAway = afkCommand.formatDuration(Date.now() - afkData.startTime);
-                            
-                            await socket.sendMessage(remoteJid, {
-                                text: `👋 @${userJid.split('@')[0]} voltou!\n\n⏱️ Ficou ausente por: ${afkCommand.formatDuration(Date.now() - afkData.startTime)}\n\n💭 Motivo: ${afkData.reason}`,
-                                mentions: [userJid]
-                            });
-                        }
-                    }
-                    
-                    const mentions = webMessage.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-                    for (const mentionedJid of mentions) {
-                        if (afkCommand.isAFK(remoteJid, mentionedJid) && mentionedJid !== userJid) {
-                            const afkData = afkCommand.getAFKData(remoteJid, mentionedJid);
-                            if (afkData) {
-                                await socket.sendMessage(remoteJid, {
-                                    text: `💤 @${mentionedJid.split('@')[0]} está AFK.\n💭 Motivo: ${afkData.reason}`,
-                                    mentions: [mentionedJid]
-                                }, { quoted: webMessage });
-                                break;
-                            }
-                        }
-                    }
-                }
-            } catch (afkError) {
-                console.error('❌ [AFK] Erro:', afkError.message);
+            // 💤 SISTEMA AFK - VERSÃO CORRIGIDA
+try {
+    if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
+        const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+        const remoteJid = webMessage.key.remoteJid;
+        
+        // Pega o texto da mensagem
+        const msgText = webMessage.message?.extendedTextMessage?.text || 
+                       webMessage.message?.conversation || "";
+        
+        // IMPORTANTE: Verifica se NÃO é o comando #afk antes de remover o AFK
+        const isAFKCommand = msgText.trim().toLowerCase().startsWith("#afk");
+        
+        // Só remove do AFK se NÃO for o comando #afk
+        if (!isAFKCommand && afkCommand.isAFK(remoteJid, userJid)) {
+            const afkData = afkCommand.removeAFK(remoteJid, userJid);
+            if (afkData) {
+                const timeAway = afkCommand.formatDuration(Date.now() - afkData.startTime);
+                
+                await socket.sendMessage(remoteJid, {
+                    text: `👋 @${userJid.split('@')[0]} voltou!\n\n⏱️ Ficou ausente por: ${timeAway}\n\n💭 Motivo: ${afkData.reason}`,
+                    mentions: [userJid]
+                });
             }
-            // 💤 FIM AFK
+        }
+        
+        // Verifica menções (mesmo se for comando #afk)
+        const mentions = webMessage.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+        for (const mentionedJid of mentions) {
+            if (afkCommand.isAFK(remoteJid, mentionedJid) && mentionedJid !== userJid) {
+                const afkData = afkCommand.getAFKData(remoteJid, mentionedJid);
+                if (afkData) {
+                    await socket.sendMessage(remoteJid, {
+                        text: `💤 @${mentionedJid.split('@')[0]} está AFK.\n💭 Motivo: ${afkData.reason}`,
+                        mentions: [mentionedJid]
+                    }, { quoted: webMessage });
+                    break;
+                }
+            }
+        }
+    }
+} catch (afkError) {
+    console.error('❌ [AFK] Erro:', afkError.message);
+}
+// 💤 FIM AFK
             
             // 🚫 ANTIFLOOD
             try {

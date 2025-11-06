@@ -63,6 +63,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}delete-auto-responder
  • ${prefix}enquete 
  • ${prefix}exit (1/0)
+ • ${prefix}exit2 (1/0)
  • ${prefix}fechar
  • ${prefix}get-sticker
  • ${prefix}limpar
@@ -78,6 +79,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}regras
  • ${prefix}revelar
  • ${prefix}roleta-russa 
+ • ${prefix}set-exit2 
  • ${prefix}set-name
  • ${prefix}unmute
  • ${prefix}welcome (1/0) Padrão 
@@ -126,6 +128,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}instagram
  • ${prefix}play-audio
  • ${prefix}play-video
+ • ${prefix}spotdl
  • ${prefix}tik-tok
  • ${prefix}twitter 
  • ${prefix}yt-mp3
