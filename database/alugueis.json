@@ -22,5 +22,21 @@
     "expira": "24/11/2025, 22:08:29",
     "expiraTimestamp": 1764032909581,
     "registradoEm": "2025-11-03T01:08:29.659Z"
+  },
+  "120363422201607745@g.us": {
+    "id": "Z14BI1F6",
+    "groupId": "120363422201607745@g.us",
+    "duracao": "30 dias",
+    "expira": "12/12/2025, 15:28:50",
+    "expiraTimestamp": 1765564130509,
+    "registradoEm": "2025-11-12T18:28:50.598Z"
+  },
+  "120363038706590596@g.us": {
+    "id": "NZ3U18NW",
+    "groupId": "120363038706590596@g.us",
+    "duracao": "30 dias",
+    "expira": "12/12/2025, 15:29:21",
+    "expiraTimestamp": 1765564161238,
+    "registradoEm": "2025-11-12T18:29:21.239Z"
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Evento chamado quando um usuário entra ou sai de um grupo de WhatsApp.
- * Suporta: WELCOME1–4, EXIT padrão, EXIT2 e sistema de blacklist.
+ * Suporta: WELCOME1–5, EXIT padrão, EXIT2 e sistema de blacklist.
  * 
  * @author Dev VaL
  */
@@ -23,6 +23,7 @@ const { upload } = require("../services/upload");
 const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 const { handleWelcome3NewMember } = require("../utils/welcome3Handler");
 const { handleWelcome4NewMember } = require("../utils/welcome4Handler");
+const { handleWelcome5NewMember } = require("../utils/welcome5Handler");
 
 const BLACKLIST_FILE = path.join(__dirname, "..", "data", "blacklist.json");
 
@@ -180,6 +181,40 @@ exports.onGroupParticipantsUpdate = async ({
             await socket.sendMessage(remoteJid, { text: caption, mentions }),
         });
       } catch {}
+
+      // WELCOME5 — Boas-vindas com GIF
+      try {
+        await handleWelcome5NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendGifFromFile: async (filePath, caption, mentions) => {
+            const isGifOrMp4 = /\.(gif|mp4)$/i.test(filePath);
+            
+            if (isGifOrMp4) {
+              await socket.sendMessage(remoteJid, {
+                video: fs.readFileSync(filePath),
+                caption,
+                mentions,
+                gifPlayback: true,
+                mimetype: 'video/mp4'
+              });
+            } else {
+              await socket.sendMessage(remoteJid, {
+                image: fs.readFileSync(filePath),
+                caption,
+                mentions
+              });
+            }
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME5] Erro:', err.message);
+      }
     }
 
     // EXIT PADRÃO

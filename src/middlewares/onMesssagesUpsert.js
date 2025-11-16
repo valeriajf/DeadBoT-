@@ -112,9 +112,11 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
     const STICKER_KEYWORDS = loadStickerKeywords();
 
     for (const webMessage of messages) {
-        if (DEVELOPER_MODE) {
-            infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
-        }
+
+    
+    if (DEVELOPER_MODE) {
+        infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
+    }
         
          // 🚫 SISTEMA ANTI-PV - Bloqueia TUDO no privado quando ativado
 if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
@@ -146,6 +148,65 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
 
         try {
             const timestamp = webMessage.messageTimestamp;
+
+// 💤 SISTEMA AFK
+try {
+    if (webMessage?.message && webMessage.key.remoteJid?.includes('@g.us')) {
+        const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+        const remoteJid = webMessage.key.remoteJid;
+        
+        // Pega o texto da mensagem
+        const msgText = webMessage.message?.extendedTextMessage?.text || 
+                       webMessage.message?.conversation || "";
+        
+        // Verifica se NÃO é o comando #afk antes de remover o AFK
+        const isAFKCommand = msgText.trim().toLowerCase().startsWith("#afk");
+        
+        // Só remove do AFK se NÃO for o comando #afk
+        if (!isAFKCommand && afkCommand.isAFK(remoteJid, userJid)) {
+            const afkData = afkCommand.removeAFK(remoteJid, userJid);
+            if (afkData) {
+                const timeAway = afkCommand.formatDuration(Date.now() - afkData.startTime);
+                
+                await socket.sendMessage(remoteJid, {
+                    text: `👋 @${userJid.split('@')[0]} voltou!\n\n⏱️ Ficou ausente por: ${timeAway}\n\n💭 Motivo: ${afkData.reason}`,
+                    mentions: [userJid]
+                });
+            }
+        }
+        
+        // Verificação de menções
+        let mentions = [];
+        
+        const messageTypes = Object.keys(webMessage.message || {});
+        for (const type of messageTypes) {
+            const contextInfo = webMessage.message[type]?.contextInfo;
+            
+            if (contextInfo?.mentionedJid && contextInfo.mentionedJid.length > 0) {
+                mentions = contextInfo.mentionedJid;
+                break;
+            }
+        }
+        
+        if (mentions.length > 0) {
+            for (const mentionedJid of mentions) {
+                if (afkCommand.isAFK(remoteJid, mentionedJid) && mentionedJid !== userJid) {
+                    const afkData = afkCommand.getAFKData(remoteJid, mentionedJid);
+                    if (afkData) {
+                        await socket.sendMessage(remoteJid, {
+                            text: `💤 @${mentionedJid.split('@')[0]} está AFK.\n💭 Motivo: ${afkData.reason}`,
+                            mentions: [mentionedJid]
+                        }, { quoted: webMessage });
+                        break;
+                    }
+                }
+            }
+        }
+    }
+} catch (afkError) {
+    console.error('❌ [AFK] Erro:', afkError.message);
+}
+// 💤 FIM AFK
 
             // 🖼️ SISTEMA DE COMANDOS POR FIGURINHA
             const abrirFigCommand = require("../commands/admin/abrir-fig");
@@ -279,51 +340,6 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
             }
             // 🖼️ FIM AUTO-STICKER
 
-            // 💤 SISTEMA AFK - VERSÃO CORRIGIDA
-try {
-    if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
-        const userJid = webMessage.key.participant || webMessage.key.remoteJid;
-        const remoteJid = webMessage.key.remoteJid;
-        
-        // Pega o texto da mensagem
-        const msgText = webMessage.message?.extendedTextMessage?.text || 
-                       webMessage.message?.conversation || "";
-        
-        // IMPORTANTE: Verifica se NÃO é o comando #afk antes de remover o AFK
-        const isAFKCommand = msgText.trim().toLowerCase().startsWith("#afk");
-        
-        // Só remove do AFK se NÃO for o comando #afk
-        if (!isAFKCommand && afkCommand.isAFK(remoteJid, userJid)) {
-            const afkData = afkCommand.removeAFK(remoteJid, userJid);
-            if (afkData) {
-                const timeAway = afkCommand.formatDuration(Date.now() - afkData.startTime);
-                
-                await socket.sendMessage(remoteJid, {
-                    text: `👋 @${userJid.split('@')[0]} voltou!\n\n⏱️ Ficou ausente por: ${timeAway}\n\n💭 Motivo: ${afkData.reason}`,
-                    mentions: [userJid]
-                });
-            }
-        }
-        
-        // Verifica menções (mesmo se for comando #afk)
-        const mentions = webMessage.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-        for (const mentionedJid of mentions) {
-            if (afkCommand.isAFK(remoteJid, mentionedJid) && mentionedJid !== userJid) {
-                const afkData = afkCommand.getAFKData(remoteJid, mentionedJid);
-                if (afkData) {
-                    await socket.sendMessage(remoteJid, {
-                        text: `💤 @${mentionedJid.split('@')[0]} está AFK.\n💭 Motivo: ${afkData.reason}`,
-                        mentions: [mentionedJid]
-                    }, { quoted: webMessage });
-                    break;
-                }
-            }
-        }
-    }
-} catch (afkError) {
-    console.error('❌ [AFK] Erro:', afkError.message);
-}
-// 💤 FIM AFK
             
             // 🚫 ANTIFLOOD
             try {
