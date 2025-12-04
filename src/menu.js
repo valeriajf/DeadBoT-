@@ -86,6 +86,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}welcome2 (1/0) Foto Usuário 
  • ${prefix}welcome3 (1/0) Foto Grupo 
  • ${prefix}welcome4 (1/0) Sem Foto 
+ • ${prefix}welcome5 (1/0) Vídeo ou Gif 
 
 ╰━━─「⭐」─━━
 
@@ -130,6 +131,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}play-video
  • ${prefix}spotdl
  • ${prefix}tik-tok
+ • ${prefix}threads
  • ${prefix}twitter 
  • ${prefix}yt-mp3
  • ${prefix}yt-mp4
