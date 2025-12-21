@@ -16,32 +16,33 @@ const afkCommand = {
   handle: async (webMessage, params) => {
     try {
       // Suporte para diferentes formatos de parâmetros
-      let socket, args;
+      let socket, args, remoteJid, userJid;
       
-      // Formato 1: params com socket direto
-      if (params?.socket) {
-        socket = params.socket;
-        args = params.args || [];
-      }
-      // Formato 2: webMessage é um objeto commonFunctions
-      else if (webMessage?.socket) {
+      // Formato 1: params é um objeto commonFunctions (dynamicCommand)
+      if (webMessage?.socket && webMessage?.webMessage) {
         socket = webMessage.socket;
         args = webMessage.args || [];
-        webMessage = webMessage.webMessage;
+        const realWebMessage = webMessage.webMessage;
+        remoteJid = realWebMessage.key.remoteJid;
+        userJid = realWebMessage.key.participant || realWebMessage.key.remoteJid;
+        webMessage = realWebMessage;
+      }
+      // Formato 2: params com socket direto (chamada direta)
+      else if (params?.socket) {
+        socket = params.socket;
+        args = params.args || [];
+        remoteJid = webMessage.key.remoteJid;
+        userJid = webMessage.key.participant || webMessage.key.remoteJid;
       }
       // Formato 3: Erro - nenhum socket encontrado
       else {
-        console.log("❌ [AFK] Parâmetros inválidos - socket não encontrado");
-        console.log("Params recebidos:", JSON.stringify(params, null, 2));
         return;
       }
       
       if (!socket) {
-        console.log("❌ [AFK] Socket ainda é undefined após validação");
         return;
       }
-      const remoteJid = webMessage.key.remoteJid;
-      const userJid = webMessage.key.participant || webMessage.key.remoteJid;
+
       const isGroup = remoteJid?.endsWith("@g.us");
 
       // Verifica se é grupo
@@ -55,15 +56,8 @@ const afkCommand = {
       // Inicializa estrutura do grupo
       afkUsersByGroup[remoteJid] ??= {};
 
-      // Verifica se usuário já está AFK no grupo
+      // Verifica se usuário já está AFK no grupo (ignora silenciosamente)
       if (afkUsersByGroup[remoteJid][userJid]) {
-        const currentAFK = afkUsersByGroup[remoteJid][userJid];
-        const timeSince = afkCommand.formatDuration(Date.now() - currentAFK.startTime);
-        
-        await socket.sendMessage(remoteJid, {
-          text: `⚠️ @${userJid.split('@')[0]} você já está AFK há ${timeSince}!\n\n💭 Motivo atual: ${currentAFK.reason}`,
-          mentions: [userJid]
-        });
         return;
       }
 
@@ -83,7 +77,7 @@ const afkCommand = {
         reason: reason,
         timestamp: new Date().toISOString(),
         startTime: Date.now(),
-        groupName: remoteJid.split('@')[0] // Para logs
+        groupName: remoteJid.split('@')[0]
       };
       
       // Formata data/hora
@@ -108,19 +102,8 @@ const afkCommand = {
         mentions: [userJid]
       });
 
-      console.log(`✅ AFK ativado: ${userJid.split('@')[0]} no grupo ${remoteJid.split('@')[0]} - Motivo: ${reason}`);
-
     } catch (error) {
       console.error("❌ Erro no comando AFK:", error.message);
-      
-      // Envia mensagem de erro ao usuário
-      try {
-        await params.socket.sendMessage(webMessage.key.remoteJid, {
-          text: "❌ Ocorreu um erro ao processar o comando AFK. Tente novamente."
-        });
-      } catch (sendError) {
-        console.error("❌ Erro ao enviar mensagem de erro:", sendError.message);
-      }
     }
   },
 
