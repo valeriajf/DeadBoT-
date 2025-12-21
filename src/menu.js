@@ -61,6 +61,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}boasvindas-add
  • ${prefix}delete
  • ${prefix}delete-auto-responder
+ • ${prefix}duelo-reset
  • ${prefix}enquete 
  • ${prefix}exit (1/0)
  • ${prefix}exit2 (1/0)
@@ -86,6 +87,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}welcome2 (1/0) Foto Usuário 
  • ${prefix}welcome3 (1/0) Foto Grupo 
  • ${prefix}welcome4 (1/0) Sem Foto 
+ • ${prefix}welcome5 (1/0) Vídeo ou Gif 
 
 ╰━━─「⭐」─━━
 
@@ -97,6 +99,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}beck
  • ${prefix}brat
  • ${prefix}cep
+ • ${prefix}duelo
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
  • ${prefix}gerar-link
@@ -130,6 +133,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}play-video
  • ${prefix}spotdl
  • ${prefix}tik-tok
+ • ${prefix}threads
  • ${prefix}twitter 
  • ${prefix}yt-mp3
  • ${prefix}yt-mp4

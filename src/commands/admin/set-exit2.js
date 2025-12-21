@@ -29,7 +29,7 @@ module.exports = {
   name: "set-exit2",
   description: "Define a mensagem de saída personalizada para o grupo.",
   commands: ["set-exit2"],
-  usage: `${PREFIX}set-exit2 <mensagem>`,
+  usage: `${PREFIX}set-exit2 <mensagem>\n\nUse {membro} para mencionar o nome do usuário que saiu.\nExemplo: ${PREFIX}set-exit2 👋 Adeus {membro}, sentiremos sua falta!`,
 
   /**
    * @param {CommandHandleProps} props
@@ -49,20 +49,27 @@ module.exports = {
     }
 
     if (!args.length) {
-      throw new InvalidParameterError("Você precisa digitar a mensagem de saída personalizada!");
+      throw new InvalidParameterError(
+        "Você precisa digitar a mensagem de saída personalizada!\n\n" +
+        "💡 Dica: Use {membro} para mencionar o nome do usuário.\n" +
+        `Exemplo: ${PREFIX}set-exit2 👋 Tchau {membro}!`
+      );
     }
 
     const message = args.join(" ");
     const exitData = loadExitData();
 
     if (!exitData[remoteJid]) {
-      exitData[remoteJid] = { active: false, message: "👋 Saiu do grupo!" };
+      exitData[remoteJid] = { active: false, message: "👋 {membro} saiu do grupo!" };
     }
 
     exitData[remoteJid].message = message;
     saveExitData(exitData);
 
     await sendReact("✅");
-    await sendReply(`✅ Mensagem de saída personalizada definida com sucesso!\n\n📝 Nova mensagem:\n"${message}"`);
+    await sendReply(
+      `✅ Mensagem de saída personalizada definida com sucesso!\n\n` +
+      `📝 Mensagem configurada:\n"${message}"`
+    );
   },
 };
