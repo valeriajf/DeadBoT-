@@ -5,7 +5,7 @@ const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 module.exports = {
   name: "twitter",
   description: "Faço o download de vídeos e imagens do Twitter/X!",
-  commands: ["twitter", "x"],
+  commands: ["twitter", "tt", "x"],
   usage: `${PREFIX}twitter https://x.com/user/status/123456`,
   /**
    * @param {CommandHandleProps} props
