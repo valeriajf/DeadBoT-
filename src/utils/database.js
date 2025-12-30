@@ -28,6 +28,7 @@ const ONLY_ADMINS_FILE = "only-admins";
 const PREFIX_GROUPS_FILE = "prefix-groups";
 const RESTRICTED_MESSAGES_FILE = "restricted-messages";
 const WELCOME_GROUPS_FILE = "welcome-groups";
+const WELCOME6_FILE = "welcome6";
 
 function createIfNotExists(fullPath, formatIfNotExists = []) {
   if (!fs.existsSync(fullPath)) {
@@ -517,4 +518,86 @@ exports.getOwnerLid = () => {
   return (
     config.owner_lid || (OWNER_LID !== "219999999999999@lid" ? OWNER_LID : null)
   );
+};
+
+// ============================================
+// WELCOME6 - Boas-vindas com vídeo
+// ============================================
+
+exports.isActiveWelcome6Group = (groupId) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  return welcome6Data[groupId]?.active || false;
+};
+
+exports.activateWelcome6Group = (groupId) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  if (!welcome6Data[groupId]) {
+    welcome6Data[groupId] = {};
+  }
+
+  welcome6Data[groupId].active = true;
+
+  writeJSON(filename, welcome6Data, {});
+};
+
+exports.deactivateWelcome6Group = (groupId) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  if (welcome6Data[groupId]) {
+    welcome6Data[groupId].active = false;
+  }
+
+  writeJSON(filename, welcome6Data, {});
+};
+
+exports.getWelcome6Video = (groupId) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  return welcome6Data[groupId]?.videoPath || null;
+};
+
+exports.setWelcome6Video = (groupId, videoPath) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  if (!welcome6Data[groupId]) {
+    welcome6Data[groupId] = {};
+  }
+
+  welcome6Data[groupId].videoPath = videoPath;
+
+  writeJSON(filename, welcome6Data, {});
+};
+
+exports.getWelcome6Caption = (groupId) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  return welcome6Data[groupId]?.caption || "Bem-vindo(a), @member! 👋";
+};
+
+exports.setWelcome6Caption = (groupId, caption) => {
+  const filename = WELCOME6_FILE;
+
+  const welcome6Data = readJSON(filename, {});
+
+  if (!welcome6Data[groupId]) {
+    welcome6Data[groupId] = {};
+  }
+
+  welcome6Data[groupId].caption = caption;
+
+  writeJSON(filename, welcome6Data, {});
 };

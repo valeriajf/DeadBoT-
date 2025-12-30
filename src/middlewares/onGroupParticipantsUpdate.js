@@ -1,6 +1,6 @@
 /**
  * Evento chamado quando um usuário entra ou sai de um grupo de WhatsApp.
- * Suporta: WELCOME1–4, EXIT padrão, EXIT2 e sistema de blacklist.
+ * Suporta: WELCOME1–6, EXIT padrão, EXIT2 e sistema de blacklist.
  * 
  * @author Dev VaL
  */
@@ -23,6 +23,8 @@ const { upload } = require("../services/upload");
 const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 const { handleWelcome3NewMember } = require("../utils/welcome3Handler");
 const { handleWelcome4NewMember } = require("../utils/welcome4Handler");
+const { handleWelcome5NewMember } = require("../utils/welcome5Handler");
+const { handleWelcome6NewMember } = require("../utils/welcome6Handler");
 
 const BLACKLIST_FILE = path.join(__dirname, "..", "data", "blacklist.json");
 
@@ -86,15 +88,38 @@ exports.onGroupParticipantsUpdate = async ({
           const groupExit = data[remoteJid];
           if (groupExit && groupExit.active) {
             const userNumber = userJid.split("@")[0];
-            const message = groupExit.message || "👋 Saiu do grupo!";
+            
+            // Tentar obter o pushname do usuário
+            let userName = "Membro";
+            try {
+              if (webMessage?.pushName) {
+                userName = webMessage.pushName;
+              } else if (socket.store?.contacts?.[userJid]) {
+                userName =
+                  socket.store.contacts[userJid].name ||
+                  socket.store.contacts[userJid].notify ||
+                  userNumber;
+              } else {
+                userName = userNumber;
+              }
+            } catch {
+              userName = userNumber;
+            }
+
+            // Substituir {membro} pelo @mention do usuário
+            let message = groupExit.message || "👋 {membro} saiu do grupo!";
+            message = message.replace(/{membro}/g, `@${userNumber}`);
+
             await socket.sendMessage(remoteJid, {
-              text: message.replace(/@user/g, `@${userNumber}`),
+              text: message,
               mentions: [userJid],
             });
           }
         }
       }
-    } catch {}
+    } catch (err) {
+      console.error("[EXIT2] Erro ao processar saída:", err);
+    }
 
     // SISTEMAS DE ENTRADA (WELCOME e BLACKLIST)
     if (action === "add") {
@@ -180,7 +205,65 @@ exports.onGroupParticipantsUpdate = async ({
             await socket.sendMessage(remoteJid, { text: caption, mentions }),
         });
       } catch {}
-    }
+
+      // WELCOME5 — Boas-vindas com GIF
+      try {
+        await handleWelcome5NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendGifFromFile: async (filePath, caption, mentions) => {
+            const isGifOrMp4 = /\.(gif|mp4)$/i.test(filePath);
+            
+            if (isGifOrMp4) {
+              await socket.sendMessage(remoteJid, {
+                video: fs.readFileSync(filePath),
+                caption,
+                mentions,
+                gifPlayback: true,
+                mimetype: 'video/mp4'
+              });
+            } else {
+              await socket.sendMessage(remoteJid, {
+                image: fs.readFileSync(filePath),
+                caption,
+                mentions
+              });
+            }
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME5] Erro:', err.message);
+      }
+      
+// WELCOME6 — Boas-vindas com vídeo
+      try {
+        await handleWelcome6NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendVideoFromFile: async (filePath, caption, mentions) => {
+            const buffer = fs.readFileSync(filePath);
+            await socket.sendMessage(remoteJid, {
+              video: buffer,
+              caption,
+              mentions
+            });
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME6] Erro:', err.message);
+      }
+
+    } // ← FIM do if (action === "add") - IMPORTANTE: Este fecha o if
 
     // EXIT PADRÃO
     if (isActiveExitGroup(remoteJid) && action === "remove") {
