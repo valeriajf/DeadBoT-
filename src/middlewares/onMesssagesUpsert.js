@@ -113,13 +113,6 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
 
     for (const webMessage of messages) {
 
-   // 🔍 TESTE: Mostra TODOS os stubTypes recebidos
-    if (webMessage.messageStubType) {
-        console.log(`\n🔍 [TESTE] stubType detectado: ${webMessage.messageStubType}`);
-        console.log(`🔍 [TESTE] Parameters:`, webMessage.messageStubParameters);
-        console.log(`🔍 [TESTE] Participant:`, webMessage.key.participant);
-    }
-    
     
     if (DEVELOPER_MODE) {
         infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
