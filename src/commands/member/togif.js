@@ -1,14 +1,14 @@
 const fs = require("fs/promises");
-const { PREFIX } = require(`${BASE_DIR}/config`);
-const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
-const { toGif } = require(`${BASE_DIR}/services/spider-x-api`);
-const { getRandomName } = require(`${BASE_DIR}/utils`);
+const { PREFIX } = require(${BASE_DIR}/config);
+const { InvalidParameterError } = require(${BASE_DIR}/errors);
+const { toGif } = require(${BASE_DIR}/services/spider-x-api);
+const { getRandomName } = require(${BASE_DIR}/utils);
 
 module.exports = {
   name: "togif",
   description: "Transformo figurinhas animadas em GIF",
   commands: ["togif", "gif"],
-  usage: `${PREFIX}togif (marque a figurinha)`,
+  usage: ${PREFIX}togif (marque a figurinha),
   /**
    * @param {CommandHandleProps} props
    */
