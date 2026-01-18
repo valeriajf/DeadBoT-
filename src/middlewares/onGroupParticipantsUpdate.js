@@ -60,6 +60,34 @@ function isEventProcessed(remoteJid, userJid, action) {
   return false;
 }
 
+// Cache para evitar processamento duplicado do mesmo evento
+const processedEvents = new Map();
+const EVENT_CACHE_TTL = 5000; // 5 segundos
+
+function isEventProcessed(remoteJid, userJid, action) {
+  const key = `${remoteJid}:${userJid}:${action}`;
+  const now = Date.now();
+  
+  if (processedEvents.has(key)) {
+    const timestamp = processedEvents.get(key);
+    if (now - timestamp < EVENT_CACHE_TTL) {
+      return true; // Evento já foi processado recentemente
+    }
+  }
+  
+  // Marca evento como processado
+  processedEvents.set(key, now);
+  
+  // Limpa eventos antigos do cache
+  for (const [k, time] of processedEvents.entries()) {
+    if (now - time > EVENT_CACHE_TTL) {
+      processedEvents.delete(k);
+    }
+  }
+  
+  return false;
+}
+
 function loadBlacklist() {
   try {
     if (!fs.existsSync(BLACKLIST_FILE)) return {};

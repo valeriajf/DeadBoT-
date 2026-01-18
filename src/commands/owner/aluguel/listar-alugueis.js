@@ -85,6 +85,8 @@ module.exports = {
         const nomeGrupo = aluguel.nomeGrupo || "Grupo sem nome";
         const tempoRestante = calcularTempoRestante(aluguel.expiraTimestamp);
 
+        const tempoRestante = calcularTempoRestante(aluguel.expiraTimestamp);
+
         mensagem += `🏷️ *Nome:* ${nomeGrupo}\n`;
         mensagem += `🆔 *ID do grupo:* ${groupId}\n`;
         mensagem += `🔑 *ID do aluguel:* ${aluguel.id}\n`;
