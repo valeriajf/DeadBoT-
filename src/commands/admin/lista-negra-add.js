@@ -161,30 +161,22 @@ module.exports = {
         }
       }
       // Verifica se passou ID/número como argumento
-      else if (args.length > 0 || props.fullArgs) {
-        let argsText = props.fullArgs || args.join(' ');
-        argsText = argsText.replace(/^#?[\w-]+\s*/, '').trim();
+      else if (args.length > 0) {
+        // args já vem sem o comando, processado pelo bot
+        const potentialId = args[0].replace(/@/g, '').trim();
         
-        const cleanText = argsText.replace(/@/g, '').trim();
-        const argParts = cleanText.split(/\s+/).filter(part => part.length > 0);
+        // Se contém apenas dígitos, é número de telefone
+        if (/^\d+$/.test(potentialId) && potentialId.length >= 10) {
+          targetUserId = potentialId;
+        }
+        // Se tem formato de LID
+        else if (potentialId.includes('lid') || potentialId.length > 15) {
+          targetUserId = potentialId.replace('@lid', '');
+        }
         
-        if (argParts.length >= 1) {
-          // Pode ser número ou LID
-          const potentialId = argParts[0];
-          
-          // Se contém apenas dígitos, é número de telefone
-          if (/^\d+$/.test(potentialId) && potentialId.length >= 10) {
-            targetUserId = potentialId;
-          }
-          // Se tem formato de LID
-          else if (potentialId.includes('lid') || potentialId.length > 15) {
-            targetUserId = potentialId.replace('@lid', '');
-          }
-          
-          // Se tem mais partes, usa como nome
-          if (argParts.length >= 2) {
-            targetName = argParts.slice(1).join(' ');
-          }
+        // Se tem mais partes, usa como nome
+        if (args.length >= 2) {
+          targetName = args.slice(1).join(' ');
         }
       }
 

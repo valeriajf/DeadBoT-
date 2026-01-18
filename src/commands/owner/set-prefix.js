@@ -18,23 +18,26 @@ module.exports = {
     "mudar-prefixo",
     "set-prefixo",
   ],
-  usage: `${PREFIX}set-prefix =`,
+  usage: `${PREFIX}set-prefix /`,
   /**
    * @param {CommandHandleProps} props
    * @returns {Promise<void>}
    */
-  handle: async ({ remoteJid, args, sendSuccessReply }) => {
-    if (!args.length) {
-      throw new InvalidParameterError("Você deve fornecer um prefixo!");
+  handle: async ({ remoteJid, args, sendSuccessReply, fullArgs }) => {
+    // Tenta pegar de args primeiro, depois de fullArgs se disponível
+    const input = args.length ? args.join(' ') : (fullArgs || '');
+    
+    const newPrefix = input.trim();
+
+    if (!newPrefix) {
+      throw new InvalidParameterError("Você deve fornecer um prefixo! Exemplo: #set-prefix /");
     }
 
-    if (args.length !== 1) {
+    if (newPrefix.length > 1) {
       throw new InvalidParameterError("O prefixo deve ser apenas 1 caractere!");
     }
 
-    const newPrefix = args[0];
-
-    setPrefix(remoteJid, newPrefix);
+    await setPrefix(remoteJid, newPrefix);
 
     await sendSuccessReply(`Prefixo alterado para: ${newPrefix} neste grupo!`);
   },

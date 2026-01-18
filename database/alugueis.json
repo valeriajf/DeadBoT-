@@ -1,26 +1,34 @@
 {
-  "120363403694373910@g.us": {
-    "id": "AZMIOQNL",
-    "groupId": "120363403694373910@g.us",
+  "120363422201607745@g.us": {
+    "id": "CIJ6RAEP",
+    "groupId": "120363422201607745@g.us",
     "duracao": "30 dias",
-    "expira": "29/11/2025, 17:47:23",
-    "expiraTimestamp": 1764449243854,
-    "registradoEm": "2025-10-30T20:47:23.936Z"
-  },
-  "120363419168076035@g.us": {
-    "id": "DD9A1Y4R",
-    "groupId": "120363419168076035@g.us",
-    "duracao": "32 dias",
-    "expira": "04/12/2025, 21:05:13",
-    "expiraTimestamp": 1764893113837,
-    "registradoEm": "2025-11-03T00:05:13.935Z"
+    "expira": "19/01/2026, 12:25:12",
+    "expiraTimestamp": 1768836312599,
+    "registradoEm": "2025-12-20T15:25:12.692Z"
   },
   "555184033465-1558458733@g.us": {
-    "id": "K11DEI2X",
+    "id": "YCWGWZIF",
     "groupId": "555184033465-1558458733@g.us",
-    "duracao": "22 dias",
-    "expira": "24/11/2025, 22:08:29",
-    "expiraTimestamp": 1764032909581,
-    "registradoEm": "2025-11-03T01:08:29.659Z"
+    "duracao": "30 dias",
+    "expira": "23/01/2026, 08:36:57",
+    "expiraTimestamp": 1769168217883,
+    "registradoEm": "2025-12-24T11:36:57.961Z"
+  },
+  "120363403694373910@g.us": {
+    "id": "0UR3DUFO",
+    "groupId": "120363403694373910@g.us",
+    "duracao": "60 dias",
+    "expira": "27/02/2026, 21:19:05",
+    "expiraTimestamp": 1772237945408,
+    "registradoEm": "2025-12-30T00:19:05.415Z"
+  },
+  "120363038706590596@g.us": {
+    "id": "OBN4LTQ8",
+    "groupId": "120363038706590596@g.us",
+    "duracao": "30 dias",
+    "expira": "11/02/2026, 07:45:14",
+    "expiraTimestamp": 1770806714617,
+    "registradoEm": "2026-01-12T10:45:14.628Z"
   }
 }

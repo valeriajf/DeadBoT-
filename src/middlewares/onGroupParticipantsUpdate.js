@@ -1,6 +1,6 @@
 /**
  * Evento chamado quando um usuário entra ou sai de um grupo de WhatsApp.
- * Suporta: WELCOME1–4, EXIT padrão, EXIT2 e sistema de blacklist.
+ * Suporta: WELCOME1–7, EXIT padrão, EXIT2, sistema de blacklist e X9 Monitor.
  * 
  * @author Dev VaL
  */
@@ -12,6 +12,8 @@ const {
   isActiveWelcomeGroup,
   isActiveExitGroup,
   isActiveGroup,
+  isActiveX9Monitor,
+  addX9Log,
 } = require("../utils/database");
 const { welcomeMessage, exitMessage } = require("../messages");
 const {
@@ -23,8 +25,40 @@ const { upload } = require("../services/upload");
 const { handleWelcome2NewMember } = require("../utils/welcome2Handler");
 const { handleWelcome3NewMember } = require("../utils/welcome3Handler");
 const { handleWelcome4NewMember } = require("../utils/welcome4Handler");
+const { handleWelcome5NewMember } = require("../utils/welcome5Handler");
+const { handleWelcome6NewMember } = require("../utils/welcome6Handler");
+const { handleWelcome7NewMember } = require("../utils/welcome7Handler");
 
-const BLACKLIST_FILE = path.join(__dirname, "..", "data", "blacklist.json");
+// CORRIGIDO: Usar o mesmo blacklist.json da raiz do projeto
+const BLACKLIST_FILE = path.join(__dirname, "../../blacklist.json");
+
+// Cache para evitar processamento duplicado do mesmo evento
+const processedEvents = new Map();
+const EVENT_CACHE_TTL = 5000; // 5 segundos
+
+function isEventProcessed(remoteJid, userJid, action) {
+  const key = `${remoteJid}:${userJid}:${action}`;
+  const now = Date.now();
+  
+  if (processedEvents.has(key)) {
+    const timestamp = processedEvents.get(key);
+    if (now - timestamp < EVENT_CACHE_TTL) {
+      return true; // Evento já foi processado recentemente
+    }
+  }
+  
+  // Marca evento como processado
+  processedEvents.set(key, now);
+  
+  // Limpa eventos antigos do cache
+  for (const [k, time] of processedEvents.entries()) {
+    if (now - time > EVENT_CACHE_TTL) {
+      processedEvents.delete(k);
+    }
+  }
+  
+  return false;
+}
 
 function loadBlacklist() {
   try {
@@ -38,30 +72,47 @@ function loadBlacklist() {
 
 function extractUserId(jid) {
   if (!jid) return null;
-  if (jid.includes("@lid")) return jid.split("@")[0];
-  if (jid.includes("@s.whatsapp.net")) return jid.split("@")[0];
-  return jid;
+  // Remove tudo que não é número
+  return jid.replace(/\D/g, '');
 }
 
+// FUNÇÃO CORRIGIDA: Verifica blacklist global (não por grupo)
 async function checkAndBanBlacklistedUser(socket, remoteJid, userJid) {
   try {
     const blacklist = loadBlacklist();
-    if (!blacklist[remoteJid] || blacklist[remoteJid].length === 0) return false;
-    const userId = extractUserId(userJid);
-    if (!userId) return false;
-
-    if (blacklist[remoteJid].includes(userId)) {
-      await socket.groupParticipantsUpdate(remoteJid, [userJid], "remove");
+    
+    // Verifica se o userJid está na blacklist global
+    if (blacklist[userJid]) {
+      const userId = extractUserId(userJid);
+      
+      console.log(`🚫 Usuário blacklistado detectado: ${userId}`);
+      
+      // Envia mensagem de aviso ANTES de banir
       const banMessage =
         `🚫 *BANIMENTO AUTOMÁTICO*\n\n` +
-        `👤 *Usuário:* ${userId}\n` +
-        `⚠️ *Motivo:* Está na lista negra\n` +
-        `🔒 *Ação:* Banido automaticamente\n`;
-      await socket.sendMessage(remoteJid, { text: banMessage });
+        `👤 *Usuário:* @${userId}\n` +
+        `⚠️ *Motivo:* Está na lista negra global\n` +
+        `🔒 *Ação:* Banido automaticamente ao entrar\n` +
+        `📅 *Data:* ${new Date().toLocaleString('pt-BR')}`;
+      
+      await socket.sendMessage(remoteJid, { 
+        text: banMessage,
+        mentions: [userJid]
+      });
+      
+      // Aguarda 1 segundo para a mensagem ser enviada
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Remove o usuário do grupo
+      await socket.groupParticipantsUpdate(remoteJid, [userJid], "remove");
+      
+      console.log(`✅ Usuário ${userId} removido com sucesso do grupo`);
       return true;
     }
+    
     return false;
-  } catch {
+  } catch (error) {
+    console.error('❌ Erro ao verificar/banir usuário da blacklist:', error);
     return false;
   }
 }
@@ -77,7 +128,100 @@ exports.onGroupParticipantsUpdate = async ({
     if (!remoteJid.endsWith("@g.us")) return;
     if (!isActiveGroup(remoteJid)) return;
 
-    // EXIT2 — sistema de saída personalizada
+    // Proteção contra eventos duplicados
+    if (isEventProcessed(remoteJid, userJid, action)) {
+      return;
+    }
+
+    // ====================================
+    // 🕵️ X9 MONITOR - Captura de ações ADM
+    // ====================================
+    try {
+      if (isActiveX9Monitor(remoteJid)) {
+        let adminJid = webMessage?.participant || 
+                       webMessage?.key?.participant || 
+                       webMessage?.author ||
+                       null;
+        
+        if (!adminJid && action === "promote") {
+          try {
+            const groupMetadata = await socket.groupMetadata(remoteJid);
+            const admins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+            adminJid = admins[0] || "Sistema";
+          } catch {
+            adminJid = "Sistema";
+          }
+        }
+        
+        const adminPhone = adminJid && adminJid !== "Sistema" ? adminJid.split("@")[0] : "Sistema";
+        const targetPhone = userJid.split("@")[0];
+        
+        let actionType = null;
+        let emoji = null;
+        let actionText = null;
+        let description = null;
+        
+        switch(action) {
+          case "promote":
+            actionType = 'promote';
+            emoji = '⬆️';
+            actionText = 'Promoção detectada!';
+            description = `@${adminPhone} promoveu @${targetPhone} a administrador`;
+            break;
+            
+          case "demote":
+            actionType = 'demote';
+            emoji = '⬇️';
+            actionText = 'Rebaixamento detectado!';
+            description = `@${adminPhone} rebaixou @${targetPhone} de administrador`;
+            break;
+            
+          case "add":
+            actionType = 'approve';
+            emoji = '✅';
+            actionText = 'Entrada aprovada!';
+            description = `@${adminPhone} aprovou entrada de @${targetPhone}`;
+            break;
+            
+          case "remove":
+            if (adminJid && adminJid !== "Sistema" && adminJid !== userJid) {
+              actionType = 'remove';
+              emoji = '🚪';
+              actionText = 'Remoção detectada!';
+              description = `@${adminPhone} removeu @${targetPhone} do grupo`;
+            }
+            break;
+        }
+        
+        if (actionType) {
+          await addX9Log(remoteJid, {
+            adminJid: adminJid || "Sistema",
+            adminPhone,
+            targetJid: userJid,
+            targetPhone,
+            action: actionType,
+            description
+          });
+          
+          const mentions = adminJid && adminJid !== "Sistema" ? [adminJid, userJid] : [userJid];
+          await socket.sendMessage(remoteJid, {
+            text: `🕵️ *ALERTA X9*\n\n` +
+                  `${emoji} *${actionText}*\n` +
+                  `👤 Admin: @${adminPhone}\n` +
+                  `🎯 Alvo: @${targetPhone}\n` +
+                  `⏰ ${new Date().toLocaleTimeString('pt-BR', { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                  })}`,
+            mentions
+          });
+        }
+      }
+    } catch (err) {
+      console.error("[X9 MONITOR] Erro:", err.message);
+    }
+
+    // EXIT2
     try {
       const EXIT2_PATH = path.join(__dirname, "../database/exit-messages.json");
       if (action === "remove" || action === "leave") {
@@ -86,20 +230,93 @@ exports.onGroupParticipantsUpdate = async ({
           const groupExit = data[remoteJid];
           if (groupExit && groupExit.active) {
             const userNumber = userJid.split("@")[0];
-            const message = groupExit.message || "👋 Saiu do grupo!";
+            
+            let userName = "Membro";
+            try {
+              if (webMessage?.pushName) {
+                userName = webMessage.pushName;
+              } else if (socket.store?.contacts?.[userJid]) {
+                userName =
+                  socket.store.contacts[userJid].name ||
+                  socket.store.contacts[userJid].notify ||
+                  userNumber;
+              } else {
+                userName = userNumber;
+              }
+            } catch {
+              userName = userNumber;
+            }
+
+            let message = groupExit.message || "👋 {membro} saiu do grupo!";
+            message = message.replace(/{membro}/g, `@${userNumber}`);
+
             await socket.sendMessage(remoteJid, {
-              text: message.replace(/@user/g, `@${userNumber}`),
+              text: message,
               mentions: [userJid],
             });
           }
         }
       }
-    } catch {}
+    } catch (err) {
+      console.error("[EXIT2] Erro ao processar saída:", err);
+    }
 
-    // SISTEMAS DE ENTRADA (WELCOME e BLACKLIST)
+    // EXIT
+    if (isActiveExitGroup(remoteJid) && action === "remove") {
+      try {
+        const { buffer, profileImage } = await getProfileImageData(socket, userJid);
+        const hasMemberMention = exitMessage.includes("@member");
+        const mentions = [];
+        let finalExitMessage = exitMessage;
+
+        if (hasMemberMention) {
+          finalExitMessage = exitMessage.replace("@member", `@${onlyNumbers(userJid)}`);
+          mentions.push(userJid);
+        }
+
+        if (spiderAPITokenConfigured) {
+          try {
+            const link = await upload(
+              buffer,
+              `${getRandomNumber(10_000, 99_9999)}.png`
+            );
+            const url = exit("membro", "Você foi um bom membro", link);
+            await socket.sendMessage(remoteJid, {
+              image: { url },
+              caption: finalExitMessage,
+              mentions,
+            });
+          } catch {
+            await socket.sendMessage(remoteJid, {
+              image: buffer,
+              caption: finalExitMessage,
+              mentions,
+            });
+          }
+        } else {
+          await socket.sendMessage(remoteJid, {
+            image: buffer,
+            caption: finalExitMessage,
+            mentions,
+          });
+        }
+
+        if (!profileImage.includes("default-user")) fs.unlinkSync(profileImage);
+      } catch (err) {
+        console.error("[EXIT] Erro:", err);
+      }
+    }
+
+    // ====================================
+    // 🚫 VERIFICAÇÃO DE BLACKLIST AO ENTRAR
+    // ====================================
     if (action === "add") {
+      // VERIFICA BLACKLIST ANTES DE QUALQUER OUTRA COISA
       const wasBanned = await checkAndBanBlacklistedUser(socket, remoteJid, userJid);
-      if (wasBanned) return;
+      if (wasBanned) {
+        console.log(`🚫 Usuário banido da blacklist, pulando boas-vindas`);
+        return; // Não executa boas-vindas se foi banido
+      }
 
       const groupMetadata = await socket.groupMetadata(remoteJid);
       const userNumber = extractUserId(userJid);
@@ -180,50 +397,96 @@ exports.onGroupParticipantsUpdate = async ({
             await socket.sendMessage(remoteJid, { text: caption, mentions }),
         });
       } catch {}
-    }
 
-    // EXIT PADRÃO
-    if (isActiveExitGroup(remoteJid) && action === "remove") {
+      // WELCOME5
       try {
-        const { buffer, profileImage } = await getProfileImageData(socket, userJid);
-        const hasMemberMention = exitMessage.includes("@member");
-        const mentions = [];
-        let finalExitMessage = exitMessage;
-
-        if (hasMemberMention) {
-          finalExitMessage = exitMessage.replace("@member", `@${onlyNumbers(userJid)}`);
-          mentions.push(userJid);
-        }
-
-        if (spiderAPITokenConfigured) {
-          try {
-            const link = await upload(
-              buffer,
-              `${getRandomNumber(10_000, 99_9999)}.png`
-            );
-            const url = exit("membro", "Você foi um bom membro", link);
+        await handleWelcome5NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendGifFromFile: async (filePath, caption, mentions) => {
+            const isGifOrMp4 = /\.(gif|mp4)$/i.test(filePath);
+            
+            if (isGifOrMp4) {
+              await socket.sendMessage(remoteJid, {
+                video: fs.readFileSync(filePath),
+                caption,
+                mentions,
+                gifPlayback: true,
+                mimetype: 'video/mp4'
+              });
+            } else {
+              await socket.sendMessage(remoteJid, {
+                image: fs.readFileSync(filePath),
+                caption,
+                mentions
+              });
+            }
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME5] Erro:', err.message);
+      }
+      
+      // WELCOME6
+      try {
+        await handleWelcome6NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendVideoFromFile: async (filePath, caption, mentions) => {
+            const buffer = fs.readFileSync(filePath);
             await socket.sendMessage(remoteJid, {
-              image: { url },
-              caption: finalExitMessage,
-              mentions,
+              video: buffer,
+              caption,
+              mentions
             });
-          } catch {
-            await socket.sendMessage(remoteJid, {
-              image: buffer,
-              caption: finalExitMessage,
-              mentions,
-            });
-          }
-        } else {
-          await socket.sendMessage(remoteJid, {
-            image: buffer,
-            caption: finalExitMessage,
-            mentions,
-          });
-        }
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME6] Erro:', err.message);
+      }
 
-        if (!profileImage.includes("default-user")) fs.unlinkSync(profileImage);
-      } catch {}
+      // WELCOME7
+      try {
+        await handleWelcome7NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendGifFromFile: async (filePath, caption, mentions) => {
+            await socket.sendMessage(remoteJid, {
+              video: fs.readFileSync(filePath),
+              caption,
+              mentions,
+              gifPlayback: true,
+              mimetype: 'video/mp4'
+            });
+          },
+          sendAudioFromFile: async (filePath) => {
+            await socket.sendMessage(remoteJid, {
+              audio: fs.readFileSync(filePath),
+              mimetype: 'audio/mp4',
+              ptt: false
+            });
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME7] Erro:', err.message);
+      }
     }
-  } catch {}
+  } catch (err) {
+    console.error('[GROUP PARTICIPANTS] Erro geral:', err);
+  }
 };
