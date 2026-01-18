@@ -1,0 +1,274 @@
+{
+  "120363422312164587@g.us": [
+    {
+      "adminJid": "Sistema",
+      "adminPhone": "Sistema",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@Sistema aprovou entrada de @52674217148583",
+      "timestamp": "06/01/2026, 20:03",
+      "rawTimestamp": 1767740592447
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@163351011319890 aprovou entrada de @52674217148583",
+      "timestamp": "06/01/2026, 20:03",
+      "rawTimestamp": 1767740592413
+    },
+    {
+      "adminJid": "52674217148583@lid",
+      "adminPhone": "52674217148583",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "reject",
+      "description": "@52674217148583 rejeitou pedido de entrada de @52674217148583",
+      "timestamp": "06/01/2026, 20:02",
+      "rawTimestamp": 1767740559420
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "reject",
+      "description": "@163351011319890 rejeitou pedido de entrada de @52674217148583",
+      "timestamp": "06/01/2026, 14:11",
+      "rawTimestamp": 1767719473608
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @52674217148583 a administrador",
+      "timestamp": "06/01/2026, 14:11",
+      "rawTimestamp": 1767719473593
+    },
+    {
+      "adminJid": "Sistema",
+      "adminPhone": "Sistema",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@Sistema aprovou entrada de @52674217148583",
+      "timestamp": "06/01/2026, 14:11",
+      "rawTimestamp": 1767719464413
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@163351011319890 aprovou entrada de @52674217148583",
+      "timestamp": "06/01/2026, 14:11",
+      "rawTimestamp": 1767719464398
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "reject",
+      "description": "@163351011319890 rejeitou pedido de entrada de @242404347146484",
+      "timestamp": "06/01/2026, 14:09",
+      "rawTimestamp": 1767719341082
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @242404347146484 a administrador",
+      "timestamp": "06/01/2026, 14:09",
+      "rawTimestamp": 1767719340956
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "04/01/2026, 20:45",
+      "rawTimestamp": 1767570321314
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "reject",
+      "description": "@163351011319890 rejeitou pedido de entrada de @242404347146484",
+      "stubType": 29,
+      "timestamp": "04/01/2026, 20:32",
+      "rawTimestamp": 1767569532501
+    },
+    {
+      "adminJid": "Sistema",
+      "adminPhone": "Sistema",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@Sistema promoveu @242404347146484 a administrador",
+      "timestamp": "04/01/2026, 20:32",
+      "rawTimestamp": 1767569532399
+    },
+    {
+      "adminJid": "Sistema",
+      "adminPhone": "Sistema",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@Sistema aprovou entrada de @52674217148583",
+      "timestamp": "04/01/2026, 16:58",
+      "rawTimestamp": 1767556724746
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@163351011319890 aprovou entrada de @52674217148583",
+      "timestamp": "04/01/2026, 16:58",
+      "rawTimestamp": 1767556724010
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "approve",
+      "description": "@163351011319890 aprovou entrada de @52674217148583",
+      "timestamp": "04/01/2026, 16:58",
+      "rawTimestamp": 1767556723989
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "04/01/2026, 16:58",
+      "rawTimestamp": 1767556713574
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @242404347146484 a administrador",
+      "timestamp": "04/01/2026, 13:56",
+      "rawTimestamp": 1767545762037
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "04/01/2026, 13:55",
+      "rawTimestamp": 1767545745908
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @242404347146484 a administrador",
+      "timestamp": "04/01/2026, 08:55",
+      "rawTimestamp": 1767527738215
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "04/01/2026, 08:35",
+      "rawTimestamp": 1767526512860
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @242404347146484 a administrador",
+      "timestamp": "03/01/2026, 20:48",
+      "rawTimestamp": 1767484121037
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "03/01/2026, 20:47",
+      "rawTimestamp": 1767484056957
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @242404347146484 a administrador",
+      "timestamp": "03/01/2026, 19:22",
+      "rawTimestamp": 1767478957863
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "242404347146484@lid",
+      "targetPhone": "242404347146484",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @242404347146484 de administrador",
+      "timestamp": "03/01/2026, 19:22",
+      "rawTimestamp": 1767478946390
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "promote",
+      "description": "@163351011319890 promoveu @52674217148583 a administrador",
+      "timestamp": "03/01/2026, 14:57",
+      "rawTimestamp": 1767463060454
+    },
+    {
+      "adminJid": "163351011319890@lid",
+      "adminPhone": "163351011319890",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "demote",
+      "description": "@163351011319890 rebaixou @52674217148583 de administrador",
+      "timestamp": "03/01/2026, 14:57",
+      "rawTimestamp": 1767463035477
+    },
+    {
+      "adminPhone": "Sistema",
+      "targetJid": "52674217148583@lid",
+      "targetPhone": "52674217148583",
+      "action": "promote",
+      "description": "@Sistema promoveu @52674217148583 a administrador",
+      "timestamp": "03/01/2026, 14:53",
+      "rawTimestamp": 1767462782633
+    }
+  ]
+}
