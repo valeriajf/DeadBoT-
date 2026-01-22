@@ -1,8 +1,7 @@
 /**
- * Auto Sticker - Converte automaticamente imagens em figurinhas
- * Baseado no comando sticker.js original
+ * Auto Sticker - Converte automaticamente imagens e GIFs em figurinhas
  *
- * @author Dev VaL 
+ * @author Dev VaL
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -44,7 +43,7 @@ const autoStickerGroups = loadActiveGroups();
 
 module.exports = {
   name: "auto-sticker",
-  description: "Ativa/desativa a criação automática de figurinhas para imagens postadas no grupo.",
+  description: "Ativa/desativa a criação automática de figurinhas para imagens e GIFs postados no grupo.",
   commands: ["autosticker", "auto-sticker", "autoS"],
   usage: `${PREFIX}autosticker (1/0)`,
   handle: async ({
@@ -74,7 +73,7 @@ module.exports = {
 • \`${PREFIX}autosticker 1\` - Ativa o auto-sticker no grupo
 • \`${PREFIX}autosticker 0\` - Desativa o auto-sticker no grupo
 
-📝 *O que faz:* Quando ativado, todas as imagens enviadas no grupo serão automaticamente convertidas em figurinhas.
+📝 *O que faz:* Quando ativado, todas as imagens e GIFs enviados no grupo serão automaticamente convertidos em figurinhas.
 
 ⚠️ *Nota:* Apenas administradores podem ativar/desativar esta função.
       `);
@@ -107,8 +106,9 @@ module.exports = {
         return sendReply(`
 🤖 *Auto-Sticker Ativado!*
 
-✅ Todas as imagens enviadas neste grupo serão automaticamente convertidas em figurinhas.
+✅ Todas as imagens e GIFs enviados neste grupo serão automaticamente convertidos em figurinhas.
 
+💡 *Dica:* Para desativar, use \`${PREFIX}autosticker 0\`
         `);
       }
 
@@ -125,8 +125,9 @@ module.exports = {
         return sendReply(`
 🛑 *Auto-Sticker Desativado!*
 
-✅ As imagens não serão mais convertidas automaticamente em figurinhas.
+✅ As imagens e GIFs não serão mais convertidos automaticamente em figurinhas.
 
+💡 *Dica:* Para reativar, use \`${PREFIX}autosticker 1\`
         `);
       }
 
@@ -139,10 +140,12 @@ module.exports = {
 
   processAutoSticker: async ({
     isImage,
+    isVideo,
     isGroup,
     groupId,
     webMessage,
     downloadImage,
+    downloadVideo,
     sendStickerFromFile,
     userJid,
   }) => {
@@ -150,7 +153,7 @@ module.exports = {
       return;
     }
 
-    if (!isImage) {
+    if (!isImage && !isVideo) {
       return;
     }
 
@@ -171,26 +174,65 @@ module.exports = {
       const outputTempPath = path.resolve(TEMP_DIR, getRandomName("webp"));
       let inputPath = null;
 
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          inputPath = await downloadImage(webMessage, getRandomName());
-          break;
-        } catch (downloadError) {
-          if (attempt === 3) return;
-          await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
-        }
-      }
-
-      await new Promise((resolve, reject) => {
-        const cmd = `ffmpeg -i "${inputPath}" -vf "scale=512:512:force_original_aspect_ratio=decrease" -f webp -quality 90 "${outputTempPath}"`;
-        exec(cmd, (error, _, stderr) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve();
+      if (isImage) {
+        // Processa imagem
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            inputPath = await downloadImage(webMessage, getRandomName());
+            break;
+          } catch (downloadError) {
+            if (attempt === 3) return;
+            await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
           }
+        }
+
+        await new Promise((resolve, reject) => {
+          const cmd = `ffmpeg -i "${inputPath}" -vf "scale=512:512:force_original_aspect_ratio=decrease" -f webp -quality 90 "${outputTempPath}"`;
+          exec(cmd, (error, _, stderr) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
         });
-      });
+
+      } else if (isVideo) {
+        // Processa vídeo/GIF
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            inputPath = await downloadVideo(webMessage, getRandomName());
+            break;
+          } catch (downloadError) {
+            if (attempt === 3) return;
+            await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+          }
+        }
+
+        // Verifica duração do vídeo (máximo 10 segundos)
+        const maxDuration = 10;
+        const seconds =
+          webMessage.message?.videoMessage?.seconds ||
+          webMessage.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.seconds;
+
+        if (seconds && seconds > maxDuration) {
+          if (inputPath && fs.existsSync(inputPath)) {
+            fs.unlinkSync(inputPath);
+          }
+          return; // Ignora vídeos muito longos
+        }
+
+        await new Promise((resolve, reject) => {
+          const cmd = `ffmpeg -y -i "${inputPath}" -vcodec libwebp -fs 0.99M -filter_complex "[0:v] scale=512:512, fps=15, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse" -f webp "${outputTempPath}"`;
+          exec(cmd, (error, _, stderr) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
+        });
+      }
 
       if (inputPath && fs.existsSync(inputPath)) {
         fs.unlinkSync(inputPath);

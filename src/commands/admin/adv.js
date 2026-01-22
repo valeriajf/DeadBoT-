@@ -15,7 +15,9 @@ module.exports = {
         replyJid,
         isGroup,
         getGroupAdmins,
-        userJid
+        userJid,
+        fullMessage,
+        mentionedJid
       } = params;
 
       if (!isGroup) {
@@ -29,9 +31,40 @@ module.exports = {
         return;
       }
 
-      const target = replyJid;
+      let target = null;
+
+      // 1. Verifica se é reply
+      if (replyJid) {
+        target = replyJid;
+      }
+      // 2. Verifica se há menção (@usuario)
+      else if (mentionedJid && mentionedJid.length > 0) {
+        target = mentionedJid[0];
+      }
+      // 3. Verifica se há número no texto
+      else if (fullMessage) {
+        const args = fullMessage.trim().split(/\s+/);
+        if (args.length > 1) {
+          // Remove tudo que não é número
+          let numero = args.slice(1).join('').replace(/\D/g, '');
+          
+          // Se não começar com código de país, assume Brasil (55)
+          if (!numero.startsWith('55') && numero.length <= 11) {
+            numero = '55' + numero;
+          }
+          
+          // Formata para o padrão do WhatsApp
+          target = numero + '@s.whatsapp.net';
+        }
+      }
+
       if (!target) {
-        await socket.sendMessage(remoteJid, { text: '⚠️ Use o comando respondendo à mensagem do usuário que deseja advertir.' });
+        await socket.sendMessage(remoteJid, { 
+          text: '⚠️ Use o comando de uma das formas:\n' +
+                '• Respondendo a mensagem do usuário\n' +
+                '• Mencionando: #adv @usuario\n' +
+                '• Com número: #adv +55 41 98776-1506'
+        });
         return;
       }
 
@@ -46,11 +79,9 @@ module.exports = {
       const count = warns[target];
 
       if (count >= 3) {
-        // Mensagem com menção (array no mentionedJid)
         await socket.sendMessage(remoteJid, {
           text: `🚫 Usuário atingiu 3 advertências e será removido.`,
-        }, {
-          contextInfo: { mentionedJid: [target] }
+          mentions: [target]
         });
 
         try {
@@ -63,8 +94,7 @@ module.exports = {
       } else {
         await socket.sendMessage(remoteJid, {
           text: `⚠️ Advertência dada ao usuário.\n🔢 Total: ${count}/3.`,
-        }, {
-          contextInfo: { mentionedJid: [target] }
+          mentions: [target]
         });
       }
 
