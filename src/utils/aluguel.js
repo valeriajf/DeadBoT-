@@ -123,9 +123,10 @@ function formatarDuracao(tempo, tipo) {
  * @param {string} groupId - ID do grupo
  * @param {number} tempo - Quantidade de tempo
  * @param {string} tipo - Tipo do tempo (dias, horas ou minutos)
+ * @param {string} nomeGrupo - Nome do grupo (opcional)
  * @returns {Object} Dados do aluguel registrado
  */
-function registrarAluguel(groupId, tempo, tipo) {
+function registrarAluguel(groupId, tempo, tipo, nomeGrupo = "Grupo sem nome") {
   const alugueis = lerAlugueis();
   
   const id = gerarId();
@@ -136,6 +137,7 @@ function registrarAluguel(groupId, tempo, tipo) {
   const aluguel = {
     id,
     groupId,
+    nomeGrupo,
     duracao,
     expira: expiraFormatado,
     expiraTimestamp: dataExpiracao.getTime(),
