@@ -46,5 +46,9 @@
   "120363400719832675@g.us": {
     "active": true,
     "customMessage": "\"Atenção, {membro}🚪✨ Você acaba de entrar no {grupo} o grupo mais vigiado do WhatsApp 🪀Aqui a gente não tem parede para nos deter 💃🏻 mas tem muita discussão e torcida 👑 Preparem os memes e vamos lá!\"👀"
+  },
+  "120363424665581220@g.us": {
+    "active": true,
+    "customMessage": "{membro} bem vindo ao {grupo} se liga nas regras!!!"
   }
 }
