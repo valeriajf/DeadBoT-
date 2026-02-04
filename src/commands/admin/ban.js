@@ -10,7 +10,7 @@ const { toUserJidOrLid, onlyNumbers, toUserJid } = require(`${BASE_DIR}/utils`);
 module.exports = {
   name: "ban",
   description: "Removo um membro do grupo",
-  commands: ["ban", "kick"],
+  commands: ["ban", "dracarys", "avadakedrava"],
   usage: `${PREFIX}ban @marcar_membro 
   
 ou 
