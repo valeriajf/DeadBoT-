@@ -1,14 +1,38 @@
 {
   "120363403694373910@g.us": {
-    "active": true,
+    "active": false,
     "customMessage": "𝐒𝐄𝐉𝐀 𝐁𝐄𝐌 𝐕𝐈𝐍𝐃𝐎! {membro}\n𝐏𝐀𝐑𝐀 𝐆𝐀𝐑𝐀𝐍𝐓𝐈𝐑 𝐒𝐄𝐔 𝐂𝐎𝐍𝐅𝐎𝐑𝐓𝐎 𝐍𝐎 𝐆𝐑𝐔𝐏𝐎, 𝐋𝐄𝐈𝐀 𝐀𝐒 𝐑𝐄𝐆𝐑𝐀𝐒 𝐄 𝐒𝐈𝐆𝐀 𝐄𝐋𝐀𝐒 𝐃𝐄 𝐀𝐂𝐎𝐑𝐃𝐎 𝐂𝐎𝐌 𝐀 𝐄𝐒𝐂𝐑𝐈𝐓𝐀 !\n(っ◔◡◔)っ 🦁 *Agradecemos sua presença, sua participação é fundamental para nosso crescimento!*\n ╔═════ஜ🏆🏆🏆🏆🏆🏆🏆🏆ஜ═════╗\n ♜•♖•♜•₪₪₪𝐂𝐎𝐋𝐈𝐒𝐄𝐔 𝐀𝐑𝐄𝐍𝐀 𝐔𝐅𝐂 ₪₪•♜•♖•♜\n ╚═════ஜ🏆🏆🏆🏆🏆🏆🏆🏆ஜ═════╝"
   },
   "120363417816517583@g.us": {
     "active": true,
-    "customMessage": "{membro} bem vindo(a) ao {grupo}"
+    "customMessage": "{membro} bem vindo ao {grupo}"
   },
   "120363419168076035@g.us": {
     "active": true,
-    "customMessage": "༺❀⃟⃟🌝🄱⃝🅴🅼 🆅🅸🅽⃝🅳🄾⃝🌝⃟⃟❀༻\n╰► {membro}\n╭༶✦┈┈᮰┈🐠✰🐠┈᮰┈┈✦༶╮\n╰►𝐀𝐏𝐑𝐄𝐒𝐄𝐍𝐓𝐄-𝐒𝐄 𝐂𝐎𝐌\n❁⃟🍃 𝐅𝐎𝐓𝐎✓ \n❁⃟🍂 𝐍𝐎𝐌𝐄✓\n❁⃟🍃 𝐈𝐃𝐀𝐃𝐄✓\n❁⃟🍂 𝐂𝐈𝐃𝐀𝐃𝐄✓\n╰༶✦┈┈᮰┈🐠✰🐠┈᮰┈┈✦༶╯\n╰►⏰5 𝑀𝑖𝑛𝑢𝑡𝑜𝑠 𝑝𝑎𝑟𝑎 𝑠𝑒 𝒜𝑝𝑟𝑒𝑠𝑒𝑛𝑡𝑎𝑟◄╯\n ╰►😼Pʀᴏɪʙɪᴅᴏ ɪɴᴠᴀᴅɪʀ ᴘᴠ😼◄╯\n ╰► {grupo} ◄╯"
+    "customMessage": "📌 \n{membro}\nBem-vindo(a) ao nosso grupo de amizades e figurinhas 👏🏼❤️\n\nPara mantermos uma comunidade unida e agradável, pedimos que faça uma breve apresentação:\n— Nome \n— 🎂 Idade\n— 📍 Cidade Estado\n\nAproveite o grupo, leia as regras e participe Sua presença é muito bem-vinda."
+  },
+  "555184033465-1558458733@g.us": {
+    "active": true,
+    "customMessage": "{membro} bem vindo ao {grupo}"
+  },
+  "120363424665581220@g.us": {
+    "active": false,
+    "customMessage": "{membro} bem vindo ao {grupo} se liga nas regras!!!"
+  },
+  "120363422312164587@g.us": {
+    "active": false,
+    "customMessage": "{membro} bem vindo ao {grupo}"
+  },
+  "120363421108908380@g.us": {
+    "active": true,
+    "customMessage": "{membro} bem vindo ao {grupo}, se liga nas regras!!!"
+  },
+  "120363404988905236@g.us": {
+    "active": true,
+    "customMessage": "{membro} bem vindo ao {grupo}, se apresente:"
+  },
+  "120363421275714747@g.us": {
+    "active": true,
+    "customMessage": "{membro} bem vindo ao {grupo} se liga nas regras!!!"
   }
 }

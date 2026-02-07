@@ -36,7 +36,23 @@ const STICKER_WARN_IDS = [
   
   "118,241,161,38,38,225,155,187,29,20,224,18,55,113,180,249,156,233,179,230,147,11,138,15,240,185,155,210,78,119,135,131",
   
-  "98,115,167,75,247,222,105,216,167,92,23,7,198,73,174,142,132,83,157,62,170,205,72,116,81,3,117,237,195,170,60,244"
+  "98,115,167,75,247,222,105,216,167,92,23,7,198,73,174,142,132,83,157,62,170,205,72,116,81,3,117,237,195,170,60,244",
+  
+  "131,69,66,9,241,7,121,234,26,18,185,11,110,193,28,217,129,66,124,123,39,215,105,255,227,152,186,187,136,15,96,98",
+  
+  "240,7,254,6,166,110,84,223,76,32,15,221,168,114,150,95,139,45,181,61,34,25,161,226,110,161,127,142,44,52,239,28",
+  
+  "96,177,22,38,132,33,63,179,190,73,233,203,70,200,117,6,133,186,41,152,4,169,149,227,247,167,32,181,92,209,119,234",
+  
+  "73,191,153,186,15,234,55,157,234,15,201,135,93,112,124,57,188,52,227,58,238,166,237,148,127,249,214,238,46,216,111,41",
+  
+  "72,88,194,237,71,172,208,226,255,242,155,50,202,122,95,255,194,156,250,147,209,12,206,98,178,34,132,175,136,58,76,18",
+  
+  "23,6,179,225,174,176,194,97,10,81,151,5,132,230,47,211,223,187,106,229,237,16,140,241,32,150,190,188,131,209,88,161",
+  
+  "145,145,59,139,227,73,133,116,249,123,115,242,150,142,29,146,70,88,177,172,9,47,210,106,192,111,64,142,101,45,55,173",
+  
+  "15,2,50,40,111,20,148,23,209,215,11,111,196,148,1,17,223,231,214,157,36,246,232,3,170,77,229,190,250,197,136,72"
 ];
 
 // Lista de figurinhas que mutam usuários (use o get-sticker)
@@ -49,7 +65,14 @@ const STICKER_UNMUTE_IDS = [
   "144,135,209,13,225,158,253,24,180,169,221,127,22,140,83,132,14,235,191,220,10,19,185,244,24,77,65,134,226,187,228,195",
 ];
 
-const warnsFile = path.join(__dirname, '../warns.json');
+// Lista de figurinhas que adicionam à lista negra (use o get-sticker)
+const STICKER_BLACKLIST_IDS = [
+  "40,129,6,142,36,237,210,120,194,13,199,18,62,145,244,172,15,224,156,124,248,98,41,46,204,225,172,202,226,75,188,84",
+];
+
+// CORRIGIDO: Sobe duas pastas para chegar à raiz do projeto
+const warnsFile = path.join(__dirname, '../../warns.json');
+const blacklistFile = path.join(__dirname, '../../blacklist.json');
 
 function readWarns() {
   if (!fs.existsSync(warnsFile)) {
@@ -68,6 +91,132 @@ function saveWarns(warns) {
   } catch (error) {
     console.error('Erro ao salvar warns:', error);
   }
+}
+
+function readBlacklist() {
+  if (!fs.existsSync(blacklistFile)) {
+    return {};
+  }
+  try {
+    return JSON.parse(fs.readFileSync(blacklistFile, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function saveBlacklist(blacklist) {
+  try {
+    fs.writeFileSync(blacklistFile, JSON.stringify(blacklist, null, 2));
+    console.log('✅ Blacklist salva com sucesso em:', blacklistFile);
+  } catch (error) {
+    console.error('❌ Erro ao salvar blacklist:', error);
+  }
+}
+
+/**
+ * Busca o número de telefone real de um usuário através de múltiplas fontes
+ */
+async function findRealPhoneNumber(socket, remoteJid, userJid, webMessage) {
+  try {
+    // 1. Se já é um JID normal (@s.whatsapp.net), retorna direto
+    if (userJid.includes('@s.whatsapp.net')) {
+      return userJid.split('@')[0];
+    }
+    
+    // 2. Busca nos metadados do grupo
+    try {
+      const metadata = await socket.groupMetadata(remoteJid);
+      
+      // Procura nos participantes
+      for (const p of metadata.participants) {
+        // Compara com id, lid ou jid
+        if (p.id === userJid || p.lid === userJid || p.jid === userJid) {
+          // PRIORIDADE 1: Campo JID (contém o número real!)
+          if (p.jid && p.jid.includes('@s.whatsapp.net')) {
+            return p.jid.split('@')[0];
+          }
+          
+          // PRIORIDADE 2: Campo ID (fallback)
+          if (p.id && p.id.includes('@s.whatsapp.net')) {
+            return p.id.split('@')[0];
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao buscar metadados do grupo:', e.message);
+    }
+    
+    // 3. Tenta via store do socket
+    if (socket.store && socket.store.contacts) {
+      const contact = socket.store.contacts[userJid];
+      if (contact && contact.id && contact.id.includes('@s.whatsapp.net')) {
+        return contact.id.split('@')[0];
+      }
+    }
+    
+    // 4. Último recurso: retorna o LID (não conseguiu converter)
+    return userJid.split('@')[0];
+    
+  } catch (error) {
+    console.error('Erro ao buscar número real:', error);
+    return userJid.split('@')[0];
+  }
+}
+
+async function addToBlacklist(socket, remoteJid, userJid, webMessage) {
+  const blacklist = readBlacklist();
+  
+  // Busca o número de telefone real
+  const phoneNumber = await findRealPhoneNumber(socket, remoteJid, userJid, webMessage);
+  const isLidOnly = phoneNumber.length > 15;
+  
+  // Dados a serem salvos
+  const userData = {
+    addedAt: new Date().toISOString(),
+    number: phoneNumber,
+    originalJid: userJid,
+    isLidOnly: isLidOnly
+  };
+  
+  // Sempre salva com o JID original
+  blacklist[userJid] = userData;
+  
+  // Se conseguiu um número de telefone válido (não é LID puro)
+  if (!isLidOnly && phoneNumber.length >= 10) {
+    const standardJid = `${phoneNumber}@s.whatsapp.net`;
+    blacklist[standardJid] = userData;
+    console.log(`🚫 Usuário ${phoneNumber} adicionado à blacklist`);
+  } else {
+    console.log(`⚠️ Usuário ${userJid} adicionado à blacklist (número não disponível)`);
+  }
+  
+  saveBlacklist(blacklist);
+}
+
+function isBlacklisted(userJid) {
+  const blacklist = readBlacklist();
+  
+  // Verifica diretamente pelo JID recebido
+  if (blacklist[userJid]) {
+    return true;
+  }
+  
+  // Verifica pelo número (converte para JID padrão)
+  const number = onlyNumbers(userJid);
+  const standardJid = `${number}@s.whatsapp.net`;
+  
+  if (blacklist[standardJid]) {
+    return true;
+  }
+  
+  // Verifica se alguma entrada tem o mesmo número
+  for (const [jid, data] of Object.entries(blacklist)) {
+    if (data.number === number) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 function onlyNumbers(jid) {
@@ -109,22 +258,31 @@ async function handleStickerDelete(socket, webMessage) {
   try {
     if (!webMessage.message?.stickerMessage) return;
 
-    const contextInfo = webMessage.message.stickerMessage.contextInfo;
-    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return;
-    }
-
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
+    // 1. Verifica se é a figurinha de deletar
     if (!STICKER_DELETE_IDS.includes(numericId)) {
       return;
     }
 
-    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Verifica se existe contextInfo (mensagem respondida)
+    // Se NÃO houver, envia instrução IMEDIATAMENTE
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário para apagar*'
+      });
+      return;
+    }
+
+    // 3. A partir daqui, já sabemos que tem uma mensagem respondida
+    const metadata = await socket.groupMetadata(remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
     if (!participant?.admin) {
@@ -132,7 +290,6 @@ async function handleStickerDelete(socket, webMessage) {
     }
 
     const { stanzaId, participant: targetParticipant } = contextInfo;
-    const remoteJid = webMessage.key.remoteJid;
     
     await socket.sendMessage(remoteJid, {
       delete: {
@@ -151,22 +308,31 @@ async function handleStickerWarn(socket, webMessage) {
   try {
     if (!webMessage.message?.stickerMessage) return;
 
-    const contextInfo = webMessage.message.stickerMessage.contextInfo;
-    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return;
-    }
-
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
+    // 1. Verifica se é a figurinha de advertência
     if (!STICKER_WARN_IDS.includes(numericId)) {
       return;
     }
 
-    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Verifica se existe contextInfo (mensagem respondida)
+    // Se NÃO houver, envia instrução IMEDIATAMENTE
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário para advertir*'
+      });
+      return;
+    }
+
+    // 3. A partir daqui, já sabemos que tem uma mensagem respondida
+    const metadata = await socket.groupMetadata(remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
     if (!participant?.admin) {
@@ -174,7 +340,6 @@ async function handleStickerWarn(socket, webMessage) {
     }
 
     const targetJid = contextInfo.participant;
-    const remoteJid = webMessage.key.remoteJid;
 
     let warns = readWarns();
     
@@ -214,22 +379,31 @@ async function handleStickerMute(socket, webMessage) {
   try {
     if (!webMessage.message?.stickerMessage) return;
 
-    const contextInfo = webMessage.message.stickerMessage.contextInfo;
-    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return;
-    }
-
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
+    // 1. Verifica se é a figurinha de mutar
     if (!STICKER_MUTE_IDS.includes(numericId)) {
       return;
     }
 
-    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Verifica se existe contextInfo (mensagem respondida)
+    // Se NÃO houver, envia instrução IMEDIATAMENTE
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário para mutar*'
+      });
+      return;
+    }
+
+    // 3. A partir daqui, já sabemos que tem uma mensagem respondida
+    const metadata = await socket.groupMetadata(remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
     if (!participant?.admin) {
@@ -237,7 +411,6 @@ async function handleStickerMute(socket, webMessage) {
     }
 
     const targetJid = contextInfo.participant;
-    const remoteJid = webMessage.key.remoteJid;
     const targetNumber = onlyNumbers(targetJid);
 
     if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
@@ -288,22 +461,31 @@ async function handleStickerUnmute(socket, webMessage) {
   try {
     if (!webMessage.message?.stickerMessage) return;
 
-    const contextInfo = webMessage.message.stickerMessage.contextInfo;
-    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
-      return;
-    }
-
     const fileSha = webMessage.message.stickerMessage.fileSha256;
     if (!fileSha || fileSha.length === 0) return;
 
     const buf = Buffer.from(fileSha);
     const numericId = Array.from(buf).join(",");
 
+    // 1. Verifica se é a figurinha de desmutar
     if (!STICKER_UNMUTE_IDS.includes(numericId)) {
       return;
     }
 
-    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Verifica se existe contextInfo (mensagem respondida)
+    // Se NÃO houver, envia instrução IMEDIATAMENTE
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário para desmutar*'
+      });
+      return;
+    }
+
+    // 3. A partir daqui, já sabemos que tem uma mensagem respondida
+    const metadata = await socket.groupMetadata(remoteJid);
     const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
 
     if (!participant?.admin) {
@@ -311,7 +493,6 @@ async function handleStickerUnmute(socket, webMessage) {
     }
 
     const targetJid = contextInfo.participant;
-    const remoteJid = webMessage.key.remoteJid;
     const targetNumber = onlyNumbers(targetJid);
 
     if (!checkIfMemberIsMuted(remoteJid, targetJid)) {
@@ -333,6 +514,107 @@ async function handleStickerUnmute(socket, webMessage) {
   }
 }
 
+async function handleStickerBlacklist(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    // 1. Verifica se é a figurinha de blacklist
+    if (!STICKER_BLACKLIST_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Verifica se existe contextInfo (mensagem respondida)
+    // Se NÃO houver, envia instrução IMEDIATAMENTE
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque o alvo para enviar à lista negra*'
+      });
+      return;
+    }
+
+    // 3. A partir daqui, já sabemos que tem uma mensagem respondida
+    // Agora sim fazemos as validações de admin, proteções, etc.
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
+
+    // Verifica se quem está usando é admin
+    if (!participant?.admin) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    // Proteção: não pode blacklistar o dono
+    if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar o dono do bot à lista negra!',
+      });
+      return;
+    }
+
+    // Proteção: não pode blacklistar o próprio bot
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar o bot à lista negra.',
+      });
+      return;
+    }
+
+    // Proteção: não pode blacklistar outros admins
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar um administrador à lista negra.',
+      });
+      return;
+    }
+
+    // Verifica se já está na blacklist
+    if (isBlacklisted(targetJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} já está na lista negra!`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    // Adiciona à lista negra (passa webMessage completo para análise)
+    await addToBlacklist(socket, remoteJid, targetJid, webMessage);
+
+    // Envia mensagem de aviso
+    await socket.sendMessage(remoteJid, {
+      text: `🚫 @${targetNumber} foi adicionado à lista negra e será removido!\n\n_Este usuário não poderá mais participar de grupos onde o bot está presente._`,
+      mentions: [targetJid]
+    });
+
+    // Remove o usuário do grupo
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'remove');
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Erro ao remover o usuário. O bot é administrador?' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao processar blacklist por sticker:', error);
+  }
+}
+
 exports.messageHandler = async (socket, webMessage) => {
   try {
     if (!webMessage?.key) return;
@@ -349,6 +631,21 @@ exports.messageHandler = async (socket, webMessage) => {
       userJid === OWNER_LID;
 
     if (isBotOrOwner) return;
+
+    // Verifica se o usuário está na blacklist
+    if (isBlacklisted(userJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `🚫 @${onlyNumbers(userJid)} está na lista negra e será removido.`,
+        mentions: [userJid]
+      });
+      
+      try {
+        await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
+      } catch (error) {
+        console.error('Erro ao remover usuário da blacklist:', error);
+      }
+      return;
+    }
 
     if (checkIfMemberIsMuted(remoteJid, userJid)) {
       await socket.sendMessage(remoteJid, {
@@ -367,6 +664,7 @@ exports.messageHandler = async (socket, webMessage) => {
     await handleStickerWarn(socket, webMessage);
     await handleStickerMute(socket, webMessage);
     await handleStickerUnmute(socket, webMessage);
+    await handleStickerBlacklist(socket, webMessage);
 
     const textMessage =
       webMessage.message?.extendedTextMessage?.text ||
