@@ -26,6 +26,7 @@ module.exports = {
     "Silencia um usuário no grupo (apaga as mensagens do usuário automáticamente).",
   commands: ["mute", "mutar"],
   usage: `${PREFIX}mute @usuario ou (responda à mensagem do usuário que deseja mutar)`,
+  onlyAdmin: true,
   /**
    * @param {CommandHandleProps} props
    * @returns {Promise<void>}

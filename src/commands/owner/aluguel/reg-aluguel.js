@@ -28,7 +28,8 @@ module.exports = {
     remoteJid,
     prefix,
     fullArgs,
-    userJid
+    userJid,
+    socket
   }) => {
     // Verifica se é o dono do bot
     if (!isDono(userJid)) {
@@ -130,14 +131,24 @@ module.exports = {
         return;
       }
 
-      // Registra o aluguel
-      const aluguel = registrarAluguel(remoteJid, tempo, tipo);
+      // Busca o nome do grupo
+      let nomeGrupo = "Grupo sem nome";
+      try {
+        const metadata = await socket.groupMetadata(remoteJid);
+        nomeGrupo = metadata?.subject || metadata?.name || "Grupo sem nome";
+      } catch (err) {
+        console.log("⚠️ Não foi possível obter o nome do grupo, usando nome padrão");
+      }
+
+      // Registra o aluguel com o nome do grupo
+      const aluguel = registrarAluguel(remoteJid, tempo, tipo, nomeGrupo);
 
       // Ativa o bot no grupo automaticamente
       activateGroup(remoteJid);
 
       await sendSuccessReply(
         `✅ *Grupo alugado com sucesso!*\n\n` +
+        `🏷️ *Grupo:* ${nomeGrupo}\n` +
         `🔑 *ID:* ${aluguel.id}\n` +
         `⏳ *Duração:* ${aluguel.duracao}\n` +
         `📅 *Expira em:* ${aluguel.expira}\n\n` +

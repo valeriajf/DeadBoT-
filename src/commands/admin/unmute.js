@@ -18,6 +18,7 @@ module.exports = {
   description: "Desativa o mute de um membro do grupo",
   commands: ["unmute", "desmutar"],
   usage: `${PREFIX}unmute @usuario`,
+  onlyAdmin: true,
   /**
    * @param {CommandHandleProps} props
    * @returns {Promise<void>}
