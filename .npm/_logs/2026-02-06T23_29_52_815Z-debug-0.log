@@ -1,0 +1,169 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.8.0
+2 info using node@v20.20.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/container/.npmrc
+5 silly config load:file:/usr/local/etc/npmrc
+6 verbose title npm install
+7 verbose argv "install"
+8 verbose logfile logs-max:10 dir:/home/container/.npm/_logs/2026-02-06T23_29_52_815Z-
+9 verbose logfile /home/container/.npm/_logs/2026-02-06T23_29_52_815Z-debug-0.log
+10 silly logfile done cleaning log files
+11 silly packumentCache heap:307232768 maxSize:76808192 maxEntrySize:38404096
+12 verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+13 silly idealTree buildDeps
+14 silly fetch manifest baileys@^6.7.20
+15 silly packumentCache full:https://registry.npmjs.org/baileys cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/npm 250ms
+17 http fetch GET 200 https://registry.npmjs.org/baileys 231ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/baileys set size:undefined disposed:false
+19 silly fetch manifest audio-decode@^2.1.3
+20 silly packumentCache full:https://registry.npmjs.org/audio-decode cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/audio-decode 58ms (cache miss)
+22 silly packumentCache full:https://registry.npmjs.org/audio-decode set size:undefined disposed:false
+23 silly fetch manifest jimp@^0.22.12
+24 silly packumentCache full:https://registry.npmjs.org/jimp cache-miss
+25 http fetch GET 200 https://registry.npmjs.org/jimp 78ms (cache miss)
+26 silly packumentCache full:https://registry.npmjs.org/jimp set size:undefined disposed:false
+27 silly fetch manifest jimp@^1.6.0
+28 silly packumentCache full:https://registry.npmjs.org/jimp cache-miss
+29 http cache https://registry.npmjs.org/jimp 11ms (cache hit)
+30 silly packumentCache full:https://registry.npmjs.org/jimp set size:1192935 disposed:false
+31 silly fetch manifest link-preview-js@^3.0.0
+32 silly packumentCache full:https://registry.npmjs.org/link-preview-js cache-miss
+33 http fetch GET 200 https://registry.npmjs.org/link-preview-js 49ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/link-preview-js set size:undefined disposed:false
+35 silly fetch manifest sharp@^0.34.4
+36 silly packumentCache full:https://registry.npmjs.org/sharp cache-miss
+37 http fetch GET 200 https://registry.npmjs.org/sharp 44ms (cache miss)
+38 silly packumentCache full:https://registry.npmjs.org/sharp set size:undefined disposed:false
+39 silly placeDep ROOT baileys@6.7.21 REPLACE for: takeshi-bot@6.6.3 want: ^6.7.20
+40 silly fetch manifest libsignal@git+https://github.com/whiskeysockets/libsignal-node.git
+41 silly fetch manifest music-metadata@^11.7.0
+42 silly packumentCache full:https://registry.npmjs.org/music-metadata cache-miss
+43 http fetch GET 200 https://registry.npmjs.org/music-metadata 54ms (cache miss)
+44 silly packumentCache full:https://registry.npmjs.org/music-metadata set size:undefined disposed:false
+45 silly fetch manifest @keyv/bigmap@^1.1.0
+46 silly packumentCache full:https://registry.npmjs.org/@keyv%2fbigmap cache-miss
+47 http fetch GET 200 https://registry.npmjs.org/@keyv%2fbigmap 58ms (cache miss)
+48 silly packumentCache full:https://registry.npmjs.org/@keyv%2fbigmap set size:undefined disposed:false
+49 silly fetch manifest keyv@^5.5.3
+50 silly packumentCache full:https://registry.npmjs.org/keyv cache-miss
+51 http fetch GET 200 https://registry.npmjs.org/keyv 47ms (cache miss)
+52 silly packumentCache full:https://registry.npmjs.org/keyv set size:undefined disposed:false
+53 silly placeDep ROOT @keyv/bigmap@1.3.1 OK for: @cacheable/memory@2.0.4 want: ^1.1.0
+54 silly placeDep ROOT keyv@5.6.0 REPLACE for: @keyv/bigmap@1.3.1 want: ^5.6.0
+55 silly fetch manifest hashery@^1.4.0
+56 silly packumentCache full:https://registry.npmjs.org/hashery cache-miss
+57 http fetch GET 200 https://registry.npmjs.org/hashery 34ms (cache miss)
+58 silly packumentCache full:https://registry.npmjs.org/hashery set size:undefined disposed:false
+59 silly fetch manifest hookified@^1.15.0
+60 silly packumentCache full:https://registry.npmjs.org/hookified cache-miss
+61 http fetch GET 200 https://registry.npmjs.org/hookified 43ms (cache miss)
+62 silly packumentCache full:https://registry.npmjs.org/hookified set size:undefined disposed:false
+63 silly placeDep ROOT hashery@1.4.0 OK for: @keyv/bigmap@1.3.1 want: ^1.4.0
+64 silly placeDep ROOT hookified@1.15.1 REPLACE for: @keyv/bigmap@1.3.1 want: ^1.15.0
+65 silly fetch manifest hookified@^1.14.0
+66 silly packumentCache full:https://registry.npmjs.org/hookified cache-miss
+67 http cache https://registry.npmjs.org/hookified 3ms (cache hit)
+68 silly packumentCache full:https://registry.npmjs.org/hookified set size:110982 disposed:false
+69 silly fetch manifest @wasm-audio-decoders/flac@^0.2.4
+70 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fflac cache-miss
+71 http fetch GET 200 https://registry.npmjs.org/@wasm-audio-decoders%2fflac 242ms (cache miss)
+72 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fflac set size:undefined disposed:false
+73 silly fetch manifest @wasm-audio-decoders/ogg-vorbis@^0.1.15
+74 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fogg-vorbis cache-miss
+75 http fetch GET 200 https://registry.npmjs.org/@wasm-audio-decoders%2fogg-vorbis 208ms (cache miss)
+76 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fogg-vorbis set size:undefined disposed:false
+77 silly fetch manifest mpg123-decoder@^1.0.0
+78 silly packumentCache full:https://registry.npmjs.org/mpg123-decoder cache-miss
+79 http fetch GET 200 https://registry.npmjs.org/mpg123-decoder 63ms (cache miss)
+80 silly packumentCache full:https://registry.npmjs.org/mpg123-decoder set size:undefined disposed:false
+81 silly fetch manifest node-wav@^0.0.2
+82 silly packumentCache full:https://registry.npmjs.org/node-wav cache-miss
+83 http fetch GET 200 https://registry.npmjs.org/node-wav 47ms (cache miss)
+84 silly packumentCache full:https://registry.npmjs.org/node-wav set size:undefined disposed:false
+85 silly fetch manifest ogg-opus-decoder@^1.6.12
+86 silly packumentCache full:https://registry.npmjs.org/ogg-opus-decoder cache-miss
+87 http fetch GET 200 https://registry.npmjs.org/ogg-opus-decoder 32ms (cache miss)
+88 silly packumentCache full:https://registry.npmjs.org/ogg-opus-decoder set size:undefined disposed:false
+89 silly placeDep ROOT @wasm-audio-decoders/flac@0.2.10 OK for: audio-decode@2.2.3 want: ^0.2.4
+90 silly placeDep ROOT @wasm-audio-decoders/ogg-vorbis@0.1.20 OK for: audio-decode@2.2.3 want: ^0.1.15
+91 silly placeDep ROOT mpg123-decoder@1.0.3 OK for: audio-decode@2.2.3 want: ^1.0.0
+92 silly placeDep ROOT node-wav@0.0.2 OK for: audio-decode@2.2.3 want: ^0.0.2
+93 silly placeDep ROOT ogg-opus-decoder@1.7.3 OK for: audio-decode@2.2.3 want: ^1.6.12
+94 silly fetch manifest @wasm-audio-decoders/common@9.0.7
+95 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fcommon cache-miss
+96 http fetch GET 200 https://registry.npmjs.org/@wasm-audio-decoders%2fcommon 55ms (cache miss)
+97 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fcommon set size:undefined disposed:false
+98 silly fetch manifest @wasm-audio-decoders/opus-ml@0.0.2
+99 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fopus-ml cache-miss
+100 http fetch GET 200 https://registry.npmjs.org/@wasm-audio-decoders%2fopus-ml 45ms (cache miss)
+101 silly packumentCache full:https://registry.npmjs.org/@wasm-audio-decoders%2fopus-ml set size:undefined disposed:false
+102 silly fetch manifest opus-decoder@0.7.11
+103 silly packumentCache full:https://registry.npmjs.org/opus-decoder cache-miss
+104 http fetch GET 200 https://registry.npmjs.org/opus-decoder 39ms (cache miss)
+105 silly packumentCache full:https://registry.npmjs.org/opus-decoder set size:undefined disposed:false
+106 silly placeDep ROOT @wasm-audio-decoders/common@9.0.7 OK for: @wasm-audio-decoders/flac@0.2.10 want: 9.0.7
+107 silly fetch manifest @eshaz/web-worker@1.2.2
+108 silly packumentCache full:https://registry.npmjs.org/@eshaz%2fweb-worker cache-miss
+109 http fetch GET 200 https://registry.npmjs.org/@eshaz%2fweb-worker 68ms (cache miss)
+110 silly packumentCache full:https://registry.npmjs.org/@eshaz%2fweb-worker set size:undefined disposed:false
+111 silly fetch manifest simple-yenc@^1.0.4
+112 silly packumentCache full:https://registry.npmjs.org/simple-yenc cache-miss
+113 http fetch GET 200 https://registry.npmjs.org/simple-yenc 32ms (cache miss)
+114 silly packumentCache full:https://registry.npmjs.org/simple-yenc set size:undefined disposed:false
+115 silly placeDep ROOT @eshaz/web-worker@1.2.2 OK for: @wasm-audio-decoders/common@9.0.7 want: 1.2.2
+116 silly placeDep ROOT simple-yenc@1.0.4 OK for: @wasm-audio-decoders/common@9.0.7 want: ^1.0.4
+117 verbose stack Error: could not resolve
+117 verbose stack     at PlaceDep.failPeerConflict (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/place-dep.js:503:25)
+117 verbose stack     at new PlaceDep (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/place-dep.js:157:21)
+117 verbose stack     at #buildDepStep (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:934:18)
+117 verbose stack     at async Arborist.buildIdealTree (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:170:7)
+117 verbose stack     at async Promise.all (index 1)
+117 verbose stack     at async Arborist.reify (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:110:5)
+117 verbose stack     at async Install.exec (/usr/local/lib/node_modules/npm/lib/commands/install.js:150:5)
+117 verbose stack     at async Npm.exec (/usr/local/lib/node_modules/npm/lib/npm.js:208:9)
+117 verbose stack     at async module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:67:5)
+118 error code ERESOLVE
+119 error ERESOLVE could not resolve
+120 error
+121 error While resolving: baileys@6.7.21
+121 error Found: jimp@0.22.12[2m[22m
+121 error [2mnode_modules/jimp[22m
+121 error   jimp@"^0.22.12" from the root project
+121 error
+121 error Could not resolve dependency:
+121 error peerOptional jimp@"^1.6.0" from baileys@6.7.21[2m[22m
+121 error [2mnode_modules/baileys[22m
+121 error   baileys@"^6.7.20" from the root project
+121 error
+121 error Conflicting peer dependency: jimp@1.6.0[2m[22m
+121 error [2mnode_modules/jimp[22m
+121 error   peerOptional jimp@"^1.6.0" from baileys@6.7.21[2m[22m
+121 error   [2mnode_modules/baileys[22m
+121 error     baileys@"^6.7.20" from the root project
+121 error
+121 error Fix the upstream dependency conflict, or retry
+121 error this command with --force or --legacy-peer-deps
+121 error to accept an incorrect (and potentially broken) dependency resolution.
+122 error
+122 error
+122 error For a full report see:
+122 error /home/container/.npm/_logs/2026-02-06T23_29_52_815Z-eresolve-report.txt
+123 silly unfinished npm timer reify 1770420593656
+124 silly unfinished npm timer reify:loadTrees 1770420593658
+125 silly unfinished npm timer idealTree:buildDeps 1770420593739
+126 silly unfinished npm timer idealTree:node_modules/baileys 1770420596643
+127 verbose cwd /home/container
+128 verbose os Linux 5.15.0-164-generic
+129 verbose node v20.20.0
+130 verbose npm  v11.8.0
+131 notice
+131 notice New [33mminor[39m version of npm available! [33m11.8.0[39m -> [34m11.9.0[39m
+131 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.9.0[39m
+131 notice To update run: [4mnpm install -g npm@11.9.0[24m
+131 notice  { force: true, [Symbol(proc-log.meta)]: true }
+132 verbose exit 1
+133 verbose code 1
+134 error A complete log of this run can be found in: /home/container/.npm/_logs/2026-02-06T23_29_52_815Z-debug-0.log

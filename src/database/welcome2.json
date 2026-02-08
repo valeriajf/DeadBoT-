@@ -13,7 +13,7 @@
   },
   "120363417816517583@g.us": {
     "active": false,
-    "customMessage": "{membro} bem vinde ao {grupo}"
+    "customMessage": "seja bem vindo ao nosso grupo"
   },
   "120363420985411758@g.us": {
     "active": false,
@@ -46,5 +46,9 @@
   "120363400719832675@g.us": {
     "active": true,
     "customMessage": "\"Atenção, {membro}🚪✨ Você acaba de entrar no {grupo} o grupo mais vigiado do WhatsApp 🪀Aqui a gente não tem parede para nos deter 💃🏻 mas tem muita discussão e torcida 👑 Preparem os memes e vamos lá!\"👀"
+  },
+  "120363424665581220@g.us": {
+    "active": true,
+    "customMessage": "{membro} Seja muito bem-vindo(a) ao nosso cantinho da amizade! 🫶✨\nAqui é lugar de trocar ideia, dar risada, compartilhar memes, apoiar uns aos outros e fazer novas conexões de verdade.\n\nRespeito sempre, treta nunca 🚫🔥\nInteração liberada, timidez proibida 😌💬\n\nChega chegando, se apresenta pra galera e bora fazer esse grupo ficar incrível! 🚀🎉"
   }
 }
