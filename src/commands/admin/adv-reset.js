@@ -3,10 +3,89 @@
 const fs = require('fs');
 const warnsFile = './warns.json';
 
+/**
+ * Busca o número real do usuário nos metadados do grupo
+ */
+async function findRealPhoneNumber(socket, remoteJid, userJid) {
+  try {
+    // Se já é um JID normal, retorna direto
+    if (userJid.includes('@s.whatsapp.net')) {
+      return userJid;
+    }
+    
+    // Busca nos metadados do grupo
+    const metadata = await socket.groupMetadata(remoteJid);
+    
+    for (const p of metadata.participants) {
+      // Compara com id, lid ou jid
+      if (p.id === userJid || p.lid === userJid || p.jid === userJid) {
+        // PRIORIDADE: Campo JID (número real)
+        if (p.jid && p.jid.includes('@s.whatsapp.net')) {
+          return p.jid;
+        }
+        // Fallback: Campo ID
+        if (p.id && p.id.includes('@s.whatsapp.net')) {
+          return p.id;
+        }
+      }
+    }
+    
+    // Se não encontrou, retorna o original
+    return userJid;
+  } catch (error) {
+    console.error('Erro ao buscar número real:', error);
+    return userJid;
+  }
+}
+
+/**
+ * Busca advertências por número, considerando LID e JID
+ */
+function findWarnsForUser(warns, userJid) {
+  // Verifica diretamente
+  if (warns[userJid]) {
+    return warns[userJid];
+  }
+  
+  // Busca por número limpo
+  const cleanNumber = userJid.replace(/\D/g, '');
+  for (const [jid, count] of Object.entries(warns)) {
+    const jidNumber = jid.replace(/\D/g, '');
+    if (jidNumber === cleanNumber) {
+      return count;
+    }
+  }
+  
+  return 0;
+}
+
+/**
+ * Remove advertências de todas as variações do usuário (LID + JID)
+ */
+function resetWarnsForUser(warns, userJid) {
+  const cleanNumber = userJid.replace(/\D/g, '');
+  const jidsToReset = [];
+  
+  // Coleta todos os JIDs com o mesmo número
+  for (const jid of Object.keys(warns)) {
+    const jidNumber = jid.replace(/\D/g, '');
+    if (jidNumber === cleanNumber || jid === userJid) {
+      jidsToReset.push(jid);
+    }
+  }
+  
+  // Reseta todos
+  jidsToReset.forEach(jid => {
+    warns[jid] = 0;
+  });
+  
+  return jidsToReset.length;
+}
+
 module.exports = {
   name: 'advreset',
   description: 'Reseta as advertências de um usuário.',
-  commands: ['advreset'],
+  commands: ['advreset', 'adv-reset'],
   handle: async (params) => {
     try {
       const {
@@ -15,7 +94,9 @@ module.exports = {
         replyJid,
         isGroup,
         getGroupAdmins,
-        userJid
+        userJid,
+        fullMessage,
+        mentionedJid
       } = params;
 
       if (!isGroup) {
@@ -29,29 +110,75 @@ module.exports = {
         return;
       }
 
-      const target = replyJid;
+      let target = null;
+
+      // 1. Verifica se é reply
+      if (replyJid) {
+        target = replyJid;
+      }
+      // 2. Verifica se há menção (@usuario)
+      else if (mentionedJid && mentionedJid.length > 0) {
+        target = mentionedJid[0];
+      }
+      // 3. Verifica se há número no texto
+      else if (fullMessage) {
+        const args = fullMessage.trim().split(/\s+/);
+        if (args.length > 1) {
+          // Remove tudo que não é número
+          let numero = args.slice(1).join('').replace(/\D/g, '');
+          
+          // Se não começar com código de país, assume Brasil (55)
+          if (!numero.startsWith('55') && numero.length <= 11) {
+            numero = '55' + numero;
+          }
+          
+          // Formata para o padrão do WhatsApp
+          target = numero + '@s.whatsapp.net';
+        }
+      }
+
       if (!target) {
-        await socket.sendMessage(remoteJid, { text: '⚠️ Use o comando respondendo à mensagem do usuário que deseja resetar as advertências.' });
+        await socket.sendMessage(remoteJid, { 
+          text: '⚠️ Use o comando de uma das formas:\n' +
+                '• Respondendo a mensagem do usuário\n' +
+                '• Mencionando: #advreset @usuario\n' +
+                '• Com número: #advreset +55 41 98776-1506'
+        });
         return;
       }
+
+      // Converte LID para número real (se necessário)
+      const realTarget = await findRealPhoneNumber(socket, remoteJid, target);
+      console.log(`📝 ADVRESET - Target original: ${target}, Target real: ${realTarget}`);
 
       let warns = {};
       if (fs.existsSync(warnsFile)) {
         warns = JSON.parse(fs.readFileSync(warnsFile));
       }
 
-      if (warns[target]) {
-        warns[target] = 0;
+      // Verifica se tem advertências (busca por todas variações)
+      const currentWarns = findWarnsForUser(warns, realTarget);
+
+      if (currentWarns > 0) {
+        // Reseta todas as variações (LID + JID)
+        const resetCount = resetWarnsForUser(warns, realTarget);
         fs.writeFileSync(warnsFile, JSON.stringify(warns, null, 2));
-        await socket.sendMessage(remoteJid, { text: '✅ Advertências do usuário foram resetadas.' });
+        
+        await socket.sendMessage(remoteJid, { 
+          text: `✅ Advertências do usuário foram resetadas.\n📊 Total de entradas removidas: ${resetCount}`,
+          mentions: [realTarget]
+        });
       } else {
-        await socket.sendMessage(remoteJid, { text: 'ℹ️ Esse usuário não possui advertências registradas.' });
+        await socket.sendMessage(remoteJid, { 
+          text: 'ℹ️ Esse usuário não possui advertências registradas.',
+          mentions: [realTarget]
+        });
       }
 
     } catch (error) {
       console.error('Erro no comando advreset:', error);
       if (params.remoteJid) {
-        await socket.sendMessage(params.remoteJid, { text: '❌ Erro inesperado ao executar /advreset.' });
+        await socket.sendMessage(params.remoteJid, { text: '❌ Erro inesperado ao executar #advreset.' });
       }
     }
   }

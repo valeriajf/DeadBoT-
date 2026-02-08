@@ -1,7 +1,7 @@
 const path = require("path");
 
 // Prefixo padrão dos comandos.
-exports.PREFIX = "!";
+exports.PREFIX = "#";
 
 // Emoji do bot (mude se preferir).
 exports.BOT_EMOJI = "";
@@ -17,11 +17,11 @@ exports.BOT_NUMBER = "5511933372131";
 // Número do dono bot.
 // Apenas números, exatamente como está no WhatsApp.
 // Se o seu número não exibir o nono dígito (9) no WhatsApp, não coloque-o.
-exports.OWNER_NUMBER = "553284876375@s.whatsapp.net";
+exports.OWNER_NUMBER = "553299459807@s.whatsapp.net";
 
 // LID do dono do bot.
 // Para obter o LID do dono do bot, use o comando <prefixo>get-lid @marca ou +telefone do dono.
-exports.OWNER_LID = "242404347146484@lid";
+exports.OWNER_LID = "52674217148583@lid";
 
 // Diretório dos comandos
 exports.COMMANDS_DIR = path.join(__dirname, "commands");
@@ -42,7 +42,7 @@ exports.TIMEOUT_IN_MILLISECONDS_BY_EVENT = 2000;
 exports.SPIDER_API_BASE_URL = "https://api.spiderx.com.br/api";
 
 // Obtenha seu token, criando uma conta em: https://api.spiderx.com.br.
-exports.SPIDER_API_TOKEN = "fiZt3SGJH1U80QKuVeT0";
+exports.SPIDER_API_TOKEN = "8zKdw7bhOu2a2uEnWCSh";
 
 // Caso queira responder apenas um grupo específico,
 // coloque o ID dele na configuração abaixo.
