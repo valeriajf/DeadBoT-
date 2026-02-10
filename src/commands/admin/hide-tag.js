@@ -16,10 +16,16 @@ module.exports = {
     socket, 
     remoteJid, 
     sendReact,
-    webMessage 
+    webMessage,
+    userJid // ID de quem enviou o comando
   }) => {
     const { participants } = await socket.groupMetadata(remoteJid);
     const mentions = participants.map(({ id }) => id);
+
+    // Adiciona o autor do comando nas menções se ainda não estiver
+    if (!mentions.includes(userJid)) {
+      mentions.push(userJid);
+    }
 
     await sendReact("📢");
 
@@ -51,7 +57,11 @@ module.exports = {
 
     console.log("=== DEBUG HIDETAG ===");
     console.log("Tipo de mídia detectada:", mediaType || "nenhuma");
+    console.log("Admin que executou:", userJid);
     console.log("====================");
+
+    // Monta a mensagem com menção ao administrador
+    const adminMessage = `📢 Marcando todos!\n📧 Mensagem do Administrador @${userJid.split('@')[0]}\n\n${fullArgs || ''}`;
 
     if (mediaMessage && mediaType) {
       try {
@@ -71,7 +81,7 @@ module.exports = {
         
         // Prepara o objeto de mensagem baseado no tipo
         const messageContent = {
-          caption: `📢 Marcando todos!\n\n${fullArgs || ''}`,
+          caption: adminMessage,
           mentions: mentions
         };
 
@@ -91,8 +101,8 @@ module.exports = {
         await socket.sendMessage(remoteJid, messageContent);
         
         // Se for áudio, envia a legenda separadamente
-        if (mediaType === "audio" && fullArgs) {
-          await sendText(`📢 Marcando todos!\n\n${fullArgs}`, mentions);
+        if (mediaType === "audio") {
+          await sendText(adminMessage, mentions);
         }
         
         console.log("✅ Mídia enviada com sucesso!");
@@ -103,7 +113,7 @@ module.exports = {
       }
     } else {
       // Envia apenas texto se não houver mídia
-      await sendText(`📢 Marcando todos!\n\n${fullArgs}`, mentions);
+      await sendText(adminMessage, mentions);
     }
   },
 };

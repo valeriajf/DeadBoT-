@@ -86,8 +86,9 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}roleta-russa 
  • ${prefix}set-exit2 
  • ${prefix}set-name
+ • ${prefix}totag
  • ${prefix}unmute
- • ${prefix}welcome (1/0) Padrão 
+ • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0) Foto Usuário 
  • ${prefix}welcome3 (1/0) Foto Grupo 
  • ${prefix}welcome4 (1/0) Sem Foto 

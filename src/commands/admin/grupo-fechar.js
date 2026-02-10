@@ -39,6 +39,9 @@ const activeIntervals = {};
 // Flag para controlar se já foi inicializado
 let isInitialized = false;
 
+// Controle de execução diária (evita executar múltiplas vezes no mesmo minuto)
+const lastExecution = {};
+
 // Verifica e executa fechamento se for o horário
 async function checkAndClose(socket, groupId, scheduleTime) {
   // Obtém horário de Brasília
@@ -54,13 +57,29 @@ async function checkAndClose(socket, groupId, scheduleTime) {
   // Horário programado
   const [scheduleHours, scheduleMinutes] = scheduleTime.split(":").map(Number);
 
+  // Cria chave única para este grupo e horário
+  const executionKey = `${groupId}-${scheduleTime}`;
+  
+  // Obtém a data atual (somente dia)
+  const currentDate = datePart;
+
   if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+    // Verifica se já executou hoje
+    if (lastExecution[executionKey] === currentDate) {
+      // Já executou hoje, não executa novamente
+      return;
+    }
+    
     try {
       await socket.groupSettingUpdate(groupId, "announcement");
       await socket.sendMessage(groupId, {
         text: `🔒 *Grupo fechado automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🥷 *Modo silencioso ativado. Shhh…*`,
       });
-      console.log(`[AUTO-FECHAR] Grupo ${groupId} fechado às ${scheduleTime} (Horário de Brasília)`);
+      
+      // Marca como executado hoje
+      lastExecution[executionKey] = currentDate;
+      
+      console.log(`[AUTO-FECHAR] Grupo ${groupId} fechado às ${scheduleTime} (Horário de Brasília) - Data: ${currentDate}`);
     } catch (error) {
       errorLog(
         `Erro ao fechar grupo automaticamente: ${JSON.stringify(error, null, 2)}`
@@ -101,7 +120,7 @@ function initializeSchedules(socket) {
 module.exports = {
   name: "grupo-fechar",
   description:
-    "Programa o fechamento automático do grupo em um horário específico.",
+    "Programa o fechamento automático do grupo em um horário específico todos os dias.",
   commands: ["grupo-fechar", "agendar-fechamento", "schedule-close"],
   usage: `${PREFIX}grupo-fechar HH:MM\n\nExemplos:\n${PREFIX}grupo-fechar 22:00\n${PREFIX}grupo-fechar 18:30\n${PREFIX}grupo-fechar cancelar`,
 
@@ -119,20 +138,11 @@ module.exports = {
     userJid,
   }) => {
     try {
-      console.log("[GRUPO-FECHAR] Comando iniciado");
-      console.log("[GRUPO-FECHAR] Args:", args);
-      console.log("[GRUPO-FECHAR] UserJid:", userJid);
-      console.log("[GRUPO-FECHAR] RemoteJid:", remoteJid);
-      
       // Inicializa agendamentos sempre que o comando for chamado
       initializeSchedules(socket);
-      console.log("[GRUPO-FECHAR] Schedules inicializados");
 
       // Verifica se o usuário é administrador do grupo
-      console.log("[GRUPO-FECHAR] Buscando metadados do grupo...");
       const groupMetadata = await socket.groupMetadata(remoteJid);
-      console.log("[GRUPO-FECHAR] Metadados obtidos, verificando permissões...");
-      
       const participants = groupMetadata.participants;
       const userParticipant = participants.find(
         (p) => p.id === userJid
@@ -142,8 +152,6 @@ module.exports = {
         userParticipant &&
         (userParticipant.admin === "admin" ||
           userParticipant.admin === "superadmin");
-
-      console.log("[GRUPO-FECHAR] É admin?", isAdmin);
 
       if (!isAdmin) {
         throw new DangerError(
@@ -159,7 +167,8 @@ module.exports = {
         if (currentSchedule) {
           await sendWarningReply(
             `⏰ *Fechamento automático ativo*\n\n` +
-              `Horário programado: *${currentSchedule}*\n\n` +
+              `Horário programado: *${currentSchedule}*\n` +
+              `🔄 *Repetição:* Todos os dias\n\n` +
               `Para alterar, use: ${PREFIX}grupo-fechar HH:MM\n` +
               `Para cancelar, use: ${PREFIX}grupo-fechar cancelar`
           );
@@ -239,6 +248,7 @@ module.exports = {
       await sendSuccessReply(
         `✅ *Fechamento programado com sucesso!*\n\n` +
           `⏰ Horário: *${scheduleTime}*\n` +
+          `🔄 *Repetição:* Todos os dias\n` +
           `📍 O grupo será fechado automaticamente todos os dias neste horário.\n` +
           `🕐 Horário atual de Brasília: ${brasiliaTimeStr}\n\n` +
           `Para cancelar: ${PREFIX}grupo-fechar cancelar`

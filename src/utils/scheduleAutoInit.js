@@ -4,19 +4,20 @@
  * Este arquivo deve ser carregado automaticamente quando o bot iniciar.
  * Ele garante que os agendamentos salvos sejam reativados após reiniciar o bot.
  * 
+ * CORREÇÃO: Agora executa TODOS OS DIAS no horário programado!
+ * 
  * INSTRUÇÕES DE INSTALAÇÃO:
  * 
- * Opção 1 - Adicionar no src/loader.js (RECOMENDADO):
- * Adicione esta linha após carregar os comandos:
+ * Adicione no src/loader.js após carregar os comandos:
  * 
- * const { autoInitSchedules } = require('./utils/scheduleAutoInit');
- * autoInitSchedules(socket);
- * 
- * Opção 2 - Adicionar no src/index.js ou index.js da raiz:
- * Adicione após o bot conectar:
- * 
- * const { autoInitSchedules } = require('./src/utils/scheduleAutoInit');
- * autoInitSchedules(socket);
+ * setTimeout(() => {
+ *   try {
+ *     const { autoInitSchedules } = require('./utils/scheduleAutoInit');
+ *     autoInitSchedules(socket);
+ *   } catch (error) {
+ *     console.error('Erro ao inicializar agendamentos:', error.message);
+ *   }
+ * }, 3000);
  */
 
 const fs = require("fs");
@@ -41,6 +42,12 @@ const activeIntervals = {
   fechar: {},
 };
 
+// Controle de execução diária
+const lastExecution = {
+  abrir: {},
+  fechar: {},
+};
+
 // Carrega agendamentos de um arquivo
 function loadSchedules(filePath) {
   try {
@@ -56,16 +63,39 @@ function loadSchedules(filePath) {
 
 // Verifica e executa abertura
 async function checkAndOpen(socket, groupId, scheduleTime) {
-  const now = new Date();
-  const [hours, minutes] = scheduleTime.split(":").map(Number);
+  // Obtém horário de Brasília
+  const now = new Date().toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    hour12: false,
+  });
+  
+  // Extrai hora, minuto e data
+  const [datePart, timePart] = now.split(", ");
+  const [currentHours, currentMinutes] = timePart.split(":").map(Number);
+  
+  // Horário programado
+  const [scheduleHours, scheduleMinutes] = scheduleTime.split(":").map(Number);
 
-  if (now.getHours() === hours && now.getMinutes() === minutes) {
+  // Cria chave única
+  const executionKey = `${groupId}-${scheduleTime}`;
+  const currentDate = datePart;
+
+  if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+    // Verifica se já executou hoje
+    if (lastExecution.abrir[executionKey] === currentDate) {
+      return; // Já executou hoje
+    }
+
     try {
       await socket.groupSettingUpdate(groupId, "not_announcement");
       await socket.sendMessage(groupId, {
         text: `✅ *Grupo aberto automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🍿 *Pode começar o show !!!*`,
       });
-      console.log(`[AUTO-ABRIR] Grupo ${groupId} aberto às ${scheduleTime}`);
+      
+      // Marca como executado hoje
+      lastExecution.abrir[executionKey] = currentDate;
+      
+      console.log(`[AUTO-ABRIR] Grupo ${groupId} aberto às ${scheduleTime} (Horário de Brasília) - Data: ${currentDate}`);
     } catch (error) {
       console.error(`Erro ao abrir grupo ${groupId}:`, error.message);
     }
@@ -74,16 +104,39 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
 
 // Verifica e executa fechamento
 async function checkAndClose(socket, groupId, scheduleTime) {
-  const now = new Date();
-  const [hours, minutes] = scheduleTime.split(":").map(Number);
+  // Obtém horário de Brasília
+  const now = new Date().toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    hour12: false,
+  });
+  
+  // Extrai hora, minuto e data
+  const [datePart, timePart] = now.split(", ");
+  const [currentHours, currentMinutes] = timePart.split(":").map(Number);
+  
+  // Horário programado
+  const [scheduleHours, scheduleMinutes] = scheduleTime.split(":").map(Number);
 
-  if (now.getHours() === hours && now.getMinutes() === minutes) {
+  // Cria chave única
+  const executionKey = `${groupId}-${scheduleTime}`;
+  const currentDate = datePart;
+
+  if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+    // Verifica se já executou hoje
+    if (lastExecution.fechar[executionKey] === currentDate) {
+      return; // Já executou hoje
+    }
+
     try {
       await socket.groupSettingUpdate(groupId, "announcement");
       await socket.sendMessage(groupId, {
         text: `🔒 *Grupo fechado automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🥷 *Modo silencioso ativado. Shhh…*`,
       });
-      console.log(`[AUTO-FECHAR] Grupo ${groupId} fechado às ${scheduleTime}`);
+      
+      // Marca como executado hoje
+      lastExecution.fechar[executionKey] = currentDate;
+      
+      console.log(`[AUTO-FECHAR] Grupo ${groupId} fechado às ${scheduleTime} (Horário de Brasília) - Data: ${currentDate}`);
     } catch (error) {
       console.error(`Erro ao fechar grupo ${groupId}:`, error.message);
     }
@@ -119,6 +172,13 @@ function startFecharMonitoring(socket, groupId, scheduleTime) {
 // Função principal de auto-inicialização
 function autoInitSchedules(socket) {
   console.log("\n🔄 Inicializando agendamentos automáticos...");
+  
+  // Obtém horário atual de Brasília
+  const now = new Date().toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    hour12: false,
+  });
+  console.log(`🕐 Horário atual de Brasília: ${now}`);
 
   // Carrega e inicializa agendamentos de abertura
   const abrirSchedules = loadSchedules(ABRIR_SCHEDULE_FILE);
@@ -138,7 +198,8 @@ function autoInitSchedules(socket) {
 
   console.log(`✅ ${abrirCount} agendamento(s) de ABERTURA carregado(s)`);
   console.log(`✅ ${fecharCount} agendamento(s) de FECHAMENTO carregado(s)`);
-  console.log("🎯 Sistema de agendamentos ativo!\n");
+  console.log("🎯 Sistema de agendamentos ativo!");
+  console.log("🔄 Execução: TODOS OS DIAS no horário programado\n");
 }
 
 module.exports = {

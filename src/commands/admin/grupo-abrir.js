@@ -39,6 +39,9 @@ const activeIntervals = {};
 // Flag para controlar se já foi inicializado
 let isInitialized = false;
 
+// Controle de execução diária (evita executar múltiplas vezes no mesmo minuto)
+const lastExecution = {};
+
 // Verifica e executa abertura se for o horário
 async function checkAndOpen(socket, groupId, scheduleTime) {
   // Obtém horário de Brasília
@@ -54,13 +57,29 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
   // Horário programado
   const [scheduleHours, scheduleMinutes] = scheduleTime.split(":").map(Number);
 
+  // Cria chave única para este grupo e horário
+  const executionKey = `${groupId}-${scheduleTime}`;
+  
+  // Obtém a data atual (somente dia)
+  const currentDate = datePart;
+
   if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+    // Verifica se já executou hoje
+    if (lastExecution[executionKey] === currentDate) {
+      // Já executou hoje, não executa novamente
+      return;
+    }
+    
     try {
       await socket.groupSettingUpdate(groupId, "not_announcement");
       await socket.sendMessage(groupId, {
         text: `✅ *Grupo aberto automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🍿 *Pode começar o show !!!*`,
       });
-      console.log(`[AUTO-ABRIR] Grupo ${groupId} aberto às ${scheduleTime} (Horário de Brasília)`);
+      
+      // Marca como executado hoje
+      lastExecution[executionKey] = currentDate;
+      
+      console.log(`[AUTO-ABRIR] Grupo ${groupId} aberto às ${scheduleTime} (Horário de Brasília) - Data: ${currentDate}`);
     } catch (error) {
       errorLog(
         `Erro ao abrir grupo automaticamente: ${JSON.stringify(error, null, 2)}`
@@ -101,7 +120,7 @@ function initializeSchedules(socket) {
 module.exports = {
   name: "grupo-abrir",
   description:
-    "Programa a abertura automática do grupo em um horário específico.",
+    "Programa a abertura automática do grupo em um horário específico todos os dias.",
   commands: ["grupo-abrir", "agendar-abertura", "schedule-open"],
   usage: `${PREFIX}grupo-abrir HH:MM\n\nExemplos:\n${PREFIX}grupo-abrir 08:00\n${PREFIX}grupo-abrir 14:30\n${PREFIX}grupo-abrir cancelar`,
 
@@ -148,7 +167,8 @@ module.exports = {
         if (currentSchedule) {
           await sendWarningReply(
             `⏰ *Abertura automática ativa*\n\n` +
-              `Horário programado: *${currentSchedule}*\n\n` +
+              `Horário programado: *${currentSchedule}*\n` +
+              `🔄 *Repetição:* Todos os dias\n\n` +
               `Para alterar, use: ${PREFIX}grupo-abrir HH:MM\n` +
               `Para cancelar, use: ${PREFIX}grupo-abrir cancelar`
           );
@@ -228,6 +248,7 @@ module.exports = {
       await sendSuccessReply(
         `✅ *Abertura programada com sucesso!*\n\n` +
           `⏰ Horário: *${scheduleTime}*\n` +
+          `🔄 *Repetição:* Todos os dias\n` +
           `📍 O grupo será aberto automaticamente todos os dias neste horário.\n` +
           `🕐 Horário atual de Brasília: ${brasiliaTimeStr}\n\n` +
           `Para cancelar: ${PREFIX}grupo-abrir cancelar`
