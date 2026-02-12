@@ -185,10 +185,6 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
     // 🔧 FIX: Normaliza o JID do usuário removendo sufixos
     const cleanUserJid = normalizeJidForComparison(normalizedUserJid);
 
-    console.log('🔍 [checkPermission] UserJid original:', userJid);
-    console.log('🔍 [checkPermission] UserJid normalizado:', normalizedUserJid);
-    console.log('🔍 [checkPermission] UserJid limpo:', cleanUserJid);
-
     // 🔧 FIX: Busca participante com comparação normalizada
     const participant = participants.find((p) => {
       const pLid = p.id.includes("@lid")
@@ -201,11 +197,6 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
       return cleanParticipantJid === cleanUserJid;
     });
 
-    console.log('🔍 [checkPermission] Participante encontrado?', participant ? 'SIM ✅' : 'NÃO ❌');
-    if (participant) {
-      console.log('🔍 [checkPermission] Admin status:', participant.admin);
-    }
-
     // Se não encontrou, verifica se é o OWNER do BOT
     if (!participant) {
       const isBotOwner = 
@@ -215,7 +206,6 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
           otherNumber: OWNER_NUMBER,
         });
       
-      console.log('🔍 [checkPermission] É dono do bot?', isBotOwner ? 'SIM ✅' : 'NÃO ❌');
       return isBotOwner && (type === "admin" || type === "owner");
     }
 
@@ -241,22 +231,14 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
         otherNumber: OWNER_NUMBER,
       });
 
-    console.log('🔍 [checkPermission] É dono do grupo?', isGroupOwner ? 'SIM ✅' : 'NÃO ❌');
-    console.log('🔍 [checkPermission] É admin?', isAdmin ? 'SIM ✅' : 'NÃO ❌');
-    console.log('🔍 [checkPermission] É dono do bot?', isBotOwner ? 'SIM ✅' : 'NÃO ❌');
-
     // Comandos de admin: aceita dono do grupo, admins ou dono do bot
     if (type === "admin") {
-      const hasPermission = isGroupOwner || isAdmin || isBotOwner;
-      console.log('🔍 [checkPermission] Tem permissão ADMIN?', hasPermission ? 'SIM ✅' : 'NÃO ❌');
-      return hasPermission;
+      return isGroupOwner || isAdmin || isBotOwner;
     }
 
     // Comandos owner: apenas dono do grupo ou dono do bot
     if (type === "owner") {
-      const hasPermission = isGroupOwner || isBotOwner;
-      console.log('🔍 [checkPermission] Tem permissão OWNER?', hasPermission ? 'SIM ✅' : 'NÃO ❌');
-      return hasPermission;
+      return isGroupOwner || isBotOwner;
     }
 
     return false;

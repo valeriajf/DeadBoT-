@@ -130,11 +130,11 @@ module.exports = {
       await sendText(
         `📋 *SISTEMA DE NOTAS*\n\n` +
         `*Comandos disponíveis:*\n` +
-        `• ${PREFIX}notas <descrição> DD/MM/YYYY - Criar nota\n` +
+        `• ${PREFIX}notas <descrição> - Criar nota\n` +
         `• ${PREFIX}notas listar - Listar notas\n` +
         `• ${PREFIX}notas deletar <id> - Deletar nota\n` +
         `• ${PREFIX}notas limpar - Limpar todas\n\n` +
-        `💡 Exemplo: ${PREFIX}notas Aluguel Felipe 08/11/2025`
+        `💡 Exemplo: ${PREFIX}notas Verificar o saldo da Spider X API`
       );
       return;
     }

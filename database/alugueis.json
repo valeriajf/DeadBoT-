@@ -7,14 +7,6 @@
     "expiraTimestamp": 1772237945408,
     "registradoEm": "2025-12-30T00:19:05.415Z"
   },
-  "120363038706590596@g.us": {
-    "id": "OBN4LTQ8",
-    "groupId": "120363038706590596@g.us",
-    "duracao": "30 dias",
-    "expira": "11/02/2026, 07:45:14",
-    "expiraTimestamp": 1770806714617,
-    "registradoEm": "2026-01-12T10:45:14.628Z"
-  },
   "555184033465-1558458733@g.us": {
     "id": "LY4PFHJ5",
     "groupId": "555184033465-1558458733@g.us",
@@ -24,13 +16,22 @@
     "expiraTimestamp": 1771854849765,
     "registradoEm": "2026-01-23T13:54:09.856Z"
   },
+  "120363422312164587@g.us": {
+    "id": "5KCRL4HD",
+    "groupId": "120363422312164587@g.us",
+    "nomeGrupo": "DeadBoT Lab 🌟",
+    "duracao": "30 dias",
+    "expira": "13/03/2026, 02:45:56",
+    "expiraTimestamp": 1773369956467,
+    "registradoEm": "2026-02-11T02:45:56.468Z"
+  },
   "120363417816517583@g.us": {
-    "id": "0RKDPMPC",
+    "id": "72AW9PV5",
     "groupId": "120363417816517583@g.us",
-    "nomeGrupo": "DeadBoT SuporTe 🤖",
-    "duracao": "24 horas",
-    "expira": "11/02/2026, 16:48:33",
-    "expiraTimestamp": 1770828513075,
-    "registradoEm": "2026-02-10T16:48:33.167Z"
+    "nomeGrupo": "DeadBoT Suporte ✨",
+    "duracao": "30 dias",
+    "expira": "13/03/2026, 18:10:24",
+    "expiraTimestamp": 1773425424000,
+    "registradoEm": "2026-02-11T18:10:24.124Z"
   }
 }

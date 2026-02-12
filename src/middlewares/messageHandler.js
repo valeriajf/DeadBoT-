@@ -70,6 +70,21 @@ const STICKER_BLACKLIST_IDS = [
   "40,129,6,142,36,237,210,120,194,13,199,18,62,145,244,172,15,224,156,124,248,98,41,46,204,225,172,202,226,75,188,84",
 ];
 
+// Lista de figurinhas que promovem usuários a ADM (use o get-sticker)
+const STICKER_PROMOTE_IDS = [
+  "150,36,21,208,34,172,94,51,170,226,158,254,16,137,198,12,5,246,158,145,67,232,64,203,140,113,110,119,133,75,202,242",
+];
+
+// Lista de figurinhas que rebaixam administradores (use o get-sticker)
+const STICKER_DEMOTE_IDS = [
+  "135,117,179,112,82,88,39,145,177,26,22,52,126,40,71,218,124,6,143,177,166,235,216,218,114,3,32,124,100,42,22,162",
+];
+
+// Lista de figurinhas que ativam/desativam modo admin-only
+const STICKER_ADMIN_ONLY_IDS = [
+  "95,181,130,218,104,202,71,146,141,123,129,217,95,220,246,195,245,138,251,65,211,71,117,249,78,74,104,34,31,253,208,144",
+];
+
 // CORRIGIDO: Sobe duas pastas para chegar à raiz do projeto
 const warnsFile = path.join(__dirname, '../../warns.json');
 const blacklistFile = path.join(__dirname, '../../blacklist.json');
@@ -658,6 +673,225 @@ exports.messageHandler = async (socket, webMessage) => {
       });
       return;
     }
+    
+async function handleStickerPromote(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    // 1. Verifica se é a figurinha de promover
+    if (!STICKER_PROMOTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Se não marcou a mensagem do alvo
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário que deseja promover*'
+      });
+      return;
+    }
+
+    // 3. Verifica se quem usou é admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
+
+    if (!participant?.admin) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    // 4. Proteções
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não faz sentido me promover, eu já mando aqui 😎'
+      });
+      return;
+    }
+
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} já é administrador.`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    // 5. Promove
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'promote');
+
+      await socket.sendMessage(remoteJid, {
+        text: `👑 @${targetNumber} agora é administrador!`,
+        mentions: [targetJid]
+      });
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Não consegui promover. O bot precisa ser administrador.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao promover por figurinha:', error);
+  }
+}
+
+async function handleStickerDemote(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    // 1. Verifica se é a figurinha de demote
+    if (!STICKER_DEMOTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // 2. Se não marcou a mensagem do alvo
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do administrador que deseja rebaixar*'
+      });
+      return;
+    }
+
+    // 3. Verifica se quem usou é admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
+
+    if (!participant?.admin) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    // 4. Proteções importantes
+
+    // Não pode rebaixar o dono
+    if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode rebaixar o dono do bot!'
+      });
+      return;
+    }
+
+    // Não pode rebaixar o bot
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não posso me auto rebaixar 😎'
+      });
+      return;
+    }
+
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (!isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} não é administrador.`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    // 5. Rebaixar
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'demote');
+
+      await socket.sendMessage(remoteJid, {
+        text: `📉 @${targetNumber} deixou de ser administrador.`,
+        mentions: [targetJid]
+      });
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Não consegui rebaixar. O bot precisa ser administrador.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao rebaixar por figurinha:', error);
+  }
+}
+
+async function handleStickerAdminOnly(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    // 1. Verifica se é a figurinha admin-only
+    if (!STICKER_ADMIN_ONLY_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    // 2. Verifica se quem usou é admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(
+      p => p.id === webMessage.key.participant
+    );
+
+    if (!participant?.admin) {
+      return;
+    }
+
+    // 3. Verifica estado atual do grupo
+    const isAdminOnly = metadata.announce === true;
+
+    try {
+      if (isAdminOnly) {
+        // Abrir grupo
+        await socket.groupSettingUpdate(remoteJid, "not_announcement");
+
+        await socket.sendMessage(remoteJid, {
+          text: "🔓 Grupo aberto! Todos podem enviar mensagens."
+        });
+      } else {
+        // Fechar grupo
+        await socket.groupSettingUpdate(remoteJid, "announcement");
+
+        await socket.sendMessage(remoteJid, {
+          text: "🔒 Modo admin ativado! Apenas administradores podem falar."
+        });
+      }
+    } catch (error) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Não consegui alterar o modo do grupo. O bot precisa ser administrador."
+      });
+    }
+
+  } catch (error) {
+    console.error("Erro no admin-only por figurinha:", error);
+  }
+}
 
     await handleStickerTrigger(socket, webMessage);
     await handleStickerDelete(socket, webMessage);
@@ -665,6 +899,9 @@ exports.messageHandler = async (socket, webMessage) => {
     await handleStickerMute(socket, webMessage);
     await handleStickerUnmute(socket, webMessage);
     await handleStickerBlacklist(socket, webMessage);
+    await handleStickerPromote(socket, webMessage);
+    await handleStickerDemote(socket, webMessage);
+    await handleStickerAdminOnly(socket, webMessage);
 
     const textMessage =
       webMessage.message?.extendedTextMessage?.text ||

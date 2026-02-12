@@ -69,15 +69,14 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}exit2 (1/0)
  • ${prefix}fechar
  • ${prefix}get-sticker
- • ${prefix}grupo-abrir
- • ${prefix}grupo-fechar
+ • ${prefix}grupo-abrir (agendado)
+ • ${prefix}grupo-fechar (agendado)
  • ${prefix}limpar
  • ${prefix}link-grupo
  • ${prefix}list-auto-responder
  • ${prefix}lista-negra-add
  • ${prefix}lista-negra-remover
  • ${prefix}mute
- • ${prefix}notas
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -85,7 +84,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}revelar
  • ${prefix}roleta-russa 
  • ${prefix}set-exit2 
- • ${prefix}set-name
+ • ${prefix}set-nome-grupo
  • ${prefix}totag
  • ${prefix}unmute
  • ${prefix}welcome (1/0)

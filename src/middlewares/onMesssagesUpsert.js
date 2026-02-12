@@ -645,11 +645,8 @@ try {
                 const audioTriggers = {
                     vagabunda: "vagabunda.ogg",
                     prostituta: "prostituta.ogg",
-                    oremos: "ferrolhos.ogg",
-                    sexo: "love.ogg",
                     denise: "denise.ogg",
-                    fofoca: "plantao.ogg",
-                    tecnologia: "tecnologia.ogg",
+                    xuxa: "xuxa.ogg",
                 };
                 const msgLower = msgText.toLowerCase();
                 for (const trigger in audioTriggers) {
