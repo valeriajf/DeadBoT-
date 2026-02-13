@@ -36,7 +36,6 @@ const {
 const NodeCache = require("node-cache");
 const { TEMP_DIR } = require("./config");
 const { badMacHandler } = require("./utils/badMacHandler");
-const { iniciarVerificador, pararVerificador } = require("./utils/verificadorAluguel");
 const fs = require("node:fs");
 
 if (!fs.existsSync(TEMP_DIR)) {
@@ -115,9 +114,6 @@ async function connect() {
     const { connection, lastDisconnect } = update;
 
     if (connection === "close") {
-      // Para o verificador de aluguéis quando desconectar
-      pararVerificador();
-      
       const error = lastDisconnect?.error;
       const statusCode = error?.output?.statusCode;
 
@@ -144,7 +140,6 @@ async function connect() {
 
       if (statusCode === DisconnectReason.loggedOut) {
         errorLog("Bot desconectado!");
-        badMacErrorCount = 0;
       } else {
         switch (statusCode) {
           case DisconnectReason.badSession:
@@ -193,12 +188,7 @@ async function connect() {
       infoLog(
         "É a última versão do WhatsApp Web?: " + (isLatest ? "Sim" : "Não")
       );
-      badMacErrorCount = 0;
       badMacHandler.resetErrorCount();
-      
-      // Inicia o verificador de aluguéis quando conectar
-      iniciarVerificador(socket);
-      infoLog("Sistema de verificação de aluguéis iniciado!");
     } else {
       infoLog("Atualizando conexão...");
     }

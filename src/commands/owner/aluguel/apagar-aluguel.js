@@ -4,10 +4,9 @@
  * 
  * @author Adaptado para DeadBoT
  */
-const path = require("node:path");
-const { PREFIX } = require(path.join(__dirname, "..", "..", "..", "config"));
-const { apagarAluguel } = require(path.join(__dirname, "..", "..", "..", "utils", "aluguel"));
-const { isDono } = require(path.join(__dirname, "..", "..", "..", "utils", "ownerCheck"));
+const { PREFIX } = require(`${BASE_DIR}/config`);
+const { apagarAluguel } = require(`${BASE_DIR}/utils/aluguel`);
+const { isDono } = require(`${BASE_DIR}/utils/ownerCheck`);
 
 module.exports = {
   name: "apagar-aluguel",
@@ -38,7 +37,7 @@ module.exports = {
       await sendWarningReply(
         `⚠️ *Uso correto:*\n${prefix}apagar_aluguel <id>\n\n` +
         `*Exemplo:*\n${prefix}apagar_aluguel ABC123\n\n` +
-        `💡 *Dica:* Use ${prefix}listar_alugueis para ver os IDs disponíveis`
+        `💡 *Dica:* Use ${prefix}listar_aluguel para ver os IDs disponíveis`
       );
       return;
     }
@@ -56,7 +55,7 @@ module.exports = {
         await sendErrorReply(
           `❌ *Aluguel não encontrado!*\n\n` +
           `🔑 *ID informado:* ${id}\n\n` +
-          `💡 *Dica:* Use ${prefix}listar_alugueis para ver os IDs válidos`
+          `💡 *Dica:* Use ${prefix}listar_aluguel para ver os IDs válidos`
         );
       }
     } catch (error) {

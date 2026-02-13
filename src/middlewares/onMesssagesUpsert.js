@@ -146,61 +146,6 @@ if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
 }
 // 🚫 FIM ANTI-PV
 
-// 🕵️ X9 MONITOR - Detecção de REJEIÇÕES (stubType 29 e 172)
-// Cole este código NO INÍCIO do onMessagesUpsert, logo após o "for (const webMessage of messages) {"
-try {
-    // Detecta rejeições de pedidos de entrada
-    if (webMessage.messageStubType && webMessage.key.remoteJid?.includes('@g.us')) {
-        const { isActiveX9Monitor, addX9Log } = require("../utils/database");
-        const remoteJid = webMessage.key.remoteJid;
-        const stubType = webMessage.messageStubType;
-        
-        // stubType 29 = Rejeição tipo 1
-        // stubType 172 = Rejeição tipo 2 (com parameters "rejected")
-        if ((stubType === 29 || stubType === 172) && isActiveX9Monitor(remoteJid)) {
-            const adminJid = webMessage.key.participant;
-            const adminPhone = adminJid ? adminJid.split('@')[0] : 'Sistema';
-            
-            // Pega o JID do usuário rejeitado
-            const targetJid = webMessage.messageStubParameters?.[0];
-            
-            if (targetJid) {
-                const targetPhone = targetJid.split('@')[0];
-                
-                // Registra no banco de dados
-                await addX9Log(remoteJid, {
-                    adminJid: adminJid || 'Sistema',
-                    adminPhone,
-                    targetJid,
-                    targetPhone,
-                    action: 'reject',
-                    description: `@${adminPhone} rejeitou pedido de entrada de @${targetPhone}`
-                });
-                
-                // Envia notificação no grupo
-                const mentions = adminJid ? [adminJid, targetJid] : [targetJid];
-                await socket.sendMessage(remoteJid, {
-                    text: `🕵️ *ALERTA X9*\n\n` +
-                          `❌ *Pedido de entrada REJEITADO!*\n` +
-                          `👤 Admin: @${adminPhone}\n` +
-                          `🎯 Rejeitou: @${targetPhone}\n` +
-                          `⏰ ${new Date().toLocaleTimeString('pt-BR', { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
-                          })}\n` +
-                          `🔢 stubType: ${stubType}`,
-                    mentions
-                });
-                
-                console.log(`🕵️ [X9 MONITOR] REJECT: ${adminPhone} → ${targetPhone} (stubType: ${stubType})`);
-            }
-        }
-    }
-} catch (x9RejectError) {
-    console.error('❌ [X9 MONITOR - REJECT] Erro:', x9RejectError.message);
-}
-// 🕵️ FIM X9 MONITOR - REJEIÇÕES
-
         try {
             const timestamp = webMessage.messageTimestamp;
 
@@ -493,37 +438,6 @@ try {
                 }
             }
 
-            // 🚫 SISTEMA BANGHOST - Limpeza automática de confirmações expiradas
-            setInterval(() => {
-                try {
-                    const banghostCommand = require('../commands/admin/banghost');
-                    const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
-                    
-                    const now = Date.now();
-                    let expiredCount = 0;
-                    
-                    for (const [id, data] of pendingBans.entries()) {
-                        if (now - data.timestamp > 60000) {
-                            pendingBans.delete(id);
-                            expiredCount++;
-                            
-                            if (data.chatId) {
-                                socket.sendMessage(data.chatId, {
-                                    text: '⏰ Tempo esgotado! Banimento cancelado automaticamente.'
-                                }).catch(() => {});
-                            }
-                        }
-                    }
-                    
-                    if (expiredCount > 0) {
-                        console.log(`🔄 [BANGHOST] ${expiredCount} confirmações expiradas removidas`);
-                    }
-                    
-                } catch (error) {
-                    console.error('❌ [BANGHOST] Erro na limpeza de confirmações:', error.message);
-                }
-            }, 30000);
-
             if (webMessage?.message) {
                 messageHandler(socket, webMessage);
 
@@ -646,7 +560,7 @@ try {
                     vagabunda: "vagabunda.ogg",
                     prostituta: "prostituta.ogg",
                     denise: "denise.ogg",
-                    xuxa: "xuxa.ogg",
+                    show: "xuxa.ogg",
                 };
                 const msgLower = msgText.toLowerCase();
                 for (const trigger in audioTriggers) {

@@ -1,14 +1,13 @@
 /**
  * Comando para registrar aluguel de grupo
- * Registra o tempo de aluguel do grupo atual (dias ou horas)
+ * Registra o tempo de aluguel do grupo atual (dias, horas ou minutos)
  * 
  * @author Adaptado para DeadBoT
  */
-const path = require("node:path");
-const { PREFIX } = require(path.join(__dirname, "..", "..", "..", "config"));
-const { registrarAluguel, listarAlugueis } = require(path.join(__dirname, "..", "..", "..", "utils", "aluguel"));
-const { activateGroup } = require(path.join(__dirname, "..", "..", "..", "utils", "database"));
-const { isDono } = require(path.join(__dirname, "..", "..", "..", "utils", "ownerCheck"));
+const { PREFIX } = require(`${BASE_DIR}/config`);
+const { registrarAluguel, listarAlugueis } = require(`${BASE_DIR}/utils/aluguel`);
+const { activateGroup } = require(`${BASE_DIR}/utils/database`);
+const { isDono } = require(`${BASE_DIR}/utils/ownerCheck`);
 
 module.exports = {
   name: "registrar-aluguel",
@@ -53,12 +52,15 @@ module.exports = {
       
       if (partes.length < 2) {
         await sendWarningReply(
-          `⚠️ *Uso correto:*\n${prefix}rg_aluguel <tempo> <dias|horas|minutos>\n\n` +
+          `⚠️ *Uso correto:*\n${prefix}reg_aluguel <tempo>\n\n` +
+          `*Tipos aceitos:*\n` +
+          `• dias\n` +
+          `• horas\n` +
+          `• minutos\n\n` +
           `*Exemplos:*\n` +
-          `${prefix}rg_aluguel 30 dias\n` +
-          `${prefix}rg_aluguel 24 horas\n` +
-          `${prefix}rg_aluguel 00:02 horas (2 minutos)\n` +
-          `${prefix}rg_aluguel 2 minutos`
+          `${prefix}reg_aluguel 30 dias\n` +
+          `${prefix}reg_aluguel 24 horas\n` +
+          `${prefix}reg_aluguel 2 minutos`
         );
         return;
       }
@@ -84,7 +86,7 @@ module.exports = {
         await sendErrorReply(
           `❌ *Tempo inválido!*\n\n` +
           `Use o formato HH:MM válido.\n\n` +
-          `*Exemplo:* ${prefix}rg_aluguel 00:02 horas`
+          `*Exemplo:* ${prefix}reg_aluguel 00:02 horas`
         );
         return;
       }
@@ -96,7 +98,7 @@ module.exports = {
         await sendErrorReply(
           `❌ *Tempo inválido!*\n\n` +
           `O tempo deve ser um número maior que zero.\n\n` +
-          `*Exemplo:* ${prefix}rg_aluguel 30 dias`
+          `*Exemplo:* ${prefix}reg_aluguel 30 dias`
         );
         return;
       }
@@ -108,10 +110,9 @@ module.exports = {
         `❌ *Tipo inválido!*\n\n` +
         `Use apenas "dias", "horas" ou "minutos".\n\n` +
         `*Exemplos:*\n` +
-        `${prefix}rg_aluguel 30 dias\n` +
-        `${prefix}rg_aluguel 24 horas\n` +
-        `${prefix}rg_aluguel 2 minutos\n` +
-        `${prefix}rg_aluguel 00:02 horas`
+        `${prefix}reg_aluguel 30 dias\n` +
+        `${prefix}reg_aluguel 24 horas\n` +
+        `${prefix}reg_aluguel 2 minutos`
       );
       return;
     }
@@ -124,7 +125,7 @@ module.exports = {
           `❌ *Este grupo já possui um aluguel ativo!*\n\n` +
           `🔑 *ID:* ${alugueis[remoteJid].id}\n` +
           `📅 *Expira em:* ${alugueis[remoteJid].expira}\n\n` +
-          `💡 *Dica:* Se quiser modificar os dias/horas restantes, apague o aluguel com:\n` +
+          `💡 *Dica:* Se quiser modificar, apague o aluguel com:\n` +
           `${prefix}apagar_aluguel ${alugueis[remoteJid].id}\n` +
           `e depois registre novamente.`
         );
@@ -140,20 +141,20 @@ module.exports = {
         console.log("⚠️ Não foi possível obter o nome do grupo, usando nome padrão");
       }
 
-      // Registra o aluguel com o nome do grupo
+      // Registra o aluguel com nome do grupo
       const aluguel = registrarAluguel(remoteJid, tempo, tipo, nomeGrupo);
 
       // Ativa o bot no grupo automaticamente
       activateGroup(remoteJid);
 
       await sendSuccessReply(
-        `✅ *Grupo alugado com sucesso!*\n\n` +
-        `🏷️ *Grupo:* ${nomeGrupo}\n` +
+        `✅ *Grupo registrado com sucesso!*\n\n` +
+        `🪀 *Grupo:* ${nomeGrupo}\n` +
         `🔑 *ID:* ${aluguel.id}\n` +
         `⏳ *Duração:* ${aluguel.duracao}\n` +
-        `📅 *Expira em:* ${aluguel.expira}\n\n` +
-        `🤖 *Bot ativado automaticamente neste grupo!*\n\n` +
-        `💡 O bot será desativado automaticamente quando o aluguel expirar.`
+        `📅 *Expira em:* ${aluguel.expira}\n` +
+        `🚨 *O bot será desativado automaticamente quando o aluguel expirar.*\n\n` +
+        `💡 Use ${prefix}status_aluguel no grupo para ver o status.`
       );
     } catch (error) {
       console.error("Erro ao registrar aluguel:", error);

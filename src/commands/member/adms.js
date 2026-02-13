@@ -1,58 +1,66 @@
-// Marca os ADMs do grupo 
-//
-// @uthor VaL
-  
-   
+// Marca todos os ADMs do grupo (versão melhorada)
+// Autor: VaL + melhorias DeadBoT
 
 module.exports = {
   name: 'adms',
   description: 'Marca todos os administradores do grupo',
   commands: ['adms', 'admins', 'administradores'],
+  cooldown: 30, // evita spam (30 segundos)
+
   handle: async (params) => {
     try {
       const {
         socket,
         remoteJid,
         isGroup,
-        getGroupAdmins,
-        args
+        getGroupAdmins
       } = params;
 
-      // Verifica se está em um grupo
+      // ❌ Só funciona em grupo
       if (!isGroup) {
-        await socket.sendMessage(remoteJid, { text: '❌ Esse comando só funciona em grupos.' });
+        await socket.sendMessage(remoteJid, {
+          text: '❌ Esse comando só funciona em grupos.'
+        });
         return;
       }
 
-      // Obtém a lista de administradores
+      // 🔎 Pega dados do grupo
+      const groupMetadata = await socket.groupMetadata(remoteJid);
+      const groupName = groupMetadata.subject || 'Grupo';
+
+      // 👮 Lista de admins
       const admins = await getGroupAdmins(remoteJid);
-      
+
       if (!admins || admins.length === 0) {
-        await socket.sendMessage(remoteJid, { text: '❌ Não foi possível encontrar administradores neste grupo.' });
+        await socket.sendMessage(remoteJid, {
+          text: '❌ Não encontrei administradores neste grupo.'
+        });
         return;
       }
 
-      // Mensagem opcional fornecida pelo usuário
-      const customMessage = args ? args.join(' ') : '';
-      
-      // Cria a lista de menções dos administradores
+      // 🏷️ Formata menções
       const adminMentions = admins.map(admin => `@${admin.split('@')[0]}`);
-      
-      // Monta a mensagem final
-      const finalMessage = customMessage 
-        ? `📢 ${customMessage}\n\n👥 Administradores:\n${adminMentions.join(' ')}`
-        : `👥 Administradores do grupo:\n${adminMentions.join(' ')}`;
 
-      // Envia a mensagem com as menções usando o mesmo formato do comando ADV
+      // 🧾 Mensagem padrão DeadBoT
+      const message =
+`👮 *Chamando os ADMs*
+🪀️ Grupo: *${groupName}*
+
+${adminMentions.join(' ')}`;
+
+      // 📤 Envia com menções reais
       await socket.sendMessage(remoteJid, {
-        text: finalMessage,
+        text: message,
         mentions: admins
       });
 
     } catch (error) {
       console.error('Erro no comando adms:', error);
+
       if (params.remoteJid) {
-        await socket.sendMessage(params.remoteJid, { text: '❌ Erro inesperado ao executar /adms.' });
+        await params.socket.sendMessage(params.remoteJid, {
+          text: '❌ Erro ao chamar os administradores.'
+        });
       }
     }
   }

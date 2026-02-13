@@ -32,7 +32,7 @@ module.exports = {
 
     await sendReply(`${response}
 
-📶 Velocidade de resposta: ${ping}ms
+⚡ Velocidade de resposta: ${ping}ms
 ⏱️ Uptime: ${h}h ${m}m ${s}s`);
   },
 };

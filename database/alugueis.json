@@ -1,37 +1,14 @@
 {
-  "120363403694373910@g.us": {
-    "id": "0UR3DUFO",
-    "groupId": "120363403694373910@g.us",
-    "duracao": "60 dias",
-    "expira": "27/02/2026, 21:19:05",
-    "expiraTimestamp": 1772237945408,
-    "registradoEm": "2025-12-30T00:19:05.415Z"
-  },
-  "555184033465-1558458733@g.us": {
-    "id": "LY4PFHJ5",
-    "groupId": "555184033465-1558458733@g.us",
-    "nomeGrupo": "★La casa de stickers★",
-    "duracao": "31 dias",
-    "expira": "23/02/2026, 10:54:09",
-    "expiraTimestamp": 1771854849765,
-    "registradoEm": "2026-01-23T13:54:09.856Z"
-  },
   "120363422312164587@g.us": {
-    "id": "5KCRL4HD",
+    "id": "6TDO8C31",
     "groupId": "120363422312164587@g.us",
-    "nomeGrupo": "DeadBoT Lab 🌟",
-    "duracao": "30 dias",
-    "expira": "13/03/2026, 02:45:56",
-    "expiraTimestamp": 1773369956467,
-    "registradoEm": "2026-02-11T02:45:56.468Z"
-  },
-  "120363417816517583@g.us": {
-    "id": "72AW9PV5",
-    "groupId": "120363417816517583@g.us",
-    "nomeGrupo": "DeadBoT Suporte ✨",
-    "duracao": "30 dias",
-    "expira": "13/03/2026, 18:10:24",
-    "expiraTimestamp": 1773425424000,
-    "registradoEm": "2026-02-11T18:10:24.124Z"
+    "nomeGrupo": "Laboratório 🧫",
+    "quantidade": 24,
+    "tipo": "horas",
+    "duracao": "24:00",
+    "expira": "14/02/2026, 12:21:26",
+    "expiraTimestamp": 1771082486695,
+    "registradoEm": "2026-02-13T15:21:26.697Z",
+    "ativo": true
   }
 }

@@ -1,6 +1,7 @@
 /**
  * Sistema de gerenciamento de aluguéis de grupos
  * Funções para registrar, listar e apagar aluguéis
+ * Suporta dias, horas e minutos
  * 
  * @author Adaptado para DeadBoT
  */
@@ -65,105 +66,109 @@ function gerarId() {
 
 /**
  * Calcula a data de expiração do aluguel
- * @param {number} tempo - Quantidade de tempo
- * @param {string} tipo - Tipo do tempo (dias, horas ou minutos)
+ * @param {number} quantidade - Quantidade de tempo
+ * @param {string} tipo - Tipo: "dias", "horas" ou "minutos"
  * @returns {Date} Data de expiração
  */
-function calcularExpiracao(tempo, tipo) {
+function calcularExpiracao(quantidade, tipo) {
   const agora = new Date();
-  if (tipo === "dias") {
-    agora.setDate(agora.getDate() + tempo);
+  
+  if (tipo === "minutos") {
+    agora.setMinutes(agora.getMinutes() + quantidade);
   } else if (tipo === "horas") {
-    agora.setHours(agora.getHours() + tempo);
-  } else if (tipo === "minutos") {
-    agora.setMinutes(agora.getMinutes() + tempo);
+    agora.setHours(agora.getHours() + quantidade);
+  } else {
+    // dias (padrão)
+    agora.setDate(agora.getDate() + quantidade);
   }
+  
   return agora;
 }
 
 /**
  * Formata uma data para exibição
  * @param {Date} data - Data a ser formatada
- * @returns {string} Data formatada
+ * @returns {string} Data formatada (dd/mm/yyyy, hh:mm:ss)
  */
 function formatarData(data) {
-  return data.toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  const hora = String(data.getHours()).padStart(2, '0');
+  const minuto = String(data.getMinutes()).padStart(2, '0');
+  const segundo = String(data.getSeconds()).padStart(2, '0');
+  
+  return `${dia}/${mes}/${ano}, ${hora}:${minuto}:${segundo}`;
 }
 
 /**
- * Formata a duração de forma legível
- * @param {number} tempo - Quantidade de tempo
- * @param {string} tipo - Tipo do tempo
+ * Formata a duração para exibição
+ * @param {number} quantidade - Quantidade de tempo
+ * @param {string} tipo - Tipo: "dias", "horas" ou "minutos"
  * @returns {string} Duração formatada
  */
-function formatarDuracao(tempo, tipo) {
+function formatarDuracao(quantidade, tipo) {
   if (tipo === "minutos") {
-    if (tempo >= 60) {
-      const horas = Math.floor(tempo / 60);
-      const mins = tempo % 60;
-      if (mins > 0) {
-        return `${horas}h ${mins}min`;
-      }
-      return `${horas} hora${horas > 1 ? 's' : ''}`;
-    }
-    return `${tempo} minuto${tempo > 1 ? 's' : ''}`;
+    const horas = Math.floor(quantidade / 60);
+    const mins = quantidade % 60;
+    return `${String(horas).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+  } else if (tipo === "horas") {
+    return `${String(quantidade).padStart(2, '0')}:00`;
+  } else {
+    // dias
+    return `${quantidade} ${quantidade === 1 ? 'dia' : 'dias'}`;
   }
-  return `${tempo} ${tipo}`;
 }
 
 /**
  * Registra um novo aluguel para um grupo
  * @param {string} groupId - ID do grupo
- * @param {number} tempo - Quantidade de tempo
- * @param {string} tipo - Tipo do tempo (dias, horas ou minutos)
- * @param {string} nomeGrupo - Nome do grupo (opcional)
+ * @param {number} quantidade - Quantidade de tempo
+ * @param {string} tipo - Tipo: "dias", "horas" ou "minutos"
+ * @param {string} nomeGrupo - Nome do grupo
  * @returns {Object} Dados do aluguel registrado
  */
-function registrarAluguel(groupId, tempo, tipo, nomeGrupo = "Grupo sem nome") {
+exports.registrarAluguel = function(groupId, quantidade, tipo, nomeGrupo = "Grupo sem nome") {
   const alugueis = lerAlugueis();
   
   const id = gerarId();
-  const dataExpiracao = calcularExpiracao(tempo, tipo);
+  const dataExpiracao = calcularExpiracao(quantidade, tipo);
   const expiraFormatado = formatarData(dataExpiracao);
-  const duracao = formatarDuracao(tempo, tipo);
+  const duracaoFormatada = formatarDuracao(quantidade, tipo);
   
   const aluguel = {
     id,
     groupId,
     nomeGrupo,
-    duracao,
+    quantidade,
+    tipo,
+    duracao: duracaoFormatada,
     expira: expiraFormatado,
     expiraTimestamp: dataExpiracao.getTime(),
     registradoEm: new Date().toISOString(),
+    ativo: true,
   };
   
   alugueis[groupId] = aluguel;
   salvarAlugueis(alugueis);
   
   return aluguel;
-}
+};
 
 /**
  * Lista todos os aluguéis ativos
  * @returns {Object} Objeto com todos os aluguéis
  */
-function listarAlugueis() {
+exports.listarAlugueis = function() {
   return lerAlugueis();
-}
+};
 
 /**
  * Busca um aluguel pelo ID
  * @param {string} id - ID do aluguel
  * @returns {Object|null} Dados do aluguel ou null se não encontrado
  */
-function buscarAluguelPorId(id) {
+exports.buscarAluguelPorId = function(id) {
   const alugueis = lerAlugueis();
   
   for (const groupId in alugueis) {
@@ -176,14 +181,14 @@ function buscarAluguelPorId(id) {
   }
   
   return null;
-}
+};
 
 /**
  * Apaga um aluguel pelo ID
  * @param {string} id - ID do aluguel a ser apagado
  * @returns {boolean} true se apagou com sucesso, false se não encontrou
  */
-function apagarAluguel(id) {
+exports.apagarAluguel = function(id) {
   const alugueis = lerAlugueis();
   
   for (const groupId in alugueis) {
@@ -195,13 +200,13 @@ function apagarAluguel(id) {
   }
   
   return false;
-}
+};
 
 /**
  * Verifica aluguéis expirados e os remove
  * @returns {Array} Lista de grupos cujos aluguéis expiraram
  */
-function verificarExpirados() {
+exports.verificarExpirados = function() {
   const alugueis = lerAlugueis();
   const agora = Date.now();
   const expirados = [];
@@ -222,73 +227,94 @@ function verificarExpirados() {
   }
   
   return expirados;
-}
+};
 
 /**
  * Verifica se um grupo possui aluguel ativo
  * @param {string} groupId - ID do grupo
  * @returns {boolean} true se tem aluguel ativo, false caso contrário
  */
-function temAluguelAtivo(groupId) {
+exports.temAluguelAtivo = function(groupId) {
   const alugueis = lerAlugueis();
-  return groupId in alugueis;
-}
+  
+  if (!alugueis[groupId]) {
+    return false;
+  }
+  
+  // Verifica se não está expirado
+  const aluguel = alugueis[groupId];
+  const agora = Date.now();
+  
+  if (aluguel.expiraTimestamp <= agora) {
+    return false;
+  }
+  
+  return true;
+};
 
 /**
  * Obtém informações do aluguel de um grupo específico
  * @param {string} groupId - ID do grupo
  * @returns {Object|null} Dados do aluguel ou null se não encontrado
  */
-function obterAluguelDoGrupo(groupId) {
+exports.obterAluguelDoGrupo = function(groupId) {
   const alugueis = lerAlugueis();
   return alugueis[groupId] || null;
-}
+};
 
 /**
- * Renova um aluguel existente (adiciona mais tempo)
- * @param {string} id - ID do aluguel
- * @param {number} tempo - Quantidade de tempo adicional
- * @param {string} tipo - Tipo do tempo (dias, horas ou minutos)
- * @returns {Object|null} Dados do aluguel renovado ou null se não encontrado
+ * Calcula o tempo restante formatado
+ * @param {number} expiraTimestamp - Timestamp de expiração
+ * @returns {string} Tempo restante formatado
  */
-function renovarAluguel(id, tempo, tipo) {
-  const alugueis = lerAlugueis();
+exports.calcularTempoRestante = function(expiraTimestamp) {
+  const agora = Date.now();
+  const diferenca = expiraTimestamp - agora;
   
-  for (const groupId in alugueis) {
-    if (alugueis[groupId].id === id) {
-      const aluguelAtual = alugueis[groupId];
-      const dataAtual = new Date(aluguelAtual.expiraTimestamp);
-      
-      // Adiciona tempo à data de expiração atual
-      if (tipo === "dias") {
-        dataAtual.setDate(dataAtual.getDate() + tempo);
-      } else if (tipo === "horas") {
-        dataAtual.setHours(dataAtual.getHours() + tempo);
-      } else if (tipo === "minutos") {
-        dataAtual.setMinutes(dataAtual.getMinutes() + tempo);
-      }
-      
-      aluguelAtual.expira = formatarData(dataAtual);
-      aluguelAtual.expiraTimestamp = dataAtual.getTime();
-      aluguelAtual.renovadoEm = new Date().toISOString();
-      
-      alugueis[groupId] = aluguelAtual;
-      salvarAlugueis(alugueis);
-      
-      return aluguelAtual;
-    }
+  if (diferenca <= 0) {
+    return "EXPIRADO";
   }
   
-  return null;
-}
+  const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+  const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+  
+  if (dias > 0) {
+    return `${dias} dia${dias > 1 ? 's' : ''}`;
+  } else if (horas > 0) {
+    return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+  } else {
+    return `00:${String(minutos).padStart(2, '0')}`;
+  }
+};
 
-module.exports = {
-  registrarAluguel,
-  listarAlugueis,
-  apagarAluguel,
-  buscarAluguelPorId,
-  verificarExpirados,
-  temAluguelAtivo,
-  obterAluguelDoGrupo,
-  renovarAluguel,
+/**
+ * Calcula os dias restantes de um aluguel
+ * @param {number} expiraTimestamp - Timestamp de expiração
+ * @returns {number} Dias restantes (pode ser negativo se expirado)
+ */
+exports.calcularDiasRestantes = function(expiraTimestamp) {
+  const agora = Date.now();
+  const diferenca = expiraTimestamp - agora;
+  const dias = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+  return dias;
+};
+
+/**
+ * Ativa ou desativa um aluguel
+ * @param {string} groupId - ID do grupo
+ * @param {boolean} ativo - true para ativar, false para desativar
+ * @returns {boolean} true se alterou com sucesso, false se não encontrou
+ */
+exports.alterarStatusAluguel = function(groupId, ativo) {
+  const alugueis = lerAlugueis();
+  
+  if (!alugueis[groupId]) {
+    return false;
+  }
+  
+  alugueis[groupId].ativo = ativo;
+  salvarAlugueis(alugueis);
+  
+  return true;
 };

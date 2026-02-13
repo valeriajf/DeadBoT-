@@ -30,10 +30,9 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
- • ${prefix}set-bot-number
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
- • ${prefix}zerar-rank
+ • ${prefix}zerar-rank (grupo)
  • ${prefix}zerar-rank global 
 
 ╰━━─「🌌」─━━
@@ -57,7 +56,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}auto-responder (1/0)
  • ${prefix}auto-sticker (1/0)
  • ${prefix}ban
- • ${prefix}banghost 
  • ${prefix}blacklist-remover 
  • ${prefix}boasvindas-add
  • ${prefix}citar 

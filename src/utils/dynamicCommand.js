@@ -105,9 +105,14 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     }
   }
 
+  // ⭐ VERIFICA SE É COMANDO STATUS-ALUGUEL (pode executar mesmo com grupo desativado)
+  const isStatusAluguel = command && 
+    ['status-aluguel', 'status_aluguel', 'statusaluguel', 'aluguel_info', 'aluguel'].includes(command.name);
+
   if (!isBotOwner({ userJid, isLid }) && !activeGroup) {
     if (verifyPrefix(prefix, remoteJid) && hasTypeAndCommand({ type, command })) {
-      if (command.name !== "on") {
+      // ⭐ Permite comando "on" (ativar) e "status-aluguel" mesmo com grupo desativado
+      if (command.name !== "on" && !isStatusAluguel) {
         await sendWarningReply(
           "Este grupo está desativado! Peça para o dono do grupo ativar o bot!"
         );

@@ -1,5 +1,4 @@
 /**
-
 Comando BanGhost - Lista e bane membros fantasmas (inativos)
 
 Usa a mesma estrutura e sistema do rank-inativo para identificar membros fantasmas
@@ -19,7 +18,7 @@ module.exports = {
   commands: ["banghost", "banfantasma"],
   usage: `${PREFIX}banghost [número]`,
 
-  // Expõe o Map para ser acessado pelo onMessagesUpsert
+  // Expõe o Map para ser acessado pelo loader
   getPendingBans: () => pendingBans,
   
   /**
@@ -48,12 +47,12 @@ module.exports = {
         return await sendReply("⚠️ Este comando só pode ser usado em grupos!");
       }
 
-      // Verificar se é resposta SIM/NÃO (tratado pelo onMessagesUpsert)
+      // Verificar se é resposta SIM/NÃO (tratado pelo loader.js)
       const text = webMessage?.message?.conversation || webMessage?.message?.extendedTextMessage?.text || "";
       const textUpper = text.trim().toUpperCase();
       
       if (textUpper === 'SIM' || textUpper === 'NÃO' || textUpper === 'NAO') {
-        return; // Será tratado pelo onMessagesUpsert
+        return; // Será tratado pelo loader.js
       }
 
       // Pega os participantes do grupo para verificar admin manualmente
@@ -214,7 +213,6 @@ module.exports = {
 };
 
 /**
-
 Executa apenas listagem quando bot não é admin
 */
 async function executeListOnly(remoteJid, args, sendReply, getGroupParticipants, socket) {
@@ -316,13 +314,5 @@ async function executeListOnly(remoteJid, args, sendReply, getGroupParticipants,
   }
 }
 
-
-// Limpa confirmações antigas a cada minuto
-setInterval(() => {
-  const now = Date.now();
-  for (const [id, data] of pendingBans.entries()) {
-    if (now - data.timestamp > 60000) { // 1 minuto
-      pendingBans.delete(id);
-    }
-  }
-}, 60000);
+// ⚠️ NÃO COLOQUE setInterval AQUI!
+// A limpeza de confirmações antigas está no loader.js

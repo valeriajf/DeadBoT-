@@ -129,7 +129,6 @@ module.exports = {
       // Estatísticas gerais do bot
       const generalStats = activityTracker.getGeneralStats();
       rankingMessage += `🌍 *ESTATÍSTICAS GLOBAIS:*\n`;
-      rankingMessage += `📱 ${generalStats.totalGroups} grupos monitorados\n`;
       rankingMessage += `👤 ${generalStats.totalUsers} usuários ativos\n`;
       rankingMessage += `💬 ${generalStats.totalMessages} mensagens globais\n`;
       rankingMessage += `🎭 ${generalStats.totalStickers} figurinhas globais`;

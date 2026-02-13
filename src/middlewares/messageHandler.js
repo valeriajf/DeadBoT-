@@ -52,7 +52,11 @@ const STICKER_WARN_IDS = [
   
   "145,145,59,139,227,73,133,116,249,123,115,242,150,142,29,146,70,88,177,172,9,47,210,106,192,111,64,142,101,45,55,173",
   
-  "15,2,50,40,111,20,148,23,209,215,11,111,196,148,1,17,223,231,214,157,36,246,232,3,170,77,229,190,250,197,136,72"
+  "15,2,50,40,111,20,148,23,209,215,11,111,196,148,1,17,223,231,214,157,36,246,232,3,170,77,229,190,250,197,136,72",
+  
+  "218,254,52,24,134,17,4,2,52,124,134,78,162,197,228,27,113,53,146,18,224,208,55,163,247,170,28,114,200,122,98,190",
+  
+  "30,52,98,246,168,2,112,22,15,156,170,90,207,24,100,35,102,218,24,228,147,102,195,53,53,141,199,61,88,117,209,87",
 ];
 
 // Lista de figurinhas que mutam usuários (use o get-sticker)
@@ -73,16 +77,40 @@ const STICKER_BLACKLIST_IDS = [
 // Lista de figurinhas que promovem usuários a ADM (use o get-sticker)
 const STICKER_PROMOTE_IDS = [
   "150,36,21,208,34,172,94,51,170,226,158,254,16,137,198,12,5,246,158,145,67,232,64,203,140,113,110,119,133,75,202,242",
+  
+  "169,58,5,90,95,197,184,23,216,212,217,121,169,127,150,148,43,18,14,128,244,22,114,119,196,245,119,61,15,67,227,2",
 ];
 
 // Lista de figurinhas que rebaixam administradores (use o get-sticker)
 const STICKER_DEMOTE_IDS = [
   "135,117,179,112,82,88,39,145,177,26,22,52,126,40,71,218,124,6,143,177,166,235,216,218,114,3,32,124,100,42,22,162",
+  
+  "185,174,244,99,214,95,235,68,14,202,46,89,85,211,82,240,96,111,107,4,131,184,7,32,251,190,121,196,243,251,86,63",
 ];
 
 // Lista de figurinhas que ativam/desativam modo admin-only
 const STICKER_ADMIN_ONLY_IDS = [
   "95,181,130,218,104,202,71,146,141,123,129,217,95,220,246,195,245,138,251,65,211,71,117,249,78,74,104,34,31,253,208,144",
+  
+  "183,65,157,176,79,95,189,24,144,76,196,163,144,110,230,121,235,98,114,109,31,65,186,161,37,119,233,146,110,77,117,32",
+  
+];
+
+// Lista de figurinhas que marcam todos os administradores
+const STICKER_TAG_ADM_IDS = [
+  "160,61,15,230,141,158,84,106,199,104,39,177,1,18,176,243,24,145,246,125,61,215,154,2,189,165,162,16,25,70,142,110",
+  
+  "113,67,140,225,164,115,62,90,101,153,208,74,161,143,161,235,216,27,131,144,127,208,68,41,202,41,41,7,118,237,46,111",
+  
+  "207,119,53,31,199,0,160,171,253,225,50,129,91,42,143,108,222,113,109,161,191,46,71,26,61,2,52,238,88,18,200,204",
+  
+  "118,253,6,203,50,179,40,197,198,10,153,52,219,201,94,252,163,131,140,118,175,207,144,106,77,248,107,31,232,110,178,180",
+  
+  "7,26,234,62,39,179,181,143,132,105,31,62,3,66,35,117,123,161,49,139,137,188,81,249,184,78,133,60,197,226,245,102",
+  
+  "138,225,237,194,60,231,106,197,191,255,99,166,144,71,138,223,81,29,10,121,32,173,62,153,83,129,130,254,103,217,94,167",
+  
+  "175,32,132,251,252,64,142,106,3,248,49,199,250,199,10,238,162,197,226,90,35,47,101,147,218,75,90,186,254,167,5,119",
 ];
 
 // CORRIGIDO: Sobe duas pastas para chegar à raiz do projeto
@@ -893,6 +921,69 @@ async function handleStickerAdminOnly(socket, webMessage) {
   }
 }
 
+async function handleStickerTagAdmins(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const buf = webMessage.message.stickerMessage.fileSha256;
+    if (!buf || buf.length === 0) return;
+
+    const stickerIdNumeric = Array.from(buf).join(",");
+
+    // Verifica se é a figurinha correta
+    if (!STICKER_TAG_ADM_IDS.includes(stickerIdNumeric)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    // Só funciona em grupo
+    if (!remoteJid.endsWith("@g.us")) {
+      return;
+    }
+
+    // Metadados do grupo
+    const metadata = await socket.groupMetadata(remoteJid);
+    const groupName = metadata.subject || "este grupo";
+
+    // ❗ REMOVIDO: bloqueio que exigia ser admin
+    // Agora qualquer membro pode chamar os ADMs
+
+    // Lista de admins
+    const admins = metadata.participants
+      .filter(p => p.admin)
+      .map(p => p.id);
+
+    if (!admins.length) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não encontrei administradores neste grupo.'
+      });
+      return;
+    }
+
+    // Monta menções
+    const mentionsText = admins
+      .map(admin => `@${admin.split("@")[0]}`)
+      .join(" ");
+
+    // Layout padrão DeadBoT
+    const finalMessage =
+`👮 *Chamando os ADMs*
+🪀 Grupo: *${groupName}*
+
+${mentionsText}`;
+
+    // Envia mensagem
+    await socket.sendMessage(remoteJid, {
+      text: finalMessage,
+      mentions: admins
+    }, { quoted: webMessage });
+
+  } catch (error) {
+    console.error('Erro ao marcar admins por figurinha:', error);
+  }
+}
+
     await handleStickerTrigger(socket, webMessage);
     await handleStickerDelete(socket, webMessage);
     await handleStickerWarn(socket, webMessage);
@@ -902,6 +993,7 @@ async function handleStickerAdminOnly(socket, webMessage) {
     await handleStickerPromote(socket, webMessage);
     await handleStickerDemote(socket, webMessage);
     await handleStickerAdminOnly(socket, webMessage);
+    await handleStickerTagAdmins(socket, webMessage);
 
     const textMessage =
       webMessage.message?.extendedTextMessage?.text ||
