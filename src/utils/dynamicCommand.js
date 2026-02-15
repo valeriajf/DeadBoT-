@@ -113,9 +113,8 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     if (verifyPrefix(prefix, remoteJid) && hasTypeAndCommand({ type, command })) {
       // ⭐ Permite comando "on" (ativar) e "status-aluguel" mesmo com grupo desativado
       if (command.name !== "on" && !isStatusAluguel) {
-        await sendWarningReply(
-          "Este grupo está desativado! Peça para o dono do grupo ativar o bot!"
-        );
+        // ⭐ NOVA MENSAGEM: Mostra status do aluguel em vez de "grupo desativado"
+        await mostrarStatusAluguelDesativado(remoteJid, socket, sendReply);
         return;
       }
 
@@ -223,3 +222,57 @@ exports.dynamicCommand = async (paramsHandler, startProcess) => {
     }
   }
 };
+
+/**
+ * ⭐ Mostra status do aluguel quando o grupo está desativado
+ * @param {string} remoteJid - ID do grupo
+ * @param {Object} socket - Socket do WhatsApp
+ * @param {Function} sendReply - Função para enviar resposta
+ */
+async function mostrarStatusAluguelDesativado(remoteJid, socket, sendReply) {
+  try {
+    const { obterAluguelDoGrupo } = require("./aluguel");
+    const aluguel = obterAluguelDoGrupo(remoteJid);
+    
+    // Busca o nome do grupo
+    let nomeGrupo = "Grupo sem nome";
+    try {
+      const metadata = await socket.groupMetadata(remoteJid);
+      nomeGrupo = metadata?.subject || metadata?.name || "Grupo sem nome";
+    } catch (err) {
+      console.log("⚠️ Não foi possível obter o nome do grupo");
+    }
+
+    // Se tem aluguel mas está expirado
+    if (aluguel) {
+      const agora = Date.now();
+      const expirado = aluguel.expiraTimestamp <= agora;
+      
+      if (expirado) {
+        await sendReply(
+          `🪀 *NOME:* ${nomeGrupo}\n` +
+          `*🆔 GRUPO:* ${remoteJid}\n` +
+          `📅 *VENCIMENTO:* ${aluguel.expira}\n` +
+          `💢 *STATUS:* 🔴 DESATIVADO\n\n` +
+          `🚨 *Renove seu aluguel*`
+        );
+        return;
+      }
+    }
+
+    // Se não tem aluguel cadastrado
+    await sendReply(
+      `📊 *STATUS DO ALUGUEL*\n\n` +
+      `*🪀 NOME:* ${nomeGrupo}\n` +
+      `*🆔 GRUPO:* ${remoteJid}\n` +
+      `💢 *STATUS:* 🔴 DESATIVADO\n\n` +
+      `🚨 *Renove seu aluguel*`
+    );
+  } catch (error) {
+    console.error("Erro ao mostrar status do aluguel:", error);
+    // Fallback para mensagem antiga se der erro
+    await sendReply(
+      "⚠️ Atenção! Este grupo está desativado! Peça para o dono do grupo ativar o bot!"
+    );
+  }
+}

@@ -13,7 +13,8 @@ module.exports = {
         socket,
         remoteJid,
         isGroup,
-        getGroupAdmins
+        getGroupAdmins,
+        args
       } = params;
 
       // ❌ Só funciona em grupo
@@ -41,10 +42,15 @@ module.exports = {
       // 🏷️ Formata menções
       const adminMentions = admins.map(admin => `@${admin.split('@')[0]}`);
 
-      // 🧾 Mensagem padrão DeadBoT
+      // 📧 Texto extra digitado após o comando
+      const extraText = args && args.length > 0
+        ? `\n⚠️ ${args.join(' ')}\n`
+        : '';
+
+      // 🧾 Mensagem padrão DeadBoT + texto extra
       const message =
 `👮 *Chamando os ADMs*
-🪀️ Grupo: *${groupName}*
+🪀️ Grupo: *${groupName}*${extraText}
 
 ${adminMentions.join(' ')}`;
 

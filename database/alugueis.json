@@ -1,14 +1,14 @@
 {
   "120363422312164587@g.us": {
-    "id": "6TDO8C31",
+    "id": "3KE6VTGC",
     "groupId": "120363422312164587@g.us",
     "nomeGrupo": "Laboratório 🧫",
     "quantidade": 24,
     "tipo": "horas",
     "duracao": "24:00",
-    "expira": "14/02/2026, 12:21:26",
-    "expiraTimestamp": 1771082486695,
-    "registradoEm": "2026-02-13T15:21:26.697Z",
+    "expira": "15/02/2026, 14:11:08",
+    "expiraTimestamp": 1771175468759,
+    "registradoEm": "2026-02-14T17:11:08.761Z",
     "ativo": true
   }
 }

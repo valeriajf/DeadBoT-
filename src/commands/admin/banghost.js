@@ -1,20 +1,21 @@
 /**
 Comando BanGhost - Lista e bane membros fantasmas (inativos)
 
-Usa a mesma estrutura e sistema do rank-inativo para identificar membros fantasmas
+NOVA LÓGICA:
+- Lista até 10 membros com atividade <= critério
+- Se confirmar SIM, bane 5 aleatórios dos 10 listados (tipo roleta-russa)
 
 @author Dev VaL
 */
 const { PREFIX, BOT_NUMBER, OWNER_NUMBER } = require(`${BASE_DIR}/config`);
 const { toUserJid, onlyNumbers } = require(`${BASE_DIR}/utils`);
 
-
 // Armazenamento temporário para confirmações de banimento
 const pendingBans = new Map();
 
 module.exports = {
   name: "banghost",
-  description: "Lista e pode banir membros fantasmas (inativos) do grupo",
+  description: "Lista até 10 membros fantasmas e pode banir 5 aleatórios",
   commands: ["banghost", "banfantasma"],
   usage: `${PREFIX}banghost [número]`,
 
@@ -95,7 +96,7 @@ module.exports = {
         return await sendReply("❌ O número deve ser maior ou igual a 0!");
       }
 
-      // Carrega o activityTracker (mesma estrutura do rank-inativo)
+      // Carrega o activityTracker
       const activityTracker = require(`${BASE_DIR}/utils/activityTracker`);
       
       // Obtém estatísticas do grupo atual
@@ -116,15 +117,9 @@ module.exports = {
         const userNumber = onlyNumbers(userId);
         
         // Ignorar administradores, owner e bot
-        if (isAdmin) {
-          continue;
-        }
-        if (ownerNumber && userNumber === ownerNumber) {
-          continue;
-        }
-        if (userId === botJidForFilter) {
-          continue;
-        }
+        if (isAdmin) continue;
+        if (ownerNumber && userNumber === ownerNumber) continue;
+        if (userId === botJidForFilter) continue;
         
         // Verificar atividade do usuário
         const userData = groupStats[userId];
@@ -134,7 +129,6 @@ module.exports = {
         
         // Adicionar se atender ao critério
         if (total <= minMessages) {
-          // Usa a mesma função do rank-inativo para pegar o nome
           const displayName = activityTracker.getDisplayName(remoteJid, userId);
           
           ghostMembers.push({
@@ -149,29 +143,37 @@ module.exports = {
       }
 
       if (ghostMembers.length === 0) {
-        return await sendReply(`🎉 *GRUPO ATIVO* 🎉\n📅 *Grupo:* ${groupName}\n\n✅ Parabéns!\n👥 Não há membros com ${minMessages} mensagem(s) ou menos\n🏆 Todos estão participando ativamente\n💪 Continue incentivando a participação!`);
+        return await sendReply(
+          `🎉 *GRUPO ATIVO* 🎉\n` +
+          `📅 *Grupo:* ${groupName}\n\n` +
+          `✅ Parabéns!\n` +
+          `👥 Não há membros com ${minMessages} mensagem(s) ou menos\n` +
+          `🏆 Todos estão participando ativamente\n` +
+          `💪 Continue incentivando a participação!`
+        );
       }
+
+      // ⭐ NOVA LÓGICA: Embaralhar e limitar a 10
+      const shuffledGhosts = ghostMembers.sort(() => Math.random() - 0.5);
+      const ghostsToShow = shuffledGhosts.slice(0, Math.min(10, shuffledGhosts.length));
 
       // Gera ID de confirmação único
       const confirmationId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Construir lista de fantasmas no novo estilo
+      // Construir lista de fantasmas
       let listMessage = `👻 *MEMBROS FANTASMAS* 👻\n`;
       listMessage += `📅 *Grupo:* ${groupName}\n`;
       listMessage += `📊 *Critério:* ${minMessages} mensagem(s) ou menos\n`;
-      listMessage += `👥 *Encontrados:* ${ghostMembers.length} membros\n\n`;
+      listMessage += `👥 *Total encontrados:* ${ghostMembers.length} membros\n`;
+      listMessage += `📋 *Exibindo:* ${ghostsToShow.length} membros\n\n`;
 
       // Array para menções
       const mentions = [];
-      
-      // Limitar exibição a 15 membros
-      const displayLimit = 15;
-      const membersToShow = ghostMembers.slice(0, displayLimit);
 
       // Emojis para variar
-      const ghostEmojis = ["💀", "👻", "☠️", "🌑", "🦇", "🕷️", "🕸️", "⚰️", "🪦", "💤", "😴", "🤐", "🙊", "🚫", "❌"];
+      const ghostEmojis = ["💀", "👻", "☠️", "🌑", "🦇", "🕷️", "🕸️", "⚰️", "🪦", "💤"];
 
-      membersToShow.forEach((member, index) => {
+      ghostsToShow.forEach((member, index) => {
         const emoji = ghostEmojis[index % ghostEmojis.length];
         const userMention = `@${member.userId.split('@')[0]}`;
         mentions.push(member.userId);
@@ -182,23 +184,20 @@ module.exports = {
         listMessage += `   📊 ${member.total} total\n\n`;
       });
 
-      if (ghostMembers.length > displayLimit) {
-        listMessage += `... e mais ${ghostMembers.length - displayLimit} membros\n\n`;
-      }
-
       listMessage += `⚠️ *ATENÇÃO:*\n`;
-      listMessage += `Para BANIR, digite: *SIM*\n`;
+      listMessage += `Se você confirmar, *5 MEMBROS ALEATÓRIOS* dos ${ghostsToShow.length} listados serão banidos! 🎲\n\n`;
+      listMessage += `Para BANIR 5 aleatórios, digite: *SIM*\n`;
       listMessage += `Para CANCELAR, digite: *NÃO*\n`;
       listMessage += `⏰ Você tem 1 minuto para responder...`;
 
       // Enviar com menções
       await sendReply(listMessage, mentions);
 
-      // Armazena dados para confirmação (expira em 1 minuto)
+      // ⭐ Armazena apenas os membros exibidos (não todos)
       pendingBans.set(confirmationId, {
         chatId: remoteJid,
         adminJid: userJid,
-        ghostMembers: ghostMembers,
+        ghostMembers: ghostsToShow, // Apenas os 10 exibidos
         minMessages,
         timestamp: Date.now(),
         expiresAt: Date.now() + 60000 // 1 minuto
@@ -268,27 +267,34 @@ async function executeListOnly(remoteJid, args, sendReply, getGroupParticipants,
     }
 
     if (ghostMembers.length === 0) {
-      return await sendReply(`🎉 *GRUPO ATIVO* 🎉\n📅 *Grupo:* ${groupName}\n\n✅ Parabéns!\n👥 Não há membros com ${minMessages} mensagem(s) ou menos\n🏆 Todos estão participando ativamente`);
+      return await sendReply(
+        `🎉 *GRUPO ATIVO* 🎉\n` +
+        `📅 *Grupo:* ${groupName}\n\n` +
+        `✅ Parabéns!\n` +
+        `👥 Não há membros com ${minMessages} mensagem(s) ou menos\n` +
+        `🏆 Todos estão participando ativamente`
+      );
     }
 
-    // Construir lista (modo apenas visualização) no novo estilo
+    // ⭐ Embaralhar e limitar a 10
+    const shuffledGhosts = ghostMembers.sort(() => Math.random() - 0.5);
+    const ghostsToShow = shuffledGhosts.slice(0, Math.min(10, ghostMembers.length));
+
+    // Construir lista (modo apenas visualização)
     let listMessage = `👻 *MEMBROS FANTASMAS* 👻\n`;
     listMessage += `📅 *Grupo:* ${groupName}\n`;
     listMessage += `📊 *Critério:* ${minMessages} mensagem(s) ou menos\n`;
-    listMessage += `👥 *Encontrados:* ${ghostMembers.length} membros\n`;
+    listMessage += `👥 *Total encontrados:* ${ghostMembers.length} membros\n`;
+    listMessage += `📋 *Exibindo:* ${ghostsToShow.length} membros\n`;
     listMessage += `⚠️ *Bot não é admin - Apenas listando*\n\n`;
 
     // Array para menções
     const mentions = [];
 
-    // Limitar exibição a 10 membros no modo listagem
-    const displayLimit = 10;
-    const membersToShow = ghostMembers.slice(0, displayLimit);
-
     // Emojis para variar
     const ghostEmojis = ["💀", "👻", "☠️", "🌑", "🦇", "🕷️", "🕸️", "⚰️", "🪦", "💤"];
 
-    membersToShow.forEach((member, index) => {
+    ghostsToShow.forEach((member, index) => {
       const emoji = ghostEmojis[index % ghostEmojis.length];
       const userMention = `@${member.userId.split('@')[0]}`;
       mentions.push(member.userId);
@@ -298,10 +304,6 @@ async function executeListOnly(remoteJid, args, sendReply, getGroupParticipants,
       listMessage += `   🎭 ${member.stickerCount} figurinhas\n`;
       listMessage += `   📊 ${member.total} total\n\n`;
     });
-
-    if (ghostMembers.length > displayLimit) {
-      listMessage += `... e mais ${ghostMembers.length - displayLimit} membros\n\n`;
-    }
 
     listMessage += `💡 *Para banir:*\n`;
     listMessage += `Torne o bot administrador e use o comando novamente`;

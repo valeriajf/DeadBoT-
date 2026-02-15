@@ -124,13 +124,22 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
     // Cria chave única
     const executionKey = `${groupId}-${scheduleTime}`;
 
+    // DEBUG: Log a cada verificação (mostra sempre)
+    console.log(`[DEBUG AUTO-ABRIR] Verificando: Atual=${currentHours}:${currentMinutes} (${currentDate}) vs Programado=${scheduleHours}:${scheduleMinutes}`);
+
     if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+      console.log(`[DEBUG AUTO-ABRIR] ✅ HORÁRIO COINCIDE!`);
+      
       // Verifica se já executou hoje
-      if (lastExecution.abrir[executionKey] === currentDate) {
-        return; // Já executou hoje
+      const jaExecutouHoje = lastExecution.abrir[executionKey] === currentDate;
+      console.log(`[DEBUG AUTO-ABRIR] Já executou hoje? ${jaExecutouHoje} (última execução: ${lastExecution.abrir[executionKey] || 'nunca'})`);
+      
+      if (jaExecutouHoje) {
+        console.log(`[DEBUG AUTO-ABRIR] ⚠️ Pulando execução - já rodou hoje em ${currentDate}`);
+        return;
       }
 
-      console.log(`[AUTO-ABRIR] ✅ Executando às ${brasilia.fullTime} de Brasília (${currentDate})`);
+      console.log(`[DEBUG AUTO-ABRIR] 🚀 EXECUTANDO abertura do grupo...`);
       
       await socket.groupSettingUpdate(groupId, "not_announcement");
       await socket.sendMessage(groupId, {
@@ -139,10 +148,12 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
       
       // Marca como executado hoje
       lastExecution.abrir[executionKey] = currentDate;
+      console.log(`[DEBUG AUTO-ABRIR] ✅ Marcado como executado em: ${currentDate}`);
       
       console.log(`[AUTO-ABRIR] ✅ Grupo aberto com sucesso!`);
     }
   } catch (error) {
+    console.error(`[DEBUG AUTO-ABRIR] ❌ ERRO:`, error);
     console.error(`Erro ao abrir grupo ${groupId}:`, error.message);
   }
 }
@@ -162,13 +173,22 @@ async function checkAndClose(socket, groupId, scheduleTime) {
     // Cria chave única
     const executionKey = `${groupId}-${scheduleTime}`;
 
+    // DEBUG: Log a cada verificação (mostra sempre)
+    console.log(`[DEBUG AUTO-FECHAR] Verificando: Atual=${currentHours}:${currentMinutes} (${currentDate}) vs Programado=${scheduleHours}:${scheduleMinutes}`);
+
     if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+      console.log(`[DEBUG AUTO-FECHAR] ✅ HORÁRIO COINCIDE!`);
+      
       // Verifica se já executou hoje
-      if (lastExecution.fechar[executionKey] === currentDate) {
-        return; // Já executou hoje
+      const jaExecutouHoje = lastExecution.fechar[executionKey] === currentDate;
+      console.log(`[DEBUG AUTO-FECHAR] Já executou hoje? ${jaExecutouHoje} (última execução: ${lastExecution.fechar[executionKey] || 'nunca'})`);
+      
+      if (jaExecutouHoje) {
+        console.log(`[DEBUG AUTO-FECHAR] ⚠️ Pulando execução - já rodou hoje em ${currentDate}`);
+        return;
       }
 
-      console.log(`[AUTO-FECHAR] ✅ Executando às ${brasilia.fullTime} de Brasília (${currentDate})`);
+      console.log(`[DEBUG AUTO-FECHAR] 🚀 EXECUTANDO fechamento do grupo...`);
       
       await socket.groupSettingUpdate(groupId, "announcement");
       await socket.sendMessage(groupId, {
@@ -177,10 +197,12 @@ async function checkAndClose(socket, groupId, scheduleTime) {
       
       // Marca como executado hoje
       lastExecution.fechar[executionKey] = currentDate;
+      console.log(`[DEBUG AUTO-FECHAR] ✅ Marcado como executado em: ${currentDate}`);
       
       console.log(`[AUTO-FECHAR] ✅ Grupo fechado com sucesso!`);
     }
   } catch (error) {
+    console.error(`[DEBUG AUTO-FECHAR] ❌ ERRO:`, error);
     console.error(`Erro ao fechar grupo ${groupId}:`, error.message);
   }
 }

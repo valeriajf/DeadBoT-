@@ -359,84 +359,110 @@ try {
             }
             // 🚫 FIM ANTIFLOOD
 
-            // 🚫 SISTEMA BANGHOST - Detecção de confirmação SIM/NÃO
-            if (webMessage?.message && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
-                const userJid = webMessage.key.participant || webMessage.key.remoteJid;
-                const chatId = webMessage.key.remoteJid;
-                const msgText = webMessage.message?.extendedTextMessage?.text || webMessage.message?.conversation || "";
-                const textUpper = msgText.trim().toUpperCase();
+            // 🎯 SISTEMA BANGHOST - Confirmação SIM/NÃO com 5 ALEATÓRIOS
+try {
+    const msgText = webMessage.message?.extendedTextMessage?.text || 
+                    webMessage.message?.conversation || "";
+    const textUpper = msgText.trim().toUpperCase();
+    const chatId = webMessage.key.remoteJid; // ⭐ DEFINIR chatId aqui
+    
+    if ((textUpper === 'SIM' || textUpper === 'NÃO' || textUpper === 'NAO') && chatId.endsWith("@g.us")) {
+        const banghostCommand = require('../commands/admin/banghost');
+        const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
+        
+        // Procura confirmação pendente deste grupo
+        let confirmationData = null;
+        let confirmationId = null;
+        
+        for (const [id, data] of pendingBans.entries()) {
+            if (data.chatId === chatId) {
+                const sender = webMessage.key.participant || webMessage.key.remoteJid;
                 
-                if (textUpper === 'SIM' || textUpper === 'NÃO' || textUpper === 'NAO') {
-                    try {
-                        const banghostCommand = require('../commands/admin/banghost');
-                        const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
-                        
-                        let targetConfirmation = null;
-                        for (const [id, data] of pendingBans.entries()) {
-                            if (data.chatId === chatId && data.adminJid === userJid) {
-                                targetConfirmation = { id, data };
-                                break;
-                            }
-                        }
-                        
-                        if (targetConfirmation) {
-                            const { id: confirmationId, data } = targetConfirmation;
-                            
-                            if (textUpper === 'SIM') {
-                                pendingBans.delete(confirmationId);
-                                
-                                await socket.sendMessage(chatId, {
-                                    text: `🔨 Iniciando banimento de ${data.ghostMembers.length} membro(s) fantasma(s)...\n⏳ Por favor, aguarde...`
-                                });
-                                
-                                let successCount = 0;
-                                let failCount = 0;
-                                
-                                const batchSize = 3;
-                                for (let i = 0; i < data.ghostMembers.length; i += batchSize) {
-                                    const batch = data.ghostMembers.slice(i, i + batchSize);
-                                    
-                                    for (const member of batch) {
-                                        try {
-                                            await socket.groupParticipantsUpdate(chatId, [member.jid], 'remove');
-                                            successCount++;
-                                            console.log(`🚪 [BANGHOST] ${member.name} foi banido do grupo`);
-                                            
-                                            const activityTracker = require('../utils/activityTracker');
-                                            if (activityTracker && typeof activityTracker.removeUser === 'function') {
-                                                activityTracker.removeUser(chatId, member.jid);
-                                            }
-                                        } catch (error) {
-                                            failCount++;
-                                            console.error(`❌ [BANGHOST] Falha ao banir ${member.name}:`, error.message);
-                                        }
-                                        
-                                        await new Promise(resolve => setTimeout(resolve, 1500));
-                                    }
-                                    
-                                    if (i + batchSize < data.ghostMembers.length) {
-                                        await new Promise(resolve => setTimeout(resolve, 3000));
-                                    }
-                                }
-                                
-                                const reportText = `📊 *BANIMENTO CONCLUÍDO*\n\n` +
-                                                 `✅ Banidos com sucesso: ${successCount}\n`;                   
-                                
-                                await socket.sendMessage(chatId, { text: reportText });
-                                
-                            } else if (textUpper === 'NÃO' || textUpper === 'NAO') {
-                                pendingBans.delete(confirmationId);
-                                await socket.sendMessage(chatId, {
-                                    text: "✅ Banimento cancelado com sucesso!"
-                                });
-                            }
-                        }
-                        
-                    } catch (error) {
-                        console.error('❌ [BANGHOST] Erro na confirmação:', error.message);
-                    }
+                // Verifica se é o admin que iniciou
+                if (data.adminJid === sender) {
+                    confirmationData = data;
+                    confirmationId = id;
+                    break;
                 }
             }
+        }
+        
+        if (confirmationData) {
+            // Remove a confirmação do Map
+            pendingBans.delete(confirmationId);
+            
+            if (textUpper === 'NÃO' || textUpper === 'NAO') {
+                await socket.sendMessage(chatId, {
+                    text: '❌ Banimento cancelado pelo administrador!'
+                });
+                continue;
+            }
+            
+            if (textUpper === 'SIM') {
+                const ghostMembers = confirmationData.ghostMembers;
+                
+                // ⭐ ESCOLHE 5 ALEATÓRIOS DOS MEMBROS LISTADOS
+                const shuffled = ghostMembers.sort(() => Math.random() - 0.5);
+                const toBan = shuffled.slice(0, Math.min(5, shuffled.length));
+                
+                if (toBan.length === 0) {
+                    await socket.sendMessage(chatId, {
+                        text: '❌ Nenhum membro para banir!'
+                    });
+                    continue;
+                }
+                
+                await socket.sendMessage(chatId, {
+                    text: `🎲 Sorteando ${toBan.length} membros aleatórios para banimento...`
+                });
+                
+                let successCount = 0;
+                let failCount = 0;
+                const bannedNames = [];
+                
+                for (const member of toBan) {
+                    try {
+                        await socket.groupParticipantsUpdate(chatId, [member.userId], 'remove');
+                        successCount++;
+                        bannedNames.push(`@${member.userId.split('@')[0]}`);
+                        
+                        // Remover do activityTracker
+                        try {
+                            const activityTracker = require('../utils/activityTracker');
+                            if (activityTracker && typeof activityTracker.removeUser === 'function') {
+                                activityTracker.removeUser(chatId, member.userId);
+                            }
+                        } catch (err) {
+                            console.error('Erro ao remover do activityTracker:', err.message);
+                        }
+                    } catch (banError) {
+                        failCount++;
+                        console.error(`Erro ao banir ${member.userId}:`, banError.message);
+                    }
+                }
+                
+                let resultMessage = `🔨 *RESULTADO DO BANIMENTO*\n\n`;
+                resultMessage += `✅ Banidos: ${successCount}\n`;
+                if (failCount > 0) {
+                    resultMessage += `❌ Falhas: ${failCount}\n`;
+                }
+                resultMessage += `\n👻 *Membros removidos:*\n`;
+                bannedNames.forEach(name => {
+                    resultMessage += `• ${name}\n`;
+                });
+                
+                const mentions = toBan.map(m => m.userId);
+                await socket.sendMessage(chatId, {
+                    text: resultMessage,
+                    mentions: mentions
+                });
+            }
+        }
+    }
+} catch (banghostError) {
+    console.error('❌ [BANGHOST] Erro na confirmação:', banghostError.message);
+}
+// 🎯 FIM SISTEMA BANGHOST
 
             if (webMessage?.message) {
                 messageHandler(socket, webMessage);

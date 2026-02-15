@@ -103,13 +103,22 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
     // Cria chave única para este grupo e horário
     const executionKey = `${groupId}-${scheduleTime}`;
 
+    // DEBUG: Log a cada verificação (mostra sempre)
+    console.log(`[DEBUG ABRIR] Verificando: Atual=${currentHours}:${currentMinutes} (${currentDate}) vs Programado=${scheduleHours}:${scheduleMinutes}`);
+
     if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
+      console.log(`[DEBUG ABRIR] ✅ HORÁRIO COINCIDE!`);
+      
       // Verifica se já executou hoje
-      if (lastExecution[executionKey] === currentDate) {
-        return; // Já executou hoje
+      const jaExecutouHoje = lastExecution[executionKey] === currentDate;
+      console.log(`[DEBUG ABRIR] Já executou hoje? ${jaExecutouHoje} (última execução: ${lastExecution[executionKey] || 'nunca'})`);
+      
+      if (jaExecutouHoje) {
+        console.log(`[DEBUG ABRIR] ⚠️ Pulando execução - já rodou hoje em ${currentDate}`);
+        return;
       }
       
-      console.log(`[ABRIR] ✅ Executando às ${brasilia.fullTime} de Brasília (${currentDate})`);
+      console.log(`[DEBUG ABRIR] 🚀 EXECUTANDO abertura do grupo...`);
       
       await socket.groupSettingUpdate(groupId, "not_announcement");
       await socket.sendMessage(groupId, {
@@ -118,10 +127,12 @@ async function checkAndOpen(socket, groupId, scheduleTime) {
       
       // Marca como executado hoje
       lastExecution[executionKey] = currentDate;
+      console.log(`[DEBUG ABRIR] ✅ Marcado como executado em: ${currentDate}`);
       
       console.log(`[AUTO-ABRIR] ✅ Grupo aberto com sucesso!`);
     }
   } catch (error) {
+    console.error(`[DEBUG ABRIR] ❌ ERRO:`, error);
     errorLog(
       `Erro ao abrir grupo automaticamente: ${JSON.stringify(error, null, 2)}`
     );
@@ -211,6 +222,7 @@ module.exports = {
           await sendWarningReply(
             `⏰ *Abertura automática ativa*\n\n` +
               `Horário programado: *${currentSchedule}* (Brasília)\n` +
+              `🔄 *Repetição:* Todos os dias\n\n` +
               `Para alterar, use: ${PREFIX}grupo-abrir HH:MM\n` +
               `Para cancelar, use: ${PREFIX}grupo-abrir cancelar`
           );
@@ -280,6 +292,7 @@ module.exports = {
       await sendSuccessReply(
         `✅ *Abertura programada com sucesso!*\n\n` +
           `⏰ Horário: *${scheduleTime}*\n` +
+          `🔄 *Repetição:* Todos os dias\n` +
           `📍 O grupo será aberto automaticamente todos os dias neste horário.\n` +
           `🕐 Horário atual de Brasília: ${brasilia.fullTime}\n\n` +
           `Para cancelar: ${PREFIX}grupo-abrir cancelar`

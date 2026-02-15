@@ -20,9 +20,100 @@ const path = require('path');
 const afk = require("../commands/member/afk");
 const voltei = require("../commands/member/voltei");
 
+//Figurinha que envia o link do grupo
+const STICKER_GROUP_LINK_IDS = [
+  "237,248,218,53,65,128,225,154,69,102,183,55,154,85,52,106,10,190,31,139,94,100,66,210,227,187,13,255,146,223,77,115"
+];
+
+// Lista de figurinhas que puxam a descrição do grupo
+const STICKER_GROUP_DESCRIPTION_IDS = [
+  "16,9,222,60,131,251,241,100,163,197,50,157,76,226,38,0,127,55,158,204,217,97,19,25,38,121,166,235,196,185,254,29",
+  
+  "224,112,41,161,253,170,220,92,249,1,176,208,200,22,61,204,0,238,76,94,134,122,213,255,156,25,139,30,215,109,2,51",
+];
+
+// =============================
+// SISTEMA DE FIGURINHAS INTELIGENTES
+// =============================
+
+// cache rotativo por grupo + figurinha
+const stickerMessageCache = new Map();
+
+// IDs das figurinhas (SHA256)
+// você vai substituir depois com os IDs reais
+const STICKER_SMART_MESSAGES = {
+
+  // 🌅 MANHÃ (10 mensagens)
+  "217,190,46,102,162,40,142,237,156,160,17,3,230,226,153,185,123,165,14,73,138,20,103,32,35,90,101,49,111,145,62,10": [
+    "🌅 Bom dia, pessoal! Que o dia comece leve e abençoado 🙏",
+    "☀️ Bom dia! Bora vencer mais um dia 💪",
+    "🌄 Acorda grupo! O dia já começou cheio de oportunidades ✨",
+    "🌻 Bom dia! Que hoje seja incrível pra todos nós 😄",
+    "🙏 Um ótimo dia pra todos! Energia positiva sempre!",
+    "🌞 Bom dia! Que nada te impeça de sorrir hoje.",
+    "✨ Hoje é um novo começo. Bom dia, grupo!",
+    "☕ Café tomado? Então bora viver esse dia!",
+    "🚀 Bom dia! Foque no que te faz crescer.",
+    "💛 Que seu dia seja leve, produtivo e feliz!"
+  ],
+
+  // ☀️ TARDE (10 mensagens)
+  "220,122,101,4,180,109,40,30,122,54,227,150,46,180,180,68,142,75,125,121,132,172,203,242,81,172,140,201,247,230,146,169": [
+    "☀️ Boa tarde, pessoal! Como está o dia de vocês?",
+    "🌞 Passando pra desejar uma ótima tarde pra todos 🙌",
+    "💛 Que sua tarde seja produtiva e tranquila!",
+    "☕ Bora continuar firme que o dia ainda rende!",
+    "🔥 Boa tarde! Não desanima, ainda dá tempo de fazer acontecer.",
+    "✨ Que sua tarde seja cheia de coisas boas.",
+    "🚀 Continue! Você está indo bem.",
+    "🌻 Uma tarde leve e positiva pra todo mundo!",
+    "📈 Foco e constância! Boa tarde, grupo.",
+    "😊 Respira, se organiza e segue. Boa tarde!"
+  ],
+
+  // 🌙 NOITE (10 mensagens)
+  "100,102,229,217,44,250,249,166,143,74,160,213,200,135,55,23,90,168,224,77,164,76,222,163,66,121,250,215,87,117,206,122": [
+    "🌙 Boa noite, grupo! Descansem bem 😴",
+    "✨ Que a noite traga paz e tranquilidade pra todos 🙏",
+    "🌌 Boa noite! Hora de desacelerar e relaxar",
+    "🛌 Que amanhã seja ainda melhor. Boa noite!",
+    "💫 Gratidão pelo dia de hoje. Boa noite, pessoal!",
+    "😌 Hora de descansar a mente e o corpo.",
+    "🌠 Boa noite! Recarregue as energias.",
+    "🙏 Deus abençoe a noite de cada um.",
+    "💤 Durmam bem e até amanhã!",
+    "🌜 Finalizando mais um dia. Boa noite!"
+  ],
+
+  // 💪 MOTIVACIONAL (10 mensagens)
+  "239,55,96,251,174,164,222,72,23,117,110,18,142,89,61,82,146,101,89,165,10,241,240,174,56,69,5,86,175,228,235,3": [
+    "💪 Nunca desista. Grandes coisas levam tempo!",
+    "🔥 Você é mais forte do que imagina.",
+    "🚀 Continue! Cada passo te aproxima da vitória.",
+    "✨ Acredite no seu potencial.",
+    "🏆 Disciplina vence motivação.",
+    "📈 Pequenos progressos ainda são progressos.",
+    "🌟 O esforço de hoje é o sucesso de amanhã.",
+    "💭 Pensamento positivo gera resultado positivo.",
+    "⚡ Levanta e faz acontecer!",
+    "🙌 Você consegue. Só não pode parar."
+  ],
+
+  // 📜 REGRAS
+  "id-da-figurinha": [
+    "📜 *REGRAS DO GRUPO*\n\n• Respeito sempre\n• Sem spam\n• Sem brigas\n• Proibido conteúdo inadequado",
+    "⚠️ Lembrete das regras:\n\n• Nada de links sem autorização\n• Sem flood\n• Educação sempre"
+  ],
+
+  // 📢 PROPAGANDA
+  "136,212,244,236,205,204,77,201,25,71,237,246,168,220,37,103,10,31,98,202,241,222,119,1,194,10,191,8,121,178,154,1": [
+    "📢 *Gostou do DeadBoT? Entre em contato para alugar e transformar seu grupo*"
+  ]
+};
+
 // Lista de figurinhas que disparam o tagall (use o get-sticker)
 const STICKER_TRIGGER_IDS = [
-  "55,228,193,145,9,157,220,70,93,2,80,169,59,3,226,160,3,67,63,3,212,55,45,222,19,228,51,154,84,130,37,50",
+  "227,46,215,121,98,204,115,82,87,139,171,69,176,148,56,239,239,142,185,103,50,47,56,106,211,1,128,222,71,218,157,226",
 ];
 
 // Lista de figurinhas que deletam mensagens (use o get-sticker) - GLOBAL para todos os grupos
@@ -273,27 +364,76 @@ async function handleStickerTrigger(socket, webMessage) {
     const buf = webMessage.message.stickerMessage.fileSha256;
     const stickerIdNumeric = Array.from(buf).join(",");
 
-    if (!STICKER_TRIGGER_IDS.includes(stickerIdNumeric)) {
+    // verifica se é uma figurinha de tagall
+    if (!STICKER_TRIGGER_IDS.includes(stickerIdNumeric)) return;
+
+    const remoteJid = webMessage.key.remoteJid;
+    const senderJid = webMessage.key.participant;
+
+    // reação inicial
+    await socket.sendMessage(remoteJid, {
+      react: { text: "⏳", key: webMessage.key }
+    });
+
+    // pega metadata do grupo
+    let metadata;
+    try {
+      metadata = await socket.groupMetadata(remoteJid);
+    } catch (e) {
+      await socket.sendMessage(remoteJid, {
+        react: { text: "❌", key: webMessage.key }
+      });
       return;
     }
 
-    const metadata = await socket.groupMetadata(webMessage.key.remoteJid);
-    const participant = metadata.participants.find(p => p.id === webMessage.key.participant);
+    // verifica se quem enviou é admin
+    const sender = metadata.participants.find(p =>
+      p.id === senderJid || p.jid === senderJid
+    );
 
-    if (!participant?.admin) {
+    if (!sender?.admin) {
+      await socket.sendMessage(remoteJid, {
+        react: { text: "❌", key: webMessage.key }
+      });
       return;
     }
 
-    const participants = metadata.participants.map(p => p.id);
-    let mentionsText = "📢 *Marcação Geral*\n\n";
-    mentionsText += participants.map(p => `@${p.split("@")[0]}`).join(" ");
+    // lista participantes (remove o bot)
+    const participants = metadata.participants
+      .map(p => p.id || p.jid)
+      .filter(jid => jid && jid !== `${BOT_NUMBER}@s.whatsapp.net`);
 
-    await socket.sendMessage(webMessage.key.remoteJid, {
-      text: mentionsText,
+    if (!participants.length) {
+      await socket.sendMessage(remoteJid, {
+        react: { text: "❌", key: webMessage.key }
+      });
+      return;
+    }
+
+    // nome do grupo
+    const groupName = metadata.subject || "Grupo";
+
+    // mensagem limpa (tagall silencioso)
+    const text = `👥 *${groupName}*\n\n🏷️ *Figurinha chamando todos do grupo*`;
+
+    // envia marcação silenciosa
+    await socket.sendMessage(remoteJid, {
+      text,
       mentions: participants
     }, { quoted: webMessage });
 
-  } catch (e) {
+    // reação de sucesso
+    await socket.sendMessage(remoteJid, {
+      react: { text: "✅", key: webMessage.key }
+    });
+
+  } catch (error) {
+    try {
+      await socket.sendMessage(webMessage.key.remoteJid, {
+        react: { text: "❌", key: webMessage.key }
+      });
+    } catch {}
+    errorLog("Erro no sticker tagall:", error);
   }
 }
 
@@ -668,12 +808,10 @@ exports.messageHandler = async (socket, webMessage) => {
     const userJid = webMessage.key?.participant;
     if (!userJid) return;
 
-    const isBotOrOwner =
-      compareUserJidWithOtherNumber({ userJid, otherNumber: OWNER_NUMBER }) ||
-      compareUserJidWithOtherNumber({ userJid, otherNumber: BOT_NUMBER }) ||
-      userJid === OWNER_LID;
+    const isBot =
+  compareUserJidWithOtherNumber({ userJid, otherNumber: BOT_NUMBER });
 
-    if (isBotOrOwner) return;
+if (isBot) return;
 
     // Verifica se o usuário está na blacklist
     if (isBlacklisted(userJid)) {
@@ -984,6 +1122,191 @@ ${mentionsText}`;
   }
 }
 
+async function handleSmartStickers(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const remoteJid = webMessage.key.remoteJid;
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    const buf = webMessage.message.stickerMessage.fileSha256;
+    if (!buf) return;
+
+    const stickerId = Array.from(buf).join(",");
+
+    const messages = STICKER_SMART_MESSAGES[stickerId];
+    if (!messages) return;
+
+    // verifica admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const sender = webMessage.key.participant;
+
+    const participant = metadata.participants.find(p => p.id === sender);
+    if (!participant?.admin) return;
+
+    // ROTATIVO
+    const cacheKey = `${remoteJid}_${stickerId}`;
+
+    let index = stickerMessageCache.get(cacheKey) || 0;
+
+    const messageToSend = messages[index];
+
+    index++;
+    if (index >= messages.length) index = 0;
+
+    stickerMessageCache.set(cacheKey, index);
+
+    await socket.sendMessage(remoteJid, {
+      text: messageToSend
+    }, { quoted: webMessage });
+
+  } catch (error) {
+    console.log("Erro no sistema de figurinha inteligente:", error);
+  }
+}
+
+async function handleStickerGroupLink(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_GROUP_LINK_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    // garante que é grupo
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    // verifica se quem usou é admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(
+      p => p.id === webMessage.key.participant
+    );
+
+    if (!participant?.admin) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Apenas administradores podem gerar o link do grupo."
+      });
+      return;
+    }
+
+    // pega código do convite
+    const inviteCode = await socket.groupInviteCode(remoteJid);
+    if (!inviteCode) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Preciso ser administrador para obter o link."
+      });
+      return;
+    }
+
+    // monta link
+    const groupInviteLink = `https://chat.whatsapp.com/${inviteCode}`;
+
+    // pega nome do grupo
+    const groupName = metadata.subject;
+
+    const messageText =
+      `*${groupName}*\n\nConvite para conversa em grupo\n\n${groupInviteLink}`;
+
+    // tenta pegar foto do grupo
+    try {
+      const profilePicUrl = await socket.profilePictureUrl(remoteJid, "image");
+
+      if (profilePicUrl) {
+        await socket.sendMessage(remoteJid, {
+          image: { url: profilePicUrl },
+          caption: messageText,
+        }, { quoted: webMessage });
+      } else {
+        await socket.sendMessage(remoteJid, {
+          text: messageText
+        }, { quoted: webMessage });
+      }
+    } catch (profileError) {
+      console.log("Não foi possível obter a foto do grupo:", profileError.message);
+
+      await socket.sendMessage(remoteJid, {
+        text: messageText
+      }, { quoted: webMessage });
+    }
+
+  } catch (error) {
+    console.error("Erro ao gerar link do grupo via figurinha:", error);
+  }
+}
+
+async function handleStickerGroupDescription(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    // verifica se é a figurinha da descrição
+    if (!STICKER_GROUP_DESCRIPTION_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    // só funciona em grupo
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    // verifica se quem usou é admin
+    const metadata = await socket.groupMetadata(remoteJid);
+    const participant = metadata.participants.find(
+      p => p.id === webMessage.key.participant
+    );
+
+    if (!participant?.admin) {
+      return;
+    }
+
+    const descricao = metadata?.desc;
+
+    if (!descricao || descricao.trim() === "") {
+      await socket.sendMessage(remoteJid, {
+        text: "⚠️ Este grupo não possui descrição definida."
+      });
+      return;
+    }
+
+    // 🔥 NOVO: puxar foto do grupo
+    let fotoGrupo;
+    try {
+      fotoGrupo = await socket.profilePictureUrl(remoteJid, "image");
+    } catch {
+      fotoGrupo = null;
+    }
+
+    // 🔥 se tiver foto → envia com legenda
+    if (fotoGrupo) {
+      await socket.sendMessage(remoteJid, {
+        image: { url: fotoGrupo },
+        caption: `🚨 *Regras do grupo 🚨*\n\n${descricao}`
+      });
+    } else {
+      // fallback se não houver foto
+      await socket.sendMessage(remoteJid, {
+        text: `🚨 *Regras do grupo 🚨*\n\n${descricao}`
+      });
+    }
+
+  } catch (error) {
+    console.error("Erro ao puxar descrição do grupo:", error);
+  }
+}
+
     await handleStickerTrigger(socket, webMessage);
     await handleStickerDelete(socket, webMessage);
     await handleStickerWarn(socket, webMessage);
@@ -994,6 +1317,9 @@ ${mentionsText}`;
     await handleStickerDemote(socket, webMessage);
     await handleStickerAdminOnly(socket, webMessage);
     await handleStickerTagAdmins(socket, webMessage);
+    await handleSmartStickers(socket, webMessage);
+    await handleStickerGroupLink(socket, webMessage);
+    await handleStickerGroupDescription(socket, webMessage);
 
     const textMessage =
       webMessage.message?.extendedTextMessage?.text ||

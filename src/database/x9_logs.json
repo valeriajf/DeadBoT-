@@ -1,0 +1,690 @@
+[
+  {
+    "id": 1,
+    "timestamp": "2026-02-14T22:46:33.229Z",
+    "date": "14/02/2026, 19:46:33",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "242404347146484",
+    "details": "1 membro(s) promovido(s) a admin"
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-02-14T22:47:18.904Z",
+    "date": "14/02/2026, 19:47:18",
+    "action": "Rebaixar Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "242404347146484",
+    "details": "1 admin(s) rebaixado(s)"
+  },
+  {
+    "id": 3,
+    "timestamp": "2026-02-14T22:57:38.403Z",
+    "date": "14/02/2026, 19:57:38",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "242404347146484",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 4,
+    "timestamp": "2026-02-14T22:57:58.904Z",
+    "date": "14/02/2026, 19:57:58",
+    "action": "Rebaixar Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "242404347146484",
+    "details": "Rebaixado de admin"
+  },
+  {
+    "id": 5,
+    "timestamp": "2026-02-14T22:59:38.192Z",
+    "date": "14/02/2026, 19:59:38",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 6,
+    "timestamp": "2026-02-14T22:59:58.858Z",
+    "date": "14/02/2026, 19:59:58",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 7,
+    "timestamp": "2026-02-14T23:05:24.969Z",
+    "date": "14/02/2026, 20:05:24",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Pakotinho"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 8,
+    "timestamp": "2026-02-14T23:27:35.218Z",
+    "date": "14/02/2026, 20:27:35",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório"
+    },
+    "target": "144512814997529",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 9,
+    "timestamp": "2026-02-14T23:27:46.008Z",
+    "date": "14/02/2026, 20:27:46",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório"
+    },
+    "target": "242404347146484",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 10,
+    "timestamp": "2026-02-14T23:39:01.722Z",
+    "date": "14/02/2026, 20:39:01",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório"
+    },
+    "target": "144512814997529",
+    "details": "Membro removido"
+  },
+  {
+    "id": 11,
+    "timestamp": "2026-02-14T23:51:14.280Z",
+    "date": "14/02/2026, 20:51:14",
+    "action": "Alterar Descrição do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🫟"
+    },
+    "target": null,
+    "details": "Descrição do grupo foi alterada"
+  },
+  {
+    "id": 12,
+    "timestamp": "2026-02-14T23:51:48.862Z",
+    "date": "14/02/2026, 20:51:48",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🫟"
+    },
+    "target": null,
+    "details": "Editar info do grupo: Todos os membros"
+  },
+  {
+    "id": 13,
+    "timestamp": "2026-02-14T23:56:12.610Z",
+    "date": "14/02/2026, 20:56:12",
+    "action": "Alterar Nome do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Novo nome: Laboratório 🧫"
+  },
+  {
+    "id": 14,
+    "timestamp": "2026-02-14T23:56:58.142Z",
+    "date": "14/02/2026, 20:56:58",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 15,
+    "timestamp": "2026-02-15T00:03:45.604Z",
+    "date": "14/02/2026, 21:03:45",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 16,
+    "timestamp": "2026-02-15T00:07:28.345Z",
+    "date": "14/02/2026, 21:07:28",
+    "action": "Sair do Grupo",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Saiu do grupo"
+  },
+  {
+    "id": 17,
+    "timestamp": "2026-02-15T00:09:48.900Z",
+    "date": "14/02/2026, 21:09:48",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 18,
+    "timestamp": "2026-02-15T00:10:12.730Z",
+    "date": "14/02/2026, 21:10:12",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "144512814997529",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 19,
+    "timestamp": "2026-02-15T00:10:37.744Z",
+    "date": "14/02/2026, 21:10:37",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "144512814997529",
+    "details": "Membro removido"
+  },
+  {
+    "id": 20,
+    "timestamp": "2026-02-15T00:32:02.456Z",
+    "date": "14/02/2026, 21:32:02",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Solicitação às 21:32:01"
+  },
+  {
+    "id": 21,
+    "timestamp": "2026-02-15T00:39:21.238Z",
+    "date": "14/02/2026, 21:39:21",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Solicitação às 21:39:20"
+  },
+  {
+    "id": 22,
+    "timestamp": "2026-02-15T00:45:45.947Z",
+    "date": "14/02/2026, 21:45:45",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Solicitação às 21:45:45"
+  },
+  {
+    "id": 23,
+    "timestamp": "2026-02-15T00:45:56.351Z",
+    "date": "14/02/2026, 21:45:56",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 24,
+    "timestamp": "2026-02-15T00:46:12.117Z",
+    "date": "14/02/2026, 21:46:12",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 25,
+    "timestamp": "2026-02-15T01:15:29.847Z",
+    "date": "14/02/2026, 22:15:29",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Solicitação às 22:15:29"
+  },
+  {
+    "id": 26,
+    "timestamp": "2026-02-15T01:16:27.760Z",
+    "date": "14/02/2026, 22:16:27",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 27,
+    "timestamp": "2026-02-15T01:22:56.929Z",
+    "date": "14/02/2026, 22:22:56",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Solicitação às 22:22:56"
+  },
+  {
+    "id": 28,
+    "timestamp": "2026-02-15T01:23:18.226Z",
+    "date": "14/02/2026, 22:23:18",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 29,
+    "timestamp": "2026-02-15T01:24:29.099Z",
+    "date": "14/02/2026, 22:24:29",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro removido"
+  },
+  {
+    "id": 30,
+    "timestamp": "2026-02-15T01:24:29.114Z",
+    "date": "14/02/2026, 22:24:29",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Solicitação recusada ou membro removido"
+  },
+  {
+    "id": 31,
+    "timestamp": "2026-02-15T01:24:36.438Z",
+    "date": "14/02/2026, 22:24:36",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro removido"
+  },
+  {
+    "id": 32,
+    "timestamp": "2026-02-15T01:24:36.491Z",
+    "date": "14/02/2026, 22:24:36",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Solicitação recusada ou membro removido"
+  },
+  {
+    "id": 33,
+    "timestamp": "2026-02-15T01:27:51.383Z",
+    "date": "14/02/2026, 22:27:51",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 34,
+    "timestamp": "2026-02-15T01:33:18.696Z",
+    "date": "14/02/2026, 22:33:18",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro removido"
+  },
+  {
+    "id": 35,
+    "timestamp": "2026-02-15T01:39:20.516Z",
+    "date": "14/02/2026, 22:39:20",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 36,
+    "timestamp": "2026-02-15T01:39:37.109Z",
+    "date": "14/02/2026, 22:39:37",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro removido"
+  },
+  {
+    "id": 37,
+    "timestamp": "2026-02-15T01:39:37.133Z",
+    "date": "14/02/2026, 22:39:37",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 38,
+    "timestamp": "2026-02-15T02:58:09.539Z",
+    "date": "14/02/2026, 23:58:09",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 39,
+    "timestamp": "2026-02-15T03:01:52.816Z",
+    "date": "15/02/2026, 00:01:52",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 40,
+    "timestamp": "2026-02-15T03:54:43.334Z",
+    "date": "15/02/2026, 00:54:43",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 41,
+    "timestamp": "2026-02-15T11:34:00.778Z",
+    "date": "15/02/2026, 08:34:00",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 42,
+    "timestamp": "2026-02-15T11:43:10.790Z",
+    "date": "15/02/2026, 08:43:10",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 43,
+    "timestamp": "2026-02-15T11:43:10.859Z",
+    "date": "15/02/2026, 08:43:10",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro removido"
+  }
+]

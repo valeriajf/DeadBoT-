@@ -9,6 +9,7 @@ socket do WhatsApp.
 const { TIMEOUT_IN_MILLISECONDS_BY_EVENT } = require("./config");
 const { onMessagesUpsert } = require("./middlewares/onMesssagesUpsert");
 const { onGroupParticipantsUpdate } = require("./middlewares/onGroupParticipantsUpdate");
+const { initX9Monitoring } = require("./middlewares/x9Monitoring");
 const path = require("node:path");
 
 exports.load = (socket) => {
@@ -27,6 +28,9 @@ exports.load = (socket) => {
 
   // ⭐ Inicia o verificador de aluguéis (1 vez apenas)
   iniciarVerificador(socket);
+
+  // ⭐ Inicia o sistema X9 de monitoramento (1 vez apenas)
+  initX9Monitoring(socket);
 
   // ⭐ Limpeza automática de confirmações BANGHOST (1 vez apenas)
   setInterval(() => {
