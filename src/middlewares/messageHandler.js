@@ -635,4 +635,679 @@ async function handleStickerMute(socket, webMessage) {
     muteMember(remoteJid, targetJid);
 
     await socket.sendMessage(remoteJid, {
-      text: `🔇 @${targetNumber}
+      text: `🔇 @${targetNumber} foi mutado com sucesso!\n\n_Suas mensagens serão deletadas automaticamente._`,
+      mentions: [targetJid]
+    });
+
+  } catch (error) {
+  }
+}
+
+async function handleStickerUnmute(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_UNMUTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário para desmutar*'
+      });
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(p => p.id === senderJid);
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    if (!checkIfMemberIsMuted(remoteJid, targetJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} não está mutado!`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    unmuteMember(remoteJid, targetJid);
+
+    await socket.sendMessage(remoteJid, {
+      text: `🔊 @${targetNumber} foi desmutado com sucesso!\n\n_Agora pode enviar mensagens normalmente._`,
+      mentions: [targetJid]
+    });
+
+  } catch (error) {
+  }
+}
+
+async function handleStickerBlacklist(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_BLACKLIST_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque o alvo para enviar à lista negra*'
+      });
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(p => p.id === senderJid);
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar o dono do bot à lista negra!',
+      });
+      return;
+    }
+
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar o bot à lista negra.',
+      });
+      return;
+    }
+
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode adicionar um administrador à lista negra.',
+      });
+      return;
+    }
+
+    if (isBlacklisted(targetJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} já está na lista negra!`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    await addToBlacklist(socket, remoteJid, targetJid, webMessage);
+
+    await socket.sendMessage(remoteJid, {
+      text: `🚫 @${targetNumber} foi adicionado à lista negra e será removido!\n\n_Este usuário não poderá mais participar de grupos onde o bot está presente._`,
+      mentions: [targetJid]
+    });
+
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'remove');
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Erro ao remover o usuário. O bot é administrador?' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao processar blacklist por sticker:', error);
+  }
+}
+
+async function handleStickerPromote(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_PROMOTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do usuário que deseja promover*'
+      });
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(p => p.id === senderJid);
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não faz sentido me promover, eu já mando aqui 😎'
+      });
+      return;
+    }
+
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} já é administrador.`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'promote');
+
+      await socket.sendMessage(remoteJid, {
+        text: `👑 @${targetNumber} agora é administrador!`,
+        mentions: [targetJid]
+      });
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Não consegui promover. O bot precisa ser administrador.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao promover por figurinha:', error);
+  }
+}
+
+async function handleStickerDemote(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_DEMOTE_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do administrador que deseja rebaixar*'
+      });
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(p => p.id === senderJid);
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const targetJid = contextInfo.participant;
+    const targetNumber = onlyNumbers(targetJid);
+
+    if ([OWNER_NUMBER, OWNER_LID.replace("@lid", "")].includes(targetNumber)) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Você não pode rebaixar o dono do bot!'
+      });
+      return;
+    }
+
+    if (targetJid === `${BOT_NUMBER}@s.whatsapp.net`) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não posso me auto rebaixar 😎'
+      });
+      return;
+    }
+
+    const isTargetAdmin = metadata.participants.some(
+      p => p.id === targetJid && p.admin
+    );
+
+    if (!isTargetAdmin) {
+      await socket.sendMessage(remoteJid, {
+        text: `⚠️ @${targetNumber} não é administrador.`,
+        mentions: [targetJid]
+      });
+      return;
+    }
+
+    try {
+      await socket.groupParticipantsUpdate(remoteJid, [targetJid], 'demote');
+
+      await socket.sendMessage(remoteJid, {
+        text: `📉 @${targetNumber} deixou de ser administrador.`,
+        mentions: [targetJid]
+      });
+    } catch (error) {
+      await socket.sendMessage(remoteJid, { 
+        text: '❌ Não consegui rebaixar. O bot precisa ser administrador.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao rebaixar por figurinha:', error);
+  }
+}
+
+async function handleStickerAdminOnly(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_ADMIN_ONLY_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(
+      p => p.id === senderJid
+    );
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const isAdminOnly = metadata.announce === true;
+
+    try {
+      if (isAdminOnly) {
+        await socket.groupSettingUpdate(remoteJid, "not_announcement");
+
+        await socket.sendMessage(remoteJid, {
+          text: "🔓 Grupo aberto! Todos podem enviar mensagens."
+        });
+      } else {
+        await socket.groupSettingUpdate(remoteJid, "announcement");
+
+        await socket.sendMessage(remoteJid, {
+          text: "🔒 Modo admin ativado! Apenas administradores podem falar."
+        });
+      }
+    } catch (error) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Não consegui alterar o modo do grupo. O bot precisa ser administrador."
+      });
+    }
+
+  } catch (error) {
+    console.error("Erro no admin-only por figurinha:", error);
+  }
+}
+
+async function handleStickerTagAdmins(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const buf = webMessage.message.stickerMessage.fileSha256;
+    if (!buf || buf.length === 0) return;
+
+    const stickerIdNumeric = Array.from(buf).join(",");
+
+    if (!STICKER_TAG_ADM_IDS.includes(stickerIdNumeric)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    if (!remoteJid.endsWith("@g.us")) {
+      return;
+    }
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const groupName = metadata.subject || "este grupo";
+
+    const admins = metadata.participants
+      .filter(p => p.admin)
+      .map(p => p.id);
+
+    if (!admins.length) {
+      await socket.sendMessage(remoteJid, {
+        text: '❌ Não encontrei administradores neste grupo.'
+      });
+      return;
+    }
+
+    const mentionsText = admins
+      .map(admin => `@${admin.split("@")[0]}`)
+      .join(" ");
+
+    const finalMessage =
+`👮 *Chamando os ADMs*
+🪀 Grupo: *${groupName}*
+
+${mentionsText}`;
+
+    await socket.sendMessage(remoteJid, {
+      text: finalMessage,
+      mentions: admins
+    }, { quoted: webMessage });
+
+  } catch (error) {
+    console.error('Erro ao marcar admins por figurinha:', error);
+  }
+}
+
+async function handleSmartStickers(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const remoteJid = webMessage.key.remoteJid;
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    const buf = webMessage.message.stickerMessage.fileSha256;
+    if (!buf) return;
+
+    const stickerId = Array.from(buf).join(",");
+
+    const messages = STICKER_SMART_MESSAGES[stickerId];
+    if (!messages) return;
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const sender = webMessage.key.participant;
+
+    const participant = metadata.participants.find(p => p.id === sender);
+    if (!participant?.admin && !isOwner(sender)) return;
+
+    const cacheKey = `${remoteJid}_${stickerId}`;
+
+    let index = stickerMessageCache.get(cacheKey) || 0;
+
+    const messageToSend = messages[index];
+
+    index++;
+    if (index >= messages.length) index = 0;
+
+    stickerMessageCache.set(cacheKey, index);
+
+    await socket.sendMessage(remoteJid, {
+      text: messageToSend
+    }, { quoted: webMessage });
+
+  } catch (error) {
+    console.log("Erro no sistema de figurinha inteligente:", error);
+  }
+}
+
+async function handleStickerGroupLink(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_GROUP_LINK_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(
+      p => p.id === senderJid
+    );
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Apenas administradores podem gerar o link do grupo."
+      });
+      return;
+    }
+
+    const inviteCode = await socket.groupInviteCode(remoteJid);
+    if (!inviteCode) {
+      await socket.sendMessage(remoteJid, {
+        text: "❌ Preciso ser administrador para obter o link."
+      });
+      return;
+    }
+
+    const groupInviteLink = `https://chat.whatsapp.com/${inviteCode}`;
+    const groupName = metadata.subject;
+
+    const messageText =
+      `*${groupName}*\n\nConvite para conversa em grupo\n\n${groupInviteLink}`;
+
+    try {
+      const profilePicUrl = await socket.profilePictureUrl(remoteJid, "image");
+
+      if (profilePicUrl) {
+        await socket.sendMessage(remoteJid, {
+          image: { url: profilePicUrl },
+          caption: messageText,
+        }, { quoted: webMessage });
+      } else {
+        await socket.sendMessage(remoteJid, {
+          text: messageText
+        }, { quoted: webMessage });
+      }
+    } catch (profileError) {
+      console.log("Não foi possível obter a foto do grupo:", profileError.message);
+
+      await socket.sendMessage(remoteJid, {
+        text: messageText
+      }, { quoted: webMessage });
+    }
+
+  } catch (error) {
+    console.error("Erro ao gerar link do grupo via figurinha:", error);
+  }
+}
+
+async function handleStickerGroupDescription(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_GROUP_DESCRIPTION_IDS.includes(numericId)) {
+      return;
+    }
+
+    const remoteJid = webMessage.key.remoteJid;
+
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const participant = metadata.participants.find(
+      p => p.id === senderJid
+    );
+
+    if (!participant?.admin && !isOwner(senderJid)) {
+      return;
+    }
+
+    const descricao = metadata?.desc;
+
+    if (!descricao || descricao.trim() === "") {
+      await socket.sendMessage(remoteJid, {
+        text: "⚠️ Este grupo não possui descrição definida."
+      });
+      return;
+    }
+
+    let fotoGrupo;
+    try {
+      fotoGrupo = await socket.profilePictureUrl(remoteJid, "image");
+    } catch {
+      fotoGrupo = null;
+    }
+
+    if (fotoGrupo) {
+      await socket.sendMessage(remoteJid, {
+        image: { url: fotoGrupo },
+        caption: `🚨 *Regras do grupo 🚨*\n\n${descricao}`
+      });
+    } else {
+      await socket.sendMessage(remoteJid, {
+        text: `🚨 *Regras do grupo 🚨*\n\n${descricao}`
+      });
+    }
+
+  } catch (error) {
+    console.error("Erro ao puxar descrição do grupo:", error);
+  }
+}
+
+exports.messageHandler = async (socket, webMessage) => {
+  try {
+    if (!webMessage?.key) return;
+
+    const { remoteJid, fromMe, id: messageId } = webMessage.key;
+    if (fromMe) return;
+
+    const userJid = webMessage.key?.participant;
+    if (!userJid) return;
+
+    const isBot =
+  compareUserJidWithOtherNumber({ userJid, otherNumber: BOT_NUMBER });
+
+    if (isBot) return;
+
+    // Verifica se o usuário está na blacklist
+    if (isBlacklisted(userJid)) {
+      await socket.sendMessage(remoteJid, {
+        text: `🚫 @${onlyNumbers(userJid)} está na lista negra e será removido.`,
+        mentions: [userJid]
+      });
+      
+      try {
+        await socket.groupParticipantsUpdate(remoteJid, [userJid], 'remove');
+      } catch (error) {
+        console.error('Erro ao remover usuário da blacklist:', error);
+      }
+      return;
+    }
+
+    if (checkIfMemberIsMuted(remoteJid, userJid)) {
+      await socket.sendMessage(remoteJid, {
+        delete: {
+          remoteJid,
+          fromMe: false,
+          id: messageId,
+          participant: userJid,
+        },
+      });
+      return;
+    }
+
+    await handleStickerTrigger(socket, webMessage);
+    await handleStickerDelete(socket, webMessage);
+    await handleStickerWarn(socket, webMessage);
+    await handleStickerMute(socket, webMessage);
+    await handleStickerUnmute(socket, webMessage);
+    await handleStickerBlacklist(socket, webMessage);
+    await handleStickerPromote(socket, webMessage);
+    await handleStickerDemote(socket, webMessage);
+    await handleStickerAdminOnly(socket, webMessage);
+    await handleStickerTagAdmins(socket, webMessage);
+    await handleSmartStickers(socket, webMessage);
+    await handleStickerGroupLink(socket, webMessage);
+    await handleStickerGroupDescription(socket, webMessage);
+
+    const textMessage =
+      webMessage.message?.extendedTextMessage?.text ||
+      webMessage.message?.conversation ||
+      "";
+
+    if (textMessage.startsWith("#")) {
+      const parts = textMessage.trim().split(/\s+/);
+      const command = parts[0].substring(1).toLowerCase();
+      const args = parts.slice(1);
+
+      if (command === "afk") return afk.handle(webMessage, { socket, args });
+      if (command === "voltei") return voltei.handle(webMessage, { socket, args });
+    }
+
+    const antiGroups = readGroupRestrictions();
+    const messageType = Object.keys(readRestrictedMessageTypes()).find(type =>
+      getContent(webMessage, type)
+    );
+    
+    if (!messageType) return;
+
+    if (textMessage.startsWith("#")) {
+      return;
+    }
+
+    const isAntiActive = !!antiGroups[remoteJid]?.[`anti-${messageType}`];
+    if (!isAntiActive) return;
+
+    await socket.sendMessage(remoteJid, {
+      delete: {
+        remoteJid,
+        fromMe,
+        id: messageId,
+        participant: userJid,
+      },
+    });
+
+  } catch (error) {
+    errorLog(`Erro ao processar mensagem restrita ou comando. Detalhes: ${error.message}`);
+  }
+};
