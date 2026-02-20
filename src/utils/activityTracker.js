@@ -1,6 +1,7 @@
 /**
  * Sistema de Rastreamento de Atividade Melhorado
  * Agora também captura e armazena nomes dos usuários
+ * + Rastreamento de comandos e áudios adicionado
  * 
  * Substitua o arquivo: src/utils/activityTracker.js
  * 
@@ -55,7 +56,7 @@ class ActivityTracker {
    */
   startAutoSave() {
     setInterval(() => {
-      if (Date.now() - this.lastSave > 30000) { // 30 segundos
+      if (Date.now() - this.lastSave > 30000) {
         this.saveStats();
       }
     }, 30000);
@@ -73,11 +74,21 @@ class ActivityTracker {
       this.stats[groupJid][userJid] = {
         messages: 0,
         stickers: 0,
+        commands: 0,
+        audios: 0,
         lastActivity: new Date().toISOString(),
         joinDate: new Date().toISOString(),
         displayName: null,
         lastKnownName: null
       };
+    }
+
+    // Garante que campos novos existem em registros antigos
+    if (this.stats[groupJid][userJid].commands === undefined) {
+      this.stats[groupJid][userJid].commands = 0;
+    }
+    if (this.stats[groupJid][userJid].audios === undefined) {
+      this.stats[groupJid][userJid].audios = 0;
     }
 
     // Atualiza o nome se foi fornecido e é válido
@@ -111,6 +122,28 @@ class ActivityTracker {
   }
 
   /**
+   * Registra um comando e captura o nome
+   */
+  trackCommand(groupJid, userJid, userName = null) {
+    if (!groupJid || !userJid) return;
+
+    this.initUserStats(groupJid, userJid, userName);
+    this.stats[groupJid][userJid].commands++;
+    this.stats[groupJid][userJid].lastActivity = new Date().toISOString();
+  }
+
+  /**
+   * Registra um áudio e captura o nome
+   */
+  trackAudio(groupJid, userJid, userName = null) {
+    if (!groupJid || !userJid) return;
+
+    this.initUserStats(groupJid, userJid, userName);
+    this.stats[groupJid][userJid].audios++;
+    this.stats[groupJid][userJid].lastActivity = new Date().toISOString();
+  }
+
+  /**
    * Atualiza apenas o nome do usuário
    */
   updateUserName(groupJid, userJid, userName) {
@@ -131,7 +164,7 @@ class ActivityTracker {
   removeUser(groupJid, userJid) {
     if (this.stats[groupJid] && this.stats[groupJid][userJid]) {
       delete this.stats[groupJid][userJid];
-      this.saveStats(); // Salva imediatamente quando remove usuário
+      this.saveStats();
     }
   }
 
@@ -140,14 +173,16 @@ class ActivityTracker {
    */
   getUserStats(groupJid, userJid) {
     if (!this.stats[groupJid] || !this.stats[groupJid][userJid]) {
-      return { messages: 0, stickers: 0, total: 0, displayName: null };
+      return { messages: 0, stickers: 0, commands: 0, audios: 0, total: 0, displayName: null };
     }
 
     const userStats = this.stats[groupJid][userJid];
     return {
       messages: userStats.messages || 0,
       stickers: userStats.stickers || 0,
-      total: (userStats.messages || 0) + (userStats.stickers || 0),
+      commands: userStats.commands || 0,
+      audios: userStats.audios || 0,
+      total: (userStats.messages || 0) + (userStats.stickers || 0) + (userStats.commands || 0) + (userStats.audios || 0),
       lastActivity: userStats.lastActivity,
       joinDate: userStats.joinDate,
       displayName: userStats.displayName || userStats.lastKnownName,
@@ -172,7 +207,9 @@ class ActivityTracker {
       userJid,
       messages: stats.messages || 0,
       stickers: stats.stickers || 0,
-      total: (stats.messages || 0) + (stats.stickers || 0),
+      commands: stats.commands || 0,
+      audios: stats.audios || 0,
+      total: (stats.messages || 0) + (stats.stickers || 0) + (stats.commands || 0) + (stats.audios || 0),
       lastActivity: stats.lastActivity,
       displayName: stats.displayName || stats.lastKnownName,
       lastKnownName: stats.lastKnownName
@@ -192,6 +229,8 @@ class ActivityTracker {
     let totalUsers = 0;
     let totalMessages = 0;
     let totalStickers = 0;
+    let totalCommands = 0;
+    let totalAudios = 0;
 
     Object.keys(this.stats).forEach(groupJid => {
       totalGroups++;
@@ -199,6 +238,8 @@ class ActivityTracker {
         totalUsers++;
         totalMessages += this.stats[groupJid][userJid].messages || 0;
         totalStickers += this.stats[groupJid][userJid].stickers || 0;
+        totalCommands += this.stats[groupJid][userJid].commands || 0;
+        totalAudios += this.stats[groupJid][userJid].audios || 0;
       });
     });
 
@@ -207,7 +248,9 @@ class ActivityTracker {
       totalUsers,
       totalMessages,
       totalStickers,
-      totalInteractions: totalMessages + totalStickers
+      totalCommands,
+      totalAudios,
+      totalInteractions: totalMessages + totalStickers + totalCommands + totalAudios
     };
   }
 
@@ -221,7 +264,6 @@ class ActivityTracker {
       return userStats.displayName;
     }
     
-    // Formata o número de telefone
     const phoneNumber = userJid.replace('@s.whatsapp.net', '').replace('@c.us', '');
     
     if (phoneNumber.startsWith('55') && phoneNumber.length >= 12) {

@@ -1,47 +1,38 @@
+/**
+ * INSTALAÇÃO: /sdcard/DeadBoT-/src/commands/admin/grupo-abrir.js
+ * VERSÃO SEM LOGS DE DEBUG
+ */
 const { PREFIX } = require(`${BASE_DIR}/config`);
 const { errorLog } = require(`${BASE_DIR}/utils/logger`);
 const { DangerError } = require(`${BASE_DIR}/errors`);
 const fs = require("fs");
 const path = require("path");
 
-// Arquivo para armazenar os agendamentos
-const SCHEDULE_FILE = path.join(
-  BASE_DIR,
-  "database",
-  "grupo-abrir-schedule.json"
-);
+const SCHEDULE_FILE = path.join(BASE_DIR, "..", "database", "grupo-abrir-schedule.json");
+const LAST_EXECUTION_FILE = path.join(BASE_DIR, "..", "database", "grupo-abrir-last-execution.json");
 
-// Função para obter horário de Brasília (UTC-3)
-// CORREÇÃO: Brasília está 3 horas ATRÁS do UTC, não à frente!
 function getBrasiliaTime() {
   const now = new Date();
-  
-  // Pega o horário UTC
   const utcHours = now.getUTCHours();
   const utcMinutes = now.getUTCMinutes();
   const utcDate = now.getUTCDate();
   const utcMonth = now.getUTCMonth();
   const utcYear = now.getUTCFullYear();
   
-  // Brasília = UTC-3 (SUBTRAIR 3 horas do UTC)
   let hours = utcHours - 3;
   let day = utcDate;
   let month = utcMonth;
   let year = utcYear;
   
-  // Ajusta se passar da meia-noite
   if (hours < 0) {
     hours += 24;
     day -= 1;
-    
-    // Ajusta o dia se necessário
     if (day < 1) {
       month -= 1;
       if (month < 0) {
         month = 11;
         year -= 1;
       }
-      // Pega o último dia do mês anterior
       day = new Date(year, month + 1, 0).getDate();
     }
   }
@@ -57,7 +48,6 @@ function getBrasiliaTime() {
   };
 }
 
-// Carrega os agendamentos salvos
 function loadSchedules() {
   try {
     if (fs.existsSync(SCHEDULE_FILE)) {
@@ -70,7 +60,6 @@ function loadSchedules() {
   return {};
 }
 
-// Salva os agendamentos
 function saveSchedules(schedules) {
   try {
     fs.writeFileSync(SCHEDULE_FILE, JSON.stringify(schedules, null, 2));
@@ -79,149 +68,125 @@ function saveSchedules(schedules) {
   }
 }
 
-// Intervalos ativos (armazenados em memória)
+function loadLastExecutions() {
+  try {
+    if (fs.existsSync(LAST_EXECUTION_FILE)) {
+      const data = fs.readFileSync(LAST_EXECUTION_FILE, "utf8");
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    errorLog(`Erro ao carregar últimas execuções: ${error.message}`);
+  }
+  return {};
+}
+
+function saveLastExecutions(executions) {
+  try {
+    fs.writeFileSync(LAST_EXECUTION_FILE, JSON.stringify(executions, null, 2));
+  } catch (error) {
+    errorLog(`Erro ao salvar últimas execuções: ${error.message}`);
+  }
+}
+
 const activeIntervals = {};
-
-// Flag para controlar se já foi inicializado
 let isInitialized = false;
+let lastExecution = loadLastExecutions();
 
-// Controle de execução diária (evita executar múltiplas vezes no mesmo minuto)
-const lastExecution = {};
-
-// Verifica e executa abertura se for o horário
 async function checkAndOpen(socket, groupId, scheduleTime) {
   try {
-    // Obtém horário de Brasília
     const brasilia = getBrasiliaTime();
     const currentHours = brasilia.hours;
     const currentMinutes = brasilia.minutes;
     const currentDate = brasilia.date;
-    
-    // Horário programado
     const [scheduleHours, scheduleMinutes] = scheduleTime.split(":").map(Number);
-
-    // Cria chave única para este grupo e horário
     const executionKey = `${groupId}-${scheduleTime}`;
 
-    // DEBUG: Log a cada verificação (mostra sempre)
-    console.log(`[DEBUG ABRIR] Verificando: Atual=${currentHours}:${currentMinutes} (${currentDate}) vs Programado=${scheduleHours}:${scheduleMinutes}`);
-
     if (currentHours === scheduleHours && currentMinutes === scheduleMinutes) {
-      console.log(`[DEBUG ABRIR] ✅ HORÁRIO COINCIDE!`);
-      
-      // Verifica se já executou hoje
       const jaExecutouHoje = lastExecution[executionKey] === currentDate;
-      console.log(`[DEBUG ABRIR] Já executou hoje? ${jaExecutouHoje} (última execução: ${lastExecution[executionKey] || 'nunca'})`);
+      if (jaExecutouHoje) return;
       
-      if (jaExecutouHoje) {
-        console.log(`[DEBUG ABRIR] ⚠️ Pulando execução - já rodou hoje em ${currentDate}`);
-        return;
+      let sucesso = false;
+      let tentativa = 0;
+      const maxTentativas = 3;
+      
+      while (!sucesso && tentativa < maxTentativas) {
+        tentativa++;
+        try {
+          await socket.groupSettingUpdate(groupId, "not_announcement");
+          await socket.sendMessage(groupId, {
+            text: `✅ *Grupo aberto automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🍿 *Pode começar o show !!!*`,
+          });
+          sucesso = true;
+        } catch (retryError) {
+          if (tentativa < maxTentativas) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+        }
       }
       
-      console.log(`[DEBUG ABRIR] 🚀 EXECUTANDO abertura do grupo...`);
-      
-      await socket.groupSettingUpdate(groupId, "not_announcement");
-      await socket.sendMessage(groupId, {
-        text: `✅ *Grupo aberto automaticamente!*\n⏰ Horário programado: ${scheduleTime}\n🍿 *Pode começar o show !!!*`,
-      });
-      
-      // Marca como executado hoje
-      lastExecution[executionKey] = currentDate;
-      console.log(`[DEBUG ABRIR] ✅ Marcado como executado em: ${currentDate}`);
-      
-      console.log(`[AUTO-ABRIR] ✅ Grupo aberto com sucesso!`);
+      if (sucesso) {
+        lastExecution[executionKey] = currentDate;
+        saveLastExecutions(lastExecution);
+      }
     }
   } catch (error) {
-    console.error(`[DEBUG ABRIR] ❌ ERRO:`, error);
-    errorLog(
-      `Erro ao abrir grupo automaticamente: ${JSON.stringify(error, null, 2)}`
-    );
+    errorLog(`Erro ao abrir grupo: ${error.message}`);
   }
 }
 
-// Inicia o monitoramento de um grupo
 function startMonitoring(socket, groupId, scheduleTime) {
-  // Limpa intervalo anterior se existir
   if (activeIntervals[groupId]) {
     clearInterval(activeIntervals[groupId]);
   }
-
-  // Verifica a cada minuto
   activeIntervals[groupId] = setInterval(() => {
     checkAndOpen(socket, groupId, scheduleTime);
-  }, 60000); // 60000ms = 1 minuto
-
-  // Verifica imediatamente também
+  }, 60000);
   checkAndOpen(socket, groupId, scheduleTime);
 }
 
-// Inicializa agendamentos ao carregar o comando
 function initializeSchedules(socket) {
-  if (isInitialized) return; // Evita inicializar múltiplas vezes
-  
+  if (isInitialized) return;
   const schedules = loadSchedules();
-  Object.entries(schedules).forEach(([groupId, scheduleTime]) => {
+  Object.entries(schedules).forEach(([groupId, scheduleData]) => {
+    const scheduleTime = typeof scheduleData === 'string' ? scheduleData : scheduleData.horario;
     startMonitoring(socket, groupId, scheduleTime);
   });
-  
   isInitialized = true;
-  
-  const brasilia = getBrasiliaTime();
-  console.log(`[grupo-abrir] ${Object.keys(schedules).length} agendamento(s) inicializado(s)`);
-  console.log(`[grupo-abrir] Horário atual de Brasília: ${brasilia.fullTime} (${brasilia.date})`);
 }
 
 module.exports = {
   name: "grupo-abrir",
-  description:
-    "Programa a abertura automática do grupo em um horário específico todos os dias (Horário de Brasília).",
+  description: "Programa a abertura automática do grupo em um horário específico todos os dias (Horário de Brasília).",
   commands: ["grupo-abrir", "agendar-abertura", "schedule-open"],
   usage: `${PREFIX}grupo-abrir HH:MM\n\nExemplos:\n${PREFIX}grupo-abrir 08:00\n${PREFIX}grupo-abrir 14:30\n${PREFIX}grupo-abrir cancelar`,
 
-  /**
-   * @param {CommandHandleProps} props
-   * @returns {Promise<void>}
-   */
-  handle: async ({
-    socket,
-    remoteJid,
-    args,
-    sendSuccessReply,
-    sendErrorReply,
-    sendWarningReply,
-    userJid,
-  }) => {
+  handle: async ({ socket, remoteJid, args, sendSuccessReply, sendErrorReply, sendWarningReply, userJid }) => {
     try {
-      // Inicializa agendamentos sempre que o comando for chamado
       initializeSchedules(socket);
 
-      // Verifica se o usuário é administrador do grupo
       const groupMetadata = await socket.groupMetadata(remoteJid);
       const participants = groupMetadata.participants;
-      const userParticipant = participants.find(
-        (p) => p.id === userJid
-      );
-
-      const isAdmin =
-        userParticipant &&
-        (userParticipant.admin === "admin" ||
-          userParticipant.admin === "superadmin");
+      const userParticipant = participants.find(p => p.id === userJid);
+      const isAdmin = userParticipant && (userParticipant.admin === "admin" || userParticipant.admin === "superadmin");
 
       if (!isAdmin) {
-        throw new DangerError(
-          "❌ Apenas administradores podem programar abertura do grupo!"
-        );
+        throw new DangerError("❌ Apenas administradores podem programar abertura do grupo!");
       }
 
-      // Verifica se foi passado argumento
+      let nomeGrupo = "Grupo sem nome";
+      try {
+        nomeGrupo = groupMetadata?.subject || groupMetadata?.name || "Grupo sem nome";
+      } catch (err) {}
+
       if (!args[0]) {
         const schedules = loadSchedules();
         const currentSchedule = schedules[remoteJid];
 
         if (currentSchedule) {
+          const horario = typeof currentSchedule === 'string' ? currentSchedule : currentSchedule.horario;
           await sendWarningReply(
             `⏰ *Abertura automática ativa*\n\n` +
-              `Horário programado: *${currentSchedule}* (Brasília)\n` +
+              `Horário programado: *${horario}* (Brasília)\n` +
               `🔄 *Repetição:* Todos os dias\n\n` +
               `Para alterar, use: ${PREFIX}grupo-abrir HH:MM\n` +
               `Para cancelar, use: ${PREFIX}grupo-abrir cancelar`
@@ -237,32 +202,22 @@ module.exports = {
         return;
       }
 
-      // Cancelar agendamento
       if (args[0].toLowerCase() === "cancelar" || args[0].toLowerCase() === "cancel") {
         const schedules = loadSchedules();
-
         if (!schedules[remoteJid]) {
           await sendWarningReply("⚠️ Não há agendamento ativo para este grupo!");
           return;
         }
-
-        // Remove o agendamento
         delete schedules[remoteJid];
         saveSchedules(schedules);
-
-        // Para o intervalo
         if (activeIntervals[remoteJid]) {
           clearInterval(activeIntervals[remoteJid]);
           delete activeIntervals[remoteJid];
         }
-
-        await sendSuccessReply(
-          "✅ Agendamento de abertura cancelado com sucesso!"
-        );
+        await sendSuccessReply("✅ Agendamento de abertura cancelado com sucesso!");
         return;
       }
 
-      // Validar formato de horário (HH:MM)
       const timeRegex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
       if (!timeRegex.test(args[0])) {
         await sendErrorReply(
@@ -278,15 +233,9 @@ module.exports = {
 
       const scheduleTime = args[0];
       const schedules = loadSchedules();
-
-      // Salva o agendamento
-      schedules[remoteJid] = scheduleTime;
+      schedules[remoteJid] = { horario: scheduleTime, nomeGrupo: nomeGrupo };
       saveSchedules(schedules);
-
-      // Inicia o monitoramento
       startMonitoring(socket, remoteJid, scheduleTime);
-
-      // Obtém horário atual de Brasília
       const brasilia = getBrasiliaTime();
 
       await sendSuccessReply(
@@ -302,16 +251,8 @@ module.exports = {
         await sendErrorReply(error.message);
         return;
       }
-      
-      console.error("[GRUPO-ABRIR] Erro detalhado:", error);
-      console.error("[GRUPO-ABRIR] Stack:", error.stack);
-      
-      await sendErrorReply(
-        `❌ Ocorreu um erro ao programar a abertura do grupo!\n\nDetalhes: ${error.message}`
-      );
-      errorLog(
-        `Erro no comando grupo-abrir: ${error.message}\nStack: ${error.stack}`
-      );
+      await sendErrorReply(`❌ Ocorreu um erro!\n\nDetalhes: ${error.message}`);
+      errorLog(`Erro no comando grupo-abrir: ${error.message}`);
     }
   },
 };

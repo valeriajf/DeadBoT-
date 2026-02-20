@@ -1,6 +1,6 @@
 /**
  * Comando RankAtivo - Mostra os 5 membros mais ativos do grupo
- * Baseado no número de mensagens e figurinhas enviadas
+ * Baseado no número de mensagens, figurinhas, comandos e áudios enviados
  * 
  * @author Dev VaL
  */
@@ -23,74 +23,68 @@ module.exports = {
     isGroup 
   }) => {
     try {
-      // Verifica se está em um grupo
       if (!isGroup) {
         return await sendErrorReply("❌ Este comando só funciona em grupos!");
       }
 
       await sendWaitReply("📊 Calculando ranking de atividade...");
 
-      // Carrega o activityTracker
       const activityTracker = require(`${BASE_DIR}/utils/activityTracker`);
-
-      // Pega os participantes do grupo
       const participants = await getGroupParticipants();
-      
-      // Obtém estatísticas do grupo atual
       const groupStats = activityTracker.getGroupStats(remoteJid);
       
       if (Object.keys(groupStats).length === 0) {
-        return await sendReply(`📊 *RANKING DE ATIVIDADE* 📊
-
-❌ Ainda não há dados de atividade neste grupo.
-
-💡 *Como funciona:*
-• O bot coleta dados de mensagens e figurinhas automaticamente
-• Continue enviando mensagens e figurinhas
-• Execute o comando novamente em alguns minutos!`);
+        return await sendReply(`📊 *RANKING DE ATIVIDADE* 📊\n\n❌ Ainda não há dados de atividade neste grupo.\n\n💡 *Como funciona:*\n• O bot coleta dados de mensagens, figurinhas, comandos e áudios automaticamente\n• Continue interagindo no grupo\n• Execute o comando novamente em alguns minutos!`);
       }
 
-      // Cria array com dados dos membros ativos
       const activeMembers = [];
-      
+
+      // Contadores para estatísticas do grupo
+      let groupTotalUsers = 0;
+      let groupTotalMessages = 0;
+      let groupTotalStickers = 0;
+      let groupTotalCommands = 0;
+      let groupTotalAudios = 0;
+
       for (const [userId, userData] of Object.entries(groupStats)) {
-        // Verifica se o usuário ainda está no grupo
         const isStillInGroup = participants.some(p => p.id === userId);
         
         if (isStillInGroup) {
-          // Usa o nome salvo pelo sistema ou formata o número
           const displayName = activityTracker.getDisplayName(remoteJid, userId);
 
           const messages = userData.messages || 0;
           const stickers = userData.stickers || 0;
-          const total = messages + stickers;
+          const commands = userData.commands || 0;
+          const audios = userData.audios || 0;
+          const total = messages + stickers + commands + audios;
+
+          groupTotalUsers++;
+          groupTotalMessages += messages;
+          groupTotalStickers += stickers;
+          groupTotalCommands += commands;
+          groupTotalAudios += audios;
 
           activeMembers.push({
             userId,
             name: displayName,
             messages,
             stickers,
+            commands,
+            audios,
             total,
             hasRealName: userData.displayName || userData.lastKnownName
           });
         }
       }
 
-      // Ordena por atividade total (mensagens + figurinhas)
+      // Ordena por atividade total
       activeMembers.sort((a, b) => b.total - a.total);
-
-      // Pega apenas os top 5 (ou quantos tiver)
       const topMembers = activeMembers.slice(0, Math.min(5, activeMembers.length));
 
       if (topMembers.length === 0) {
-        return await sendReply(`📊 *RANKING DE ATIVIDADE* 📊
-
-❌ Nenhum usuário ativo encontrado no momento.
-
-💡 Continue enviando mensagens e figurinhas para aparecer no ranking!`);
+        return await sendReply(`📊 *RANKING DE ATIVIDADE* 📊\n\n❌ Nenhum usuário ativo encontrado no momento.\n\n💡 Continue interagindo no grupo para aparecer no ranking!`);
       }
 
-      // Monta a mensagem do ranking
       let rankingMessage = `🏆 *RANKING DE ATIVIDADE* 🏆\n`;
       
       try {
@@ -100,38 +94,37 @@ module.exports = {
         rankingMessage += `📅 *Grupo:* ${remoteJid.split('@')[0]}\n\n`;
       }
 
-      // Emojis para as posições
       const positionEmojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
-
-      // Array para as menções
       const mentions = [];
 
       topMembers.forEach((member, index) => {
         const position = positionEmojis[index] || `${index + 1}️⃣`;
         
-        // Calcula porcentagem baseada no primeiro lugar
-        const topScore = topMembers[0].total;
-        const percentage = topScore > 0 ? ((member.total / topScore) * 100).toFixed(1) : 0;
+        // Porcentagem baseada no total do grupo
+        const groupGrandTotal = groupTotalMessages + groupTotalStickers + groupTotalCommands + groupTotalAudios;
+        const percentage = groupGrandTotal > 0
+          ? ((member.total / groupGrandTotal) * 100).toFixed(1)
+          : 0;
         
-        // Adiciona emoji de perfil se tiver nome real
         const namePrefix = member.hasRealName ? "👤" : "";
-        
-        // Adiciona a menção do usuário (sem repetir o nome)
         const userMention = `@${member.userId.split('@')[0]}`;
         mentions.push(member.userId);
         
         rankingMessage += `${position} ${namePrefix}${userMention}\n`;
         rankingMessage += `   📝 ${member.messages} mensagens\n`;
         rankingMessage += `   🎭 ${member.stickers} figurinhas\n`;
+        rankingMessage += `   🎮 ${member.commands} comandos\n`;
+        rankingMessage += `   🎤 ${member.audios} áudios\n`;
         rankingMessage += `   📊 ${member.total} total (${percentage}%)\n\n`;
       });
 
-      // Estatísticas gerais do bot
-      const generalStats = activityTracker.getGeneralStats();
-      rankingMessage += `🌍 *ESTATÍSTICAS GLOBAIS:*\n`;
-      rankingMessage += `👤 ${generalStats.totalUsers} usuários ativos\n`;
-      rankingMessage += `💬 ${generalStats.totalMessages} mensagens globais\n`;
-      rankingMessage += `🎭 ${generalStats.totalStickers} figurinhas globais`;
+      // Estatísticas do grupo atual
+      rankingMessage += `🌍 *ESTATÍSTICAS DO GRUPO:*\n`;
+      rankingMessage += `👥 ${groupTotalUsers} usuários ativos\n`;
+      rankingMessage += `💬 ${groupTotalMessages} mensagens enviadas\n`;
+      rankingMessage += `🎭 ${groupTotalStickers} figurinhas enviadas\n`;
+      rankingMessage += `🎮 ${groupTotalCommands} comandos enviados\n`;
+      rankingMessage += `🎤 ${groupTotalAudios} áudios enviados`;
 
       await sendReply(rankingMessage, mentions);
 

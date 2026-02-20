@@ -1,14 +1,98 @@
 {
-  "120363422312164587@g.us": {
-    "id": "3KE6VTGC",
-    "groupId": "120363422312164587@g.us",
+  "120363421108908380@g.us": {
+    "id": "8THWB17Z",
+    "groupId": "120363421108908380@g.us",
+    "nomeGrupo": "🅲⃢🅻⃢🆄⃢🅱⃢🅴⃢ 🅳⃢🅰⃢ 🅰⃢🅼⃢🅸⃢🆉⃢🅰⃢🅳⃢🅴",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "19/03/2026, 08:45:12",
+    "expiraTimestamp": 1773909912524,
+    "registradoEm": "2026-02-17T08:45:12.524Z",
+    "ativo": true
+  },
+  "120363405821801516@g.us": {
+    "id": "GLN8Y6I9",
+    "groupId": "120363405821801516@g.us",
+    "nomeGrupo": "•♖•⚖️₪₪𝐌𝐈𝐋𝐋𝐄𝐍𝐈𝐔𝐌 𝐀.𝐂 𝐒𝐓𝐈𝐂𝐊𝐄𝐑 ₪₪ •⚖️•♖•",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "19/03/2026, 10:57:54",
+    "expiraTimestamp": 1773917874486,
+    "registradoEm": "2026-02-17T10:57:54.486Z",
+    "ativo": true
+  },
+  "120363362886567059@g.us": {
+    "id": "UXYJRVRK",
+    "groupId": "120363362886567059@g.us",
+    "nomeGrupo": "🆉🅾🅴🅸🆁🅰 🅴 🅰🅼🅸🆉🅰🅳🅴🫂😝",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "19/03/2026, 15:47:42",
+    "expiraTimestamp": 1773935262693,
+    "registradoEm": "2026-02-17T15:47:42.693Z",
+    "ativo": true
+  },
+  "120363421275714747@g.us": {
+    "id": "Q902DFLU",
+    "groupId": "120363421275714747@g.us",
+    "nomeGrupo": "ℝ𝔼𝕊𝔼ℕℍ𝔸 𝔻𝕆𝕊 𝔸𝕄𝕀𝔾𝕆𝕊 𝟚.𝟘🔥💥",
+    "quantidade": 4,
+    "tipo": "dias",
+    "duracao": "4 dias",
+    "expira": "21/02/2026, 18:54:46",
+    "expiraTimestamp": 1771700086412,
+    "registradoEm": "2026-02-17T18:54:46.412Z",
+    "ativo": true
+  },
+  "120363424665581220@g.us": {
+    "id": "HT6ELBQC",
+    "groupId": "120363424665581220@g.us",
+    "nomeGrupo": "Amizades e figurinhas ❤️👏🏼☺️😉",
+    "quantidade": 15,
+    "tipo": "dias",
+    "duracao": "15 dias",
+    "expira": "04/03/2026, 22:01:10",
+    "expiraTimestamp": 1772661670271,
+    "registradoEm": "2026-02-17T22:01:10.271Z",
+    "ativo": true
+  },
+  "555184033465-1558458733@g.us": {
+    "id": "7580FLON",
+    "groupId": "555184033465-1558458733@g.us",
+    "nomeGrupo": "★La casa de stickers★",
+    "quantidade": 7,
+    "tipo": "dias",
+    "duracao": "7 dias",
+    "expira": "25/02/2026, 00:14:10",
+    "expiraTimestamp": 1771978450255,
+    "registradoEm": "2026-02-18T00:14:10.255Z",
+    "ativo": true
+  },
+  "120363417816517583@g.us": {
+    "id": "Z9QSJ6EB",
+    "groupId": "120363417816517583@g.us",
+    "nomeGrupo": "DeadBoT SuporTe 🤖",
+    "quantidade": 7,
+    "tipo": "dias",
+    "duracao": "7 dias",
+    "expira": "25/02/2026, 10:58:22",
+    "expiraTimestamp": 1772017102513,
+    "registradoEm": "2026-02-18T10:58:22.513Z",
+    "ativo": true
+  },
+  "120363406027458811@g.us": {
+    "id": "DTCHSHQ0",
+    "groupId": "120363406027458811@g.us",
     "nomeGrupo": "Laboratório 🧫",
-    "quantidade": 24,
-    "tipo": "horas",
-    "duracao": "24:00",
-    "expira": "15/02/2026, 14:11:08",
-    "expiraTimestamp": 1771175468759,
-    "registradoEm": "2026-02-14T17:11:08.761Z",
+    "quantidade": 7,
+    "tipo": "dias",
+    "duracao": "7 dias",
+    "expira": "27/02/2026, 14:17:01",
+    "expiraTimestamp": 1772212621632,
+    "registradoEm": "2026-02-20T17:17:01.635Z",
     "ativo": true
   }
 }

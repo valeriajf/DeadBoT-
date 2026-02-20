@@ -42,13 +42,29 @@ module.exports = {
 
       await sendSuccessReact();
 
+      // Extrair o título e artista do título completo
+      let title = data.title;
+      let artist = data.channel.name;
+      
+      // Tentar extrair artista e título se estiver no formato "Artista - Título"
+      if (title.includes(' - ')) {
+        const parts = title.split(' - ');
+        artist = parts[0].trim();
+        title = parts.slice(1).join(' - ').trim();
+      }
+
+      // Extrair informações do álbum se houver entre parênteses
+      const albumInfo = title.match(/\((.*?)\)/);
+      const album = albumInfo ? albumInfo[1] : "YouTube";
+
       await sendImageFromURL(
         data.thumbnail,
-        `*Título*: ${data.title}
-        
-*Descrição*: ${data.description}
-*Duração em segundos*: ${data.total_duration_in_seconds}
-*Canal*: ${data.channel.name}`
+        `🎵 *${title}*
+🎤 *Artista:* ${artist}
+💿 *${album}*
+⏱️ *Duração:* ${data.total_duration_in_seconds}s
+«── « ↻ ◁ 𝐈𝐈 ▷ ↺ » ──»
+💚 *By DeadBoT*`
       );
 
       await sendAudioFromURL(data.url);

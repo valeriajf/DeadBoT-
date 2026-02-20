@@ -236,7 +236,7 @@ const onGroupUpdate = async (socket) => {
   socket.ev.on('groups.update', async (updates) => {
     try {
       for (const update of updates) {
-        const { id: groupId, subject, desc, restrict, announce, author } = update;
+        const { id: groupId, subject, desc, restrict, announce, joinApprovalMode, memberAddMode, author } = update;
         
         // Verificar se X9 está ativo neste grupo
         const x9Active = isX9Active(groupId);
@@ -259,14 +259,27 @@ const onGroupUpdate = async (socket) => {
           continue;
         }
         
-        const actorName = getContactName(socket, author);
-        const authorMention = `@${extractNumber(author)}`;
+        // Tentar obter nome real do admin (converter @lid para JID real)
+        let actorName = author;
+        let adminJid = author;
+        
+        if (author.includes('@lid')) {
+          const participant = groupMetadata.participants.find(p => p.lid === author);
+          if (participant && participant.id) {
+            adminJid = participant.id;
+            actorName = getContactName(socket, adminJid);
+          }
+        } else {
+          actorName = getContactName(socket, author);
+        }
+        
+        const authorMention = `@${extractNumber(adminJid)}`;
         
         // Registrar mudança de nome
         if (subject !== undefined) {
           addLog(
             'Alterar Nome do Grupo',
-            author,
+            adminJid,
             actorName,
             groupId,
             groupName,
@@ -277,7 +290,7 @@ const onGroupUpdate = async (socket) => {
           // Notificar no grupo
           await socket.sendMessage(groupId, {
             text: `📝 *NOME ALTERADO* 📝\n\n🕵️ O admin ${authorMention} alterou o nome do grupo!\n\n🪀 Novo nome: ${subject}\n\n🕵️ Grupo renomeado! 🕵️`,
-            mentions: [author]
+            mentions: [adminJid]
           }).catch(() => {});
         }
         
@@ -285,7 +298,7 @@ const onGroupUpdate = async (socket) => {
         if (desc !== undefined) {
           addLog(
             'Alterar Descrição do Grupo',
-            author,
+            adminJid,
             actorName,
             groupId,
             groupName,
@@ -296,7 +309,7 @@ const onGroupUpdate = async (socket) => {
           // Notificar no grupo
           await socket.sendMessage(groupId, {
             text: `📄 *DESCRIÇÃO ALTERADA* 📄\n\n🕵️ O admin ${authorMention} alterou a descrição do grupo!\n\n🪀 ${groupName}\n\n🕵️ Nova descrição definida! 🕵️`,
-            mentions: [author]
+            mentions: [adminJid]
           }).catch(() => {});
         }
         
@@ -304,7 +317,7 @@ const onGroupUpdate = async (socket) => {
         if (restrict !== undefined) {
           addLog(
             'Alterar Configurações',
-            author,
+            adminJid,
             actorName,
             groupId,
             groupName,
@@ -316,7 +329,7 @@ const onGroupUpdate = async (socket) => {
           const restrictMsg = restrict ? 'Apenas admins' : 'Todos os membros';
           await socket.sendMessage(groupId, {
             text: `⚙️ *CONFIGURAÇÃO ALTERADA* ⚙️\n\n🕵️ O admin ${authorMention} alterou as permissões!\n\n🪀 Editar info: ${restrictMsg}\n\n🕵️ Configuração atualizada! 🕵️`,
-            mentions: [author]
+            mentions: [adminJid]
           }).catch(() => {});
         }
         
@@ -324,7 +337,7 @@ const onGroupUpdate = async (socket) => {
         if (announce !== undefined) {
           addLog(
             'Alterar Configurações',
-            author,
+            adminJid,
             actorName,
             groupId,
             groupName,
@@ -336,7 +349,48 @@ const onGroupUpdate = async (socket) => {
           const announceMsg = announce ? 'Apenas admins' : 'Todos os membros';
           await socket.sendMessage(groupId, {
             text: `⚙️ *CONFIGURAÇÃO ALTERADA* ⚙️\n\n🕵️ O admin ${authorMention} alterou as permissões!\n\n🪀 Enviar mensagens: ${announceMsg}\n\n🕵️ Configuração atualizada! 🕵️`,
-            mentions: [author]
+            mentions: [adminJid]
+          }).catch(() => {});
+        }
+        
+        // Registrar mudança de aprovação de membros
+        if (joinApprovalMode !== undefined) {
+          addLog(
+            'Alterar Configurações',
+            adminJid,
+            actorName,
+            groupId,
+            groupName,
+            null,
+            `Aprovação de novos membros: ${joinApprovalMode ? 'Ativada' : 'Desativada'}`
+          );
+          
+          // Notificar no grupo
+          const approvalMsg = joinApprovalMode ? 'ATIVOU' : 'DESATIVOU';
+          const approvalStatus = joinApprovalMode ? 'Admins precisam aprovar novos membros' : 'Qualquer um pode entrar pelo link';
+          await socket.sendMessage(groupId, {
+            text: `⚙️ *CONFIGURAÇÃO ALTERADA* ⚙️\n\n🕵️ O admin ${authorMention} ${approvalMsg} a aprovação de membros!\n\n🪀 ${approvalStatus}\n\n🕵️ Configuração atualizada! 🕵️`,
+            mentions: [adminJid]
+          }).catch(() => {});
+        }
+        
+        // Registrar mudança de quem pode adicionar membros
+        if (memberAddMode !== undefined) {
+          addLog(
+            'Alterar Configurações',
+            adminJid,
+            actorName,
+            groupId,
+            groupName,
+            null,
+            `Adicionar membros: ${memberAddMode ? 'Apenas admins' : 'Todos os membros'}`
+          );
+          
+          // Notificar no grupo
+          const memberAddMsg = memberAddMode ? 'Apenas admins' : 'Todos os membros';
+          await socket.sendMessage(groupId, {
+            text: `⚙️ *CONFIGURAÇÃO ALTERADA* ⚙️\n\n🕵️ O admin ${authorMention} alterou as permissões!\n\n🪀 Adicionar membros: ${memberAddMsg}\n\n🕵️ Configuração atualizada! 🕵️`,
+            mentions: [adminJid]
           }).catch(() => {});
         }
       }
@@ -616,14 +670,12 @@ const onMessageStubType = async (socket) => {
  * Função principal para inicializar todos os middlewares X9
  */
 const initX9Monitoring = (socket) => {
-  console.log('🕵️  Iniciando sistema X9 de monitoramento...');
   
   onGroupParticipantsUpdate(socket);
   onGroupUpdate(socket);
   onGroupPictureUpdate(socket);
   onMessageStubType(socket);
   
-  console.log('✅ Sistema X9 ativado com sucesso!');
 };
 
 module.exports = { initX9Monitoring };

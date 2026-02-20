@@ -686,5 +686,293 @@
     },
     "target": "183897715433715",
     "details": "Membro removido"
+  },
+  {
+    "id": 44,
+    "timestamp": "2026-02-15T14:47:41.198Z",
+    "date": "15/02/2026, 14:47:41",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte ✨"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 45,
+    "timestamp": "2026-02-15T14:48:42.870Z",
+    "date": "15/02/2026, 14:48:42",
+    "action": "Alterar Nome do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": null,
+    "details": "Novo nome: DeadBoT Suporte 🤖"
+  },
+  {
+    "id": 46,
+    "timestamp": "2026-02-15T14:52:24.891Z",
+    "date": "15/02/2026, 14:52:24",
+    "action": "Alterar Descrição do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": null,
+    "details": "Descrição do grupo foi alterada"
+  },
+  {
+    "id": 47,
+    "timestamp": "2026-02-15T14:52:52.742Z",
+    "date": "15/02/2026, 14:52:52",
+    "action": "Rebaixar Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": "270652296695959",
+    "details": "Rebaixado de admin"
+  },
+  {
+    "id": 48,
+    "timestamp": "2026-02-15T14:53:10.171Z",
+    "date": "15/02/2026, 14:53:10",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": "270652296695959",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 49,
+    "timestamp": "2026-02-15T14:53:24.441Z",
+    "date": "15/02/2026, 14:53:24",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": null,
+    "details": "Editar info do grupo: Apenas admins"
+  },
+  {
+    "id": 50,
+    "timestamp": "2026-02-15T14:55:09.235Z",
+    "date": "15/02/2026, 14:55:09",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": null,
+    "details": "Solicitação às 11:55:08"
+  },
+  {
+    "id": 51,
+    "timestamp": "2026-02-15T14:55:38.668Z",
+    "date": "15/02/2026, 14:55:38",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT Suporte 🤖"
+    },
+    "target": "242404347146484",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 52,
+    "timestamp": "2026-02-15T23:00:59.742Z",
+    "date": "15/02/2026, 23:00:59",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 53,
+    "timestamp": "2026-02-15T23:35:21.044Z",
+    "date": "15/02/2026, 23:35:21",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Grupo"
+    },
+    "target": "52674217148583",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 54,
+    "timestamp": "2026-02-17T12:51:57.641Z",
+    "date": "17/02/2026, 12:51:57",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 55,
+    "timestamp": "2026-02-18T07:09:12.981Z",
+    "date": "18/02/2026, 07:09:12",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 56,
+    "timestamp": "2026-02-18T07:58:10.090Z",
+    "date": "18/02/2026, 07:58:10",
+    "action": "Alterar Nome do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Novo nome: DeadBoT SuporTe 🤖"
+  },
+  {
+    "id": 57,
+    "timestamp": "2026-02-18T08:55:03.815Z",
+    "date": "18/02/2026, 08:55:03",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 58,
+    "timestamp": "2026-02-18T17:32:47.955Z",
+    "date": "18/02/2026, 17:32:47",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 59,
+    "timestamp": "2026-02-19T08:29:51.704Z",
+    "date": "19/02/2026, 08:29:51",
+    "action": "Promover a Admin",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": "52674217148583",
+    "details": "Promovido a admin"
+  },
+  {
+    "id": 60,
+    "timestamp": "2026-02-19T13:50:22.405Z",
+    "date": "19/02/2026, 13:50:22",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 61,
+    "timestamp": "2026-02-19T13:52:45.389Z",
+    "date": "19/02/2026, 13:52:45",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "Laboratório 🧫"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
   }
 ]

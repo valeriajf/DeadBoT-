@@ -20,6 +20,7 @@ const { badMacHandler } = require("../utils/badMacHandler");
 const { checkIfMemberIsMuted } = require("../utils/database");
 const { messageHandler } = require("./messageHandler");
 const connection = require("../connection");
+const { verificarAluguelAtivo } = require("../utils/middleware-aluguel");
 
 const fs = require("fs");
 const path = require("path");
@@ -52,6 +53,11 @@ const figBanAddCommand = require("../commands/admin/fig-ban-add");
 const figBanDeleteCommand = require("../commands/admin/fig-ban-delete");
 const figBanListCommand = require("../commands/admin/fig-ban-list");
 const figBanClearCommand = require("../commands/admin/fig-ban-clear");
+
+//  Comandos fig-adv
+const figAdvAddCommand = require("../commands/admin/fig-adv-add");
+const figAdvDeleteCommand = require("../commands/admin/fig-adv-delete");
+const figAdvClearCommand = require("../commands/admin/fig-adv-clear");
 
 // ====================================
 // SISTEMA FIG-BAN - Carregar figurinhas banidas do banco
@@ -275,9 +281,11 @@ try {
                             case 'stickerMessage':
                                 activityTracker.trackSticker(remoteJid, userJid, userName);
                                 break;
+                            case 'audioMessage':
+                                activityTracker.trackAudio(remoteJid, userJid, userName);
+                                break;
                             case 'imageMessage':
                             case 'videoMessage':
-                            case 'audioMessage':
                             case 'documentMessage':
                                 activityTracker.trackMessage(remoteJid, userJid, userName);
                                 break;
@@ -467,14 +475,56 @@ try {
             if (webMessage?.message) {
                 messageHandler(socket, webMessage);
 
-                const msgText = webMessage.message?.extendedTextMessage?.text ||
-                                webMessage.message?.conversation || "";
-                const chatId = webMessage.key.remoteJid;
+const msgText = webMessage.message?.extendedTextMessage?.text ||
+                webMessage.message?.conversation || "";
+const chatId = webMessage.key.remoteJid;
+const userJidForAluguel = webMessage.key.participant || webMessage.key.remoteJid;
+
+// ⭐ VERIFICAÇÃO DE ALUGUEL - Bloqueia comandos # em grupos sem aluguel ativo
+if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "#") {
+    const aluguelAtivo = verificarAluguelAtivo(chatId, msgText, userJidForAluguel);
+    if (!aluguelAtivo) {
+        console.log(`🚫 [ALUGUEL] Comando bloqueado no grupo ${chatId}`);
+        try {
+            const { obterAluguelDoGrupo } = require("../utils/aluguel");
+            const aluguel = obterAluguelDoGrupo(chatId);
+            let nomeGrupo = "Grupo";
+            try {
+                const meta = await socket.groupMetadata(chatId);
+                nomeGrupo = meta?.subject || "Grupo";
+            } catch (_) {}
+
+            let msg = `📊 *STATUS DO ALUGUEL*\n\n`;
+            msg += `*🪀 NOME:* ${nomeGrupo}\n`;
+            msg += `*🆔 GRUPO:* ${chatId}\n`;
+            msg += `💢 *STATUS:* 🔴 DESATIVADO\n\n`;
+            msg += `🚨 *Entre em contato com o dono do bot*`;
+
+            await socket.sendMessage(chatId, { text: msg });
+        } catch (e) {
+            console.error("Erro ao enviar mensagem de aluguel:", e.message);
+        }
+        continue;
+    }
+}
+// ⭐ FIM VERIFICAÇÃO DE ALUGUEL
                 
                 // === COMANDOS #
                 if (msgText.startsWith("#")) {
                     const [cmd, ...args] = msgText.trim().slice(1).split(/\s+/);
                     const command = cmd.toLowerCase();
+
+                    // 🎮 RASTREAMENTO DE COMANDO
+                    if (chatId?.endsWith("@g.us") && msgText.trim() !== "#") {
+                        try {
+                            const cmdUserJid = webMessage.key.participant || webMessage.key.remoteJid;
+                            const cmdUserName = webMessage.pushName || null;
+                            activityTracker.trackCommand(chatId, cmdUserJid, cmdUserName);
+                        } catch (cmdTrackError) {
+                            console.error('❌ [ACTIVITY] Erro ao rastrear comando:', cmdTrackError.message);
+                        }
+                    }
+                    // 🎮 FIM RASTREAMENTO DE COMANDO
                     
                     // Reação ao símbolo # sozinho
                     if (msgText.trim() === "#") {
@@ -525,6 +575,20 @@ try {
                     }
                     if (command === "fig-ban-clear") {
                         await figBanClearCommand.handle(webMessage, { socket });
+                        continue;
+                    }
+
+                    // ✅ fig-adv
+                    if (command === "fig-adv-add") {
+                        await figAdvAddCommand.handle(webMessage, { socket });
+                        continue;
+                    }
+                    if (command === "fig-adv-delete") {
+                        await figAdvDeleteCommand.handle(webMessage, { socket });
+                        continue;
+                    }
+                    if (command === "fig-adv-clear") {
+                        await figAdvClearCommand.handle(webMessage, { socket });
                         continue;
                     }
                 }

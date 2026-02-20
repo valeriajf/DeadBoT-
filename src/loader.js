@@ -1,11 +1,11 @@
 /**
-Este script é responsável
-por carregar os eventos
-que serão escutados pelo
-socket do WhatsApp.
-
-@author Dev Gui
-*/
+ * INSTALAÇÃO: /sdcard/DeadBoT-/src/loader.js
+ * 
+ * Este script é responsável por carregar os eventos
+ * que serão escutados pelo socket do WhatsApp.
+ * 
+ * @author Dev Gui
+ */
 const { TIMEOUT_IN_MILLISECONDS_BY_EVENT } = require("./config");
 const { onMessagesUpsert } = require("./middlewares/onMesssagesUpsert");
 const { onGroupParticipantsUpdate } = require("./middlewares/onGroupParticipantsUpdate");
@@ -13,6 +13,7 @@ const { initX9Monitoring } = require("./middlewares/x9Monitoring");
 const path = require("node:path");
 
 exports.load = (socket) => {
+  // BASE_DIR = src/ (PADRÃO DO BOT)
   global.BASE_DIR = path.resolve(__dirname);
 
   // IMPORTANTE: só importar depois do BASE_DIR existir
@@ -31,6 +32,16 @@ exports.load = (socket) => {
 
   // ⭐ Inicia o sistema X9 de monitoramento (1 vez apenas)
   initX9Monitoring(socket);
+
+  // ⭐ Inicia o sistema de agendamentos automáticos (grupo-abrir e grupo-fechar)
+  setTimeout(() => {
+    try {
+      const { autoInitSchedules } = require(`${BASE_DIR}/utils/scheduleAutoInit`);
+      autoInitSchedules(socket);
+    } catch (error) {
+      console.error('Erro ao inicializar agendamentos:', error.message);
+    }
+  }, 3000);
 
   // ⭐ Limpeza automática de confirmações BANGHOST (1 vez apenas)
   setInterval(() => {

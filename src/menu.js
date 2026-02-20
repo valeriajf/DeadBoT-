@@ -26,10 +26,12 @@ exports.menuMessage = (groupJid) => {
 ╭━━⪩ DONO ⪨━━
 
  • ${prefix}anti-pv (1/0)
+ • ${prefix}clearauth 
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
+ • ${prefix}restart
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
  • ${prefix}zerar-rank (grupo)
@@ -85,6 +87,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}set-nome-grupo
  • ${prefix}totag
  • ${prefix}unmute
+ • ${prefix}x9 (1/0)
  • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0) Foto Usuário 
  • ${prefix}welcome3 (1/0) Foto Grupo 
@@ -133,6 +136,21 @@ exports.menuMessage = (groupJid) => {
 
 ╰━━─「🚀」─━━
 
+╭━━⪩ BRINCADEIRAS ⪨━━
+
+ • ${prefix}abracar
+ • ${prefix}beijar
+ • ${prefix}dado
+ • ${prefix}dancar
+ • ${prefix}driblar
+ • ${prefix}duelar
+ • ${prefix}jantar
+ • ${prefix}lutar
+ • ${prefix}socar
+ • ${prefix}tapa
+
+╰━━─「🎡」─━━
+
 ╭━━⪩ DOWNLOADS ⪨━━
 
  • ${prefix}facebook
@@ -140,7 +158,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}pinterest 
  • ${prefix}play-audio
  • ${prefix}play-video
- • ${prefix}spotdl
+ • ${prefix}spotify
  • ${prefix}tik-tok
  • ${prefix}threads
  • ${prefix}twitter 
@@ -148,4 +166,5 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}yt-mp4
 
 ╰━━─「🎶」─━━`;
+
 };

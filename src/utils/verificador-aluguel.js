@@ -1,78 +1,54 @@
 /**
  * Sistema de verificação automática de aluguéis expirados
- * Verifica a cada minuto se há aluguéis vencidos
- * 
+ * Verifica a cada 1 minuto
  * @author Adaptado para DeadBoT
  */
 const path = require("node:path");
-const { verificarExpirados } = require(path.join(__dirname, "aluguel"));
+const { verificarExpirados, removerAluguelExpirado } = require(path.join(__dirname, "aluguel"));
 const { deactivateGroup } = require(path.join(__dirname, "database"));
 
 let intervaloVerificacao = null;
 
-/**
- * Inicia o verificador de aluguéis expirados
- * @param {Object} socket - Socket do baileys
- */
 function iniciarVerificador(socket) {
-  // Evita criar múltiplos intervalos
-  if (intervaloVerificacao) {
-    console.log("⚠️ Verificador de aluguéis já está rodando");
-    return;
-  }
+  if (intervaloVerificacao) return;
 
-  console.log("✅ Verificador de aluguéis iniciado");
-
-  // Verifica a cada 1 minuto (60000 ms)
   intervaloVerificacao = setInterval(async () => {
     try {
       const expirados = verificarExpirados();
 
-      if (expirados.length > 0) {
-        console.log(`🔔 ${expirados.length} aluguel(is) expirado(s) encontrado(s)`);
+      for (const aluguel of expirados) {
+        try {
+          // 1. Desativa o grupo
+          deactivateGroup(aluguel.groupId);
 
-        for (const aluguel of expirados) {
-          try {
-            console.log(`📴 Desativando bot no grupo: ${aluguel.groupId}`);
+          // 2. Envia mensagem
+          await socket.sendMessage(aluguel.groupId, {
+            text:
+              `⏰ *Aluguel Expirado!*\n\n` +
+              `O período de aluguel deste grupo chegou ao fim.\n\n` +
+              `🔑 *ID do aluguel:* ${aluguel.id}\n` +
+              `📅 *Expirou em:* ${aluguel.expira}\n\n` +
+              `🤖 O bot foi desativado neste grupo.\n\n` +
+              `Para renovar o aluguel e reativar o bot, entre em contato com o dono do bot.\n\n` +
+              `💤 Entrando em modo OFF...`
+          });
 
-            // Desativa o bot no grupo
-            deactivateGroup(aluguel.groupId);
+          // 3. Remove do banco
+          removerAluguelExpirado(aluguel.groupId);
 
-            // Envia mensagem informando sobre a expiração
-            await socket.sendMessage(aluguel.groupId, {
-              text: `⏰ *Aluguel Expirado!*\n\n` +
-                    `O período de aluguel deste grupo chegou ao fim.\n\n` +
-                    `🔑 *ID do aluguel:* ${aluguel.id}\n` +
-                    `📅 *Expirou em:* ${aluguel.expira}\n\n` +
-                    `🤖 O bot foi desativado neste grupo.\n\n` +
-                    `Para renovar o aluguel e reativar o bot, entre em contato com o dono do bot.\n\n` +
-                    `💤 Entrando em modo OFF...`
-            });
-
-            console.log(`✅ Bot desativado no grupo: ${aluguel.groupId}`);
-          } catch (error) {
-            console.error(`❌ Erro ao desativar bot no grupo ${aluguel.groupId}:`, error);
-          }
+        } catch (error) {
+          try { removerAluguelExpirado(aluguel.groupId); } catch (_) {}
         }
       }
-    } catch (error) {
-      console.error("❌ Erro no verificador de aluguéis:", error);
-    }
-  }, 60000); // 60000 ms = 1 minuto
+    } catch (_) {}
+  }, 60000); // 1 minuto
 }
 
-/**
- * Para o verificador de aluguéis
- */
 function pararVerificador() {
   if (intervaloVerificacao) {
     clearInterval(intervaloVerificacao);
     intervaloVerificacao = null;
-    console.log("🛑 Verificador de aluguéis parado");
   }
 }
 
-module.exports = {
-  iniciarVerificador,
-  pararVerificador,
-};
+module.exports = { iniciarVerificador, pararVerificador };
