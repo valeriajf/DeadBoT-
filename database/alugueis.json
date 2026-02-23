@@ -35,18 +35,6 @@
     "registradoEm": "2026-02-17T15:47:42.693Z",
     "ativo": true
   },
-  "120363421275714747@g.us": {
-    "id": "Q902DFLU",
-    "groupId": "120363421275714747@g.us",
-    "nomeGrupo": "ℝ𝔼𝕊𝔼ℕℍ𝔸 𝔻𝕆𝕊 𝔸𝕄𝕀𝔾𝕆𝕊 𝟚.𝟘🔥💥",
-    "quantidade": 4,
-    "tipo": "dias",
-    "duracao": "4 dias",
-    "expira": "21/02/2026, 18:54:46",
-    "expiraTimestamp": 1771700086412,
-    "registradoEm": "2026-02-17T18:54:46.412Z",
-    "ativo": true
-  },
   "120363424665581220@g.us": {
     "id": "HT6ELBQC",
     "groupId": "120363424665581220@g.us",
@@ -93,6 +81,30 @@
     "expira": "27/02/2026, 14:17:01",
     "expiraTimestamp": 1772212621632,
     "registradoEm": "2026-02-20T17:17:01.635Z",
+    "ativo": true
+  },
+  "120363404988905236@g.us": {
+    "id": "2WX4O5KB",
+    "groupId": "120363404988905236@g.us",
+    "nomeGrupo": "🫂❤️🅔🅝🅣🅡🅔 🅐🅜🅘🅖🅞🅢 🅔 🅐🅜🅞🅡🅔🅢 🫂❤️",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "22/03/2026, 17:04:09",
+    "expiraTimestamp": 1774209849255,
+    "registradoEm": "2026-02-20T20:04:09.255Z",
+    "ativo": true
+  },
+  "120363421275714747@g.us": {
+    "id": "SXQI9Z1N",
+    "groupId": "120363421275714747@g.us",
+    "nomeGrupo": "ℝ𝔼𝕊𝔼ℕℍ𝔸 𝔻𝕆𝕊 𝔸𝕄𝕀𝔾𝕆𝕊 𝟚.𝟘🔥💥",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "24/03/2026, 06:26:39",
+    "expiraTimestamp": 1774344399109,
+    "registradoEm": "2026-02-22T09:26:39.109Z",
     "ativo": true
   }
 }

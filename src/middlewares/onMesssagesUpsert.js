@@ -8,6 +8,7 @@
 const {
     isAtLeastMinutesInPast,
     GROUP_PARTICIPANT_ADD,
+    GROUP_PARTICIPANT_JOIN_LINK,
     GROUP_PARTICIPANT_LEAVE,
     isAddOrLeave,
 } = require("../utils");
@@ -119,38 +120,30 @@ exports.onMessagesUpsert = async ({ socket, messages, startProcess }) => {
 
     for (const webMessage of messages) {
 
-    
     if (DEVELOPER_MODE) {
         infoLog(`\n\n⪨========== [ MENSAGEM RECEBIDA ] ==========⪩ \n\n${JSON.stringify(messages, null, 2)}`);
     }
         
-         // 🚫 SISTEMA ANTI-PV - Bloqueia TUDO no privado quando ativado
-if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
-    try {
-        const antiPvData = antiPvCommand.loadAntiPvData();
-        const isAntiPvActiveInAnyGroup = Object.values(antiPvData).some(value => value === true);
-        
-        if (isAntiPvActiveInAnyGroup) {
-            console.log(`🚫 [ANTI-PV] Mensagem privada BLOQUEADA de: ${webMessage.key.remoteJid}`);
+    // 🚫 SISTEMA ANTI-PV
+    if (!webMessage.key.fromMe && !webMessage.key.remoteJid?.includes('@g.us')) {
+        try {
+            const antiPvData = antiPvCommand.loadAntiPvData();
+            const isAntiPvActiveInAnyGroup = Object.values(antiPvData).some(value => value === true);
             
-            // Envia mensagem uma única vez e bloqueia o contato
-            await socket.sendMessage(webMessage.key.remoteJid, {
-                text: "🚫 *Antipv ativado!*\n\n❌ Mensagens privadas serão bloqueadas.\n\n✅ Use o bot apenas nos grupos."
-            });
-            
-            // BLOQUEIA o contato para não receber mais mensagens
-            await socket.updateBlockStatus(webMessage.key.remoteJid, 'block');
-            
-            console.log(`🔒 [ANTI-PV] Contato ${webMessage.key.remoteJid} foi BLOQUEADO`);
-            
-            // Pula COMPLETAMENTE esta mensagem
-            continue;
+            if (isAntiPvActiveInAnyGroup) {
+                console.log(`🚫 [ANTI-PV] Mensagem privada BLOQUEADA de: ${webMessage.key.remoteJid}`);
+                await socket.sendMessage(webMessage.key.remoteJid, {
+                    text: "🚫 *Antipv ativado!*\n\n❌ Mensagens privadas serão bloqueadas.\n\n✅ Use o bot apenas nos grupos."
+                });
+                await socket.updateBlockStatus(webMessage.key.remoteJid, 'block');
+                console.log(`🔒 [ANTI-PV] Contato ${webMessage.key.remoteJid} foi BLOQUEADO`);
+                continue;
+            }
+        } catch (antiPvError) {
+            console.error('❌ [ANTI-PV] Erro:', antiPvError.message);
         }
-    } catch (antiPvError) {
-        console.error('❌ [ANTI-PV] Erro:', antiPvError.message);
     }
-}
-// 🚫 FIM ANTI-PV
+    // 🚫 FIM ANTI-PV
 
         try {
             const timestamp = webMessage.messageTimestamp;
@@ -160,20 +153,14 @@ try {
     if (webMessage?.message && webMessage.key.remoteJid?.includes('@g.us')) {
         const userJid = webMessage.key.participant || webMessage.key.remoteJid;
         const remoteJid = webMessage.key.remoteJid;
-        
-        // Pega o texto da mensagem
         const msgText = webMessage.message?.extendedTextMessage?.text || 
                        webMessage.message?.conversation || "";
-        
-        // Verifica se NÃO é o comando #afk antes de remover o AFK
         const isAFKCommand = msgText.trim().toLowerCase().startsWith("#afk");
         
-        // Só remove do AFK se NÃO for o comando #afk
         if (!isAFKCommand && afkCommand.isAFK(remoteJid, userJid)) {
             const afkData = afkCommand.removeAFK(remoteJid, userJid);
             if (afkData) {
                 const timeAway = afkCommand.formatDuration(Date.now() - afkData.startTime);
-                
                 await socket.sendMessage(remoteJid, {
                     text: `👋 @${userJid.split('@')[0]} voltou!\n\n⏱️ Ficou ausente por: ${timeAway}\n\n💭 Motivo: ${afkData.reason}`,
                     mentions: [userJid]
@@ -181,13 +168,10 @@ try {
             }
         }
         
-        // Verificação de menções
         let mentions = [];
-        
         const messageTypes = Object.keys(webMessage.message || {});
         for (const type of messageTypes) {
             const contextInfo = webMessage.message[type]?.contextInfo;
-            
             if (contextInfo?.mentionedJid && contextInfo.mentionedJid.length > 0) {
                 mentions = contextInfo.mentionedJid;
                 break;
@@ -230,37 +214,21 @@ try {
                         if (isAdmin || isOwner) {
                             const commonFunctions = {
                                 sendReply: async (text) => {
-                                    return await socket.sendMessage(remoteJid, {
-                                        text: text
-                                    }, { quoted: webMessage });
+                                    return await socket.sendMessage(remoteJid, { text }, { quoted: webMessage });
                                 },
                                 sendErrorReply: async (text) => {
-                                    return await socket.sendMessage(remoteJid, {
-                                        text: text
-                                    }, { quoted: webMessage });
+                                    return await socket.sendMessage(remoteJid, { text }, { quoted: webMessage });
                                 },
-                                socket: socket,
-                                webMessage: webMessage,
+                                socket,
+                                webMessage,
                                 isGroupMessage: true,
                                 isFromAdmins: isAdmin || isOwner,
                                 groupId: remoteJid
                             };
-
-                            try {
-                                await fecharFigCommand.handle(commonFunctions);
-                            } catch (error) {
-                                // Silencioso
-                            }
-
-                            try {
-                                await abrirFigCommand.handle(commonFunctions);
-                            } catch (error) {
-                                // Silencioso
-                            }
+                            try { await fecharFigCommand.handle(commonFunctions); } catch {}
+                            try { await abrirFigCommand.handle(commonFunctions); } catch {}
                         }
-                    } catch (error) {
-                        // Silencioso
-                    }
+                    } catch {}
                 }
             }
             // 🖼️ FIM DO SISTEMA DE COMANDOS POR FIGURINHA
@@ -300,15 +268,13 @@ try {
             }
             // 🔥 FIM RASTREAMENTO
             
-// 🖼️ SISTEMA AUTO-STICKER
+            // 🖼️ SISTEMA AUTO-STICKER
             try {
                 const autoStickerCmd = require("../commands/admin/auto-sticker");
-                
                 const hasImage = !!(
                     webMessage?.message?.imageMessage ||
                     webMessage?.message?.viewOnceMessage?.message?.imageMessage
                 );
-                
                 const hasVideo = !!(
                     webMessage?.message?.videoMessage ||
                     webMessage?.message?.viewOnceMessage?.message?.videoMessage
@@ -316,35 +282,22 @@ try {
                 
                 if ((hasImage || hasVideo) && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
                     const groupId = webMessage.key.remoteJid;
-                    const isActive = autoStickerCmd.isActive(groupId);
-                    
-                    if (isActive) {
+                    if (autoStickerCmd.isActive(groupId)) {
                         const { download } = require("../utils");
-                        const { getRandomName } = require("../utils");
-                        
-                        const downloadImage = async (msg, filename) => {
-                            return await download(msg, filename, "image", "png");
-                        };
-                        
-                        const downloadVideo = async (msg, filename) => {
-                            return await download(msg, filename, "video", "mp4");
-                        };
-                        
                         const sendStickerFromFile = async (filePath) => {
                             return await socket.sendMessage(groupId, {
                                 sticker: fs.readFileSync(filePath)
                             }, { quoted: webMessage });
                         };
-                        
                         await autoStickerCmd.processAutoSticker({
                             isImage: hasImage,
                             isVideo: hasVideo,
                             isGroup: true,
-                            groupId: groupId,
-                            webMessage: webMessage,
-                            downloadImage: downloadImage,
-                            downloadVideo: downloadVideo,
-                            sendStickerFromFile: sendStickerFromFile,
+                            groupId,
+                            webMessage,
+                            downloadImage: async (msg, filename) => await download(msg, filename, "image", "png"),
+                            downloadVideo: async (msg, filename) => await download(msg, filename, "video", "mp4"),
+                            sendStickerFromFile,
                             userJid: webMessage.key.participant || webMessage.key.remoteJid,
                         });
                     }
@@ -359,34 +312,30 @@ try {
                 if (webMessage?.message?.stickerMessage && !webMessage.key.fromMe && webMessage.key.remoteJid?.includes('@g.us')) {
                     const userJid = webMessage.key.participant || webMessage.key.remoteJid;
                     const remoteJid = webMessage.key.remoteJid;
-                    const message = { type: 'sticker', author: userJid, from: remoteJid };
-                    await antifloodCommand.processSticker({ socket, message, from: remoteJid });
+                    await antifloodCommand.processSticker({ socket, message: { type: 'sticker', author: userJid, from: remoteJid }, from: remoteJid });
                 }
             } catch (antifloodError) {
                 console.error('❌ [ANTIFLOOD] Erro:', antifloodError.message);
             }
             // 🚫 FIM ANTIFLOOD
 
-            // 🎯 SISTEMA BANGHOST - Confirmação SIM/NÃO com 5 ALEATÓRIOS
+            // 🎯 SISTEMA BANGHOST
 try {
     const msgText = webMessage.message?.extendedTextMessage?.text || 
                     webMessage.message?.conversation || "";
     const textUpper = msgText.trim().toUpperCase();
-    const chatId = webMessage.key.remoteJid; // ⭐ DEFINIR chatId aqui
+    const chatId = webMessage.key.remoteJid;
     
     if ((textUpper === 'SIM' || textUpper === 'NÃO' || textUpper === 'NAO') && chatId.endsWith("@g.us")) {
         const banghostCommand = require('../commands/admin/banghost');
         const pendingBans = banghostCommand.getPendingBans ? banghostCommand.getPendingBans() : new Map();
         
-        // Procura confirmação pendente deste grupo
         let confirmationData = null;
         let confirmationId = null;
         
         for (const [id, data] of pendingBans.entries()) {
             if (data.chatId === chatId) {
                 const sender = webMessage.key.participant || webMessage.key.remoteJid;
-                
-                // Verifica se é o admin que iniciou
                 if (data.adminJid === sender) {
                     confirmationData = data;
                     confirmationId = id;
@@ -396,33 +345,24 @@ try {
         }
         
         if (confirmationData) {
-            // Remove a confirmação do Map
             pendingBans.delete(confirmationId);
             
             if (textUpper === 'NÃO' || textUpper === 'NAO') {
-                await socket.sendMessage(chatId, {
-                    text: '❌ Banimento cancelado pelo administrador!'
-                });
+                await socket.sendMessage(chatId, { text: '❌ Banimento cancelado pelo administrador!' });
                 continue;
             }
             
             if (textUpper === 'SIM') {
                 const ghostMembers = confirmationData.ghostMembers;
-                
-                // ⭐ ESCOLHE 5 ALEATÓRIOS DOS MEMBROS LISTADOS
                 const shuffled = ghostMembers.sort(() => Math.random() - 0.5);
                 const toBan = shuffled.slice(0, Math.min(5, shuffled.length));
                 
                 if (toBan.length === 0) {
-                    await socket.sendMessage(chatId, {
-                        text: '❌ Nenhum membro para banir!'
-                    });
+                    await socket.sendMessage(chatId, { text: '❌ Nenhum membro para banir!' });
                     continue;
                 }
                 
-                await socket.sendMessage(chatId, {
-                    text: `🎲 Sorteando ${toBan.length} membros aleatórios para banimento...`
-                });
+                await socket.sendMessage(chatId, { text: `🎲 Sorteando ${toBan.length} membros aleatórios para banimento...` });
                 
                 let successCount = 0;
                 let failCount = 0;
@@ -433,37 +373,22 @@ try {
                         await socket.groupParticipantsUpdate(chatId, [member.userId], 'remove');
                         successCount++;
                         bannedNames.push(`@${member.userId.split('@')[0]}`);
-                        
-                        // Remover do activityTracker
                         try {
-                            const activityTracker = require('../utils/activityTracker');
-                            if (activityTracker && typeof activityTracker.removeUser === 'function') {
-                                activityTracker.removeUser(chatId, member.userId);
-                            }
-                        } catch (err) {
-                            console.error('Erro ao remover do activityTracker:', err.message);
-                        }
+                            const at = require('../utils/activityTracker');
+                            if (at && typeof at.removeUser === 'function') at.removeUser(chatId, member.userId);
+                        } catch {}
                     } catch (banError) {
                         failCount++;
                         console.error(`Erro ao banir ${member.userId}:`, banError.message);
                     }
                 }
                 
-                let resultMessage = `🔨 *RESULTADO DO BANIMENTO*\n\n`;
-                resultMessage += `✅ Banidos: ${successCount}\n`;
-                if (failCount > 0) {
-                    resultMessage += `❌ Falhas: ${failCount}\n`;
-                }
+                let resultMessage = `🔨 *RESULTADO DO BANIMENTO*\n\n✅ Banidos: ${successCount}\n`;
+                if (failCount > 0) resultMessage += `❌ Falhas: ${failCount}\n`;
                 resultMessage += `\n👻 *Membros removidos:*\n`;
-                bannedNames.forEach(name => {
-                    resultMessage += `• ${name}\n`;
-                });
+                bannedNames.forEach(name => { resultMessage += `• ${name}\n`; });
                 
-                const mentions = toBan.map(m => m.userId);
-                await socket.sendMessage(chatId, {
-                    text: resultMessage,
-                    mentions: mentions
-                });
+                await socket.sendMessage(chatId, { text: resultMessage, mentions: toBan.map(m => m.userId) });
             }
         }
     }
@@ -480,26 +405,23 @@ const msgText = webMessage.message?.extendedTextMessage?.text ||
 const chatId = webMessage.key.remoteJid;
 const userJidForAluguel = webMessage.key.participant || webMessage.key.remoteJid;
 
-// ⭐ VERIFICAÇÃO DE ALUGUEL - Bloqueia comandos # em grupos sem aluguel ativo
+// ⭐ VERIFICAÇÃO DE ALUGUEL
 if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "#") {
     const aluguelAtivo = verificarAluguelAtivo(chatId, msgText, userJidForAluguel);
     if (!aluguelAtivo) {
         console.log(`🚫 [ALUGUEL] Comando bloqueado no grupo ${chatId}`);
         try {
             const { obterAluguelDoGrupo } = require("../utils/aluguel");
-            const aluguel = obterAluguelDoGrupo(chatId);
             let nomeGrupo = "Grupo";
             try {
                 const meta = await socket.groupMetadata(chatId);
                 nomeGrupo = meta?.subject || "Grupo";
             } catch (_) {}
-
             let msg = `📊 *STATUS DO ALUGUEL*\n\n`;
             msg += `*🪀 NOME:* ${nomeGrupo}\n`;
             msg += `*🆔 GRUPO:* ${chatId}\n`;
             msg += `💢 *STATUS:* 🔴 DESATIVADO\n\n`;
             msg += `🚨 *Entre em contato com o dono do bot*`;
-
             await socket.sendMessage(chatId, { text: msg });
         } catch (e) {
             console.error("Erro ao enviar mensagem de aluguel:", e.message);
@@ -517,27 +439,15 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                     // 🎮 RASTREAMENTO DE COMANDO
                     if (chatId?.endsWith("@g.us") && msgText.trim() !== "#") {
                         try {
-                            const cmdUserJid = webMessage.key.participant || webMessage.key.remoteJid;
-                            const cmdUserName = webMessage.pushName || null;
-                            activityTracker.trackCommand(chatId, cmdUserJid, cmdUserName);
-                        } catch (cmdTrackError) {
-                            console.error('❌ [ACTIVITY] Erro ao rastrear comando:', cmdTrackError.message);
-                        }
+                            activityTracker.trackCommand(chatId, webMessage.key.participant || webMessage.key.remoteJid, webMessage.pushName || null);
+                        } catch {}
                     }
-                    // 🎮 FIM RASTREAMENTO DE COMANDO
                     
                     // Reação ao símbolo # sozinho
                     if (msgText.trim() === "#") {
                         try {
-                            await socket.sendMessage(chatId, {
-                                react: {
-                                    text: "🤖",
-                                    key: webMessage.key
-                                }
-                            });
-                        } catch (reactError) {
-                            console.error("❌ Erro ao reagir:", reactError.message);
-                        }
+                            await socket.sendMessage(chatId, { react: { text: "🤖", key: webMessage.key } });
+                        } catch {}
                         continue;
                     }
 
@@ -552,45 +462,21 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                     if (autoStickerCmd.commands.includes(command)) {
                         const commonFunctions = loadCommonFunctions({ socket, webMessage });
                         if (commonFunctions) {
-                            await autoStickerCmd.handle({
-                                ...commonFunctions,
-                                args: args
-                            });
+                            await autoStickerCmd.handle({ ...commonFunctions, args });
                         }
                         continue;
                     }
 
                     // fig-ban
-                    if (command === "fig-ban-add") {
-                        await figBanAddCommand.handle(webMessage, { socket });
-                        continue;
-                    }
-                    if (command === "fig-ban-delete") {
-                        await figBanDeleteCommand.handle(webMessage, { socket });
-                        continue;
-                    }
-                    if (command === "fig-ban-list") {
-                        await figBanListCommand.handle(webMessage, { socket });
-                        continue;
-                    }
-                    if (command === "fig-ban-clear") {
-                        await figBanClearCommand.handle(webMessage, { socket });
-                        continue;
-                    }
+                    if (command === "fig-ban-add") { await figBanAddCommand.handle(webMessage, { socket }); continue; }
+                    if (command === "fig-ban-delete") { await figBanDeleteCommand.handle(webMessage, { socket }); continue; }
+                    if (command === "fig-ban-list") { await figBanListCommand.handle(webMessage, { socket }); continue; }
+                    if (command === "fig-ban-clear") { await figBanClearCommand.handle(webMessage, { socket }); continue; }
 
-                    // ✅ fig-adv
-                    if (command === "fig-adv-add") {
-                        await figAdvAddCommand.handle(webMessage, { socket });
-                        continue;
-                    }
-                    if (command === "fig-adv-delete") {
-                        await figAdvDeleteCommand.handle(webMessage, { socket });
-                        continue;
-                    }
-                    if (command === "fig-adv-clear") {
-                        await figAdvClearCommand.handle(webMessage, { socket });
-                        continue;
-                    }
+                    // fig-adv
+                    if (command === "fig-adv-add") { await figAdvAddCommand.handle(webMessage, { socket }); continue; }
+                    if (command === "fig-adv-delete") { await figAdvDeleteCommand.handle(webMessage, { socket }); continue; }
+                    if (command === "fig-adv-clear") { await figAdvClearCommand.handle(webMessage, { socket }); continue; }
                 }
 
                 // === BAN POR FIGURINHA (DINÂMICO) ===
@@ -602,10 +488,7 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                             const targetJid = webMessage.message.stickerMessage.contextInfo?.participant;
                             const sender = webMessage.key.participant || webMessage.key.remoteJid;
                             const botJid = socket.user?.id;
-                            if (!targetJid) {
-                                await socket.sendMessage(chatId, { text: "🎯 Marque o alvo para banir" });
-                                return;
-                            }
+                            if (!targetJid) { await socket.sendMessage(chatId, { text: "🎯 Marque o alvo para banir" }); return; }
                             const groupMetadata = await socket.groupMetadata(chatId);
                             const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
                             if (!groupAdmins.includes(sender)) {
@@ -620,7 +503,6 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                                 await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
                                 await socket.sendMessage(chatId, { text: "🚫 Usuário removido com sucesso!" });
                             } catch (banErr) {
-                                console.error("❌ Erro ao tentar banir via figurinha:", banErr);
                                 await socket.sendMessage(chatId, { text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?" });
                             }
                         }
@@ -657,14 +539,13 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                     if (msgLower.includes(trigger)) {
                         const audioPath = path.join(__dirname, "..", "assets", "audios", audioTriggers[trigger]);
                         if (fs.existsSync(audioPath)) {
-                            const audioBuffer = fs.readFileSync(audioPath);
-                            await socket.sendMessage(chatId, { audio: audioBuffer, mimetype: "audio/mp4", ptt: true });
+                            await socket.sendMessage(chatId, { audio: fs.readFileSync(audioPath), mimetype: "audio/mp4", ptt: true });
                         }
                         break;
                     }
                 }
                 
-                // === BAN POR EMOJI ☠️ (ADMs)
+                // === BAN POR EMOJI ☠️
                 const emojiText = webMessage.message?.extendedTextMessage?.text?.trim() || webMessage.message?.conversation?.trim() || "";
                 const contextInfo = webMessage.message?.extendedTextMessage?.contextInfo;
 
@@ -672,7 +553,6 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                     const sender = webMessage.key.participant || chatId;
                     const targetJid = contextInfo.participant;
                     const botJid = socket.user?.id;
-
                     const groupMetadata = await socket.groupMetadata(chatId);
                     const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
 
@@ -680,22 +560,14 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                         await socket.sendMessage(chatId, { text: "❌ Apenas administradores podem usar o emoji ☠️ para banir." }, { quoted: webMessage });
                         return;
                     }
-
-                    const isSelf = targetJid === sender;
-                    const isBot = targetJid === botJid;
-                    const isOwner = OWNER_NUMBER && targetJid.includes(OWNER_NUMBER);
-                    const isTargetAdmin = groupAdmins.includes(targetJid);
-
-                    if (isSelf || isBot || isOwner || isTargetAdmin) {
+                    if (targetJid === sender || targetJid === botJid || (OWNER_NUMBER && targetJid.includes(OWNER_NUMBER)) || groupAdmins.includes(targetJid)) {
                         await socket.sendMessage(chatId, { text: "❌ Você não pode usar ☠️ contra ADMs!" }, { quoted: webMessage });
                         return;
                     }
-
                     try {
                         await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
                         await socket.sendMessage(chatId, { text: "☠️ Usuário removido com sucesso" });
                     } catch (banErr) {
-                        console.error("❌ Erro ao tentar banir via ☠️:", banErr);
                         await socket.sendMessage(chatId, { text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?" });
                     }
                 }
@@ -707,7 +579,7 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
             if (isAtLeastMinutesInPast(timestamp)) continue;
 
             if (isAddOrLeave.includes(webMessage.messageStubType)) {
-                const action = webMessage.messageStubType === GROUP_PARTICIPANT_ADD ? "add" : "remove";
+                const action = [GROUP_PARTICIPANT_ADD, GROUP_PARTICIPANT_JOIN_LINK].includes(webMessage.messageStubType) ? "add" : "remove";
                 
                 await onGroupParticipantsUpdate({
                     userJid: webMessage.messageStubParameters[0],
@@ -731,6 +603,11 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                 }
                 const commonFunctions = loadCommonFunctions({ socket, webMessage });
                 if (!commonFunctions) continue;
+
+                // 🆕 Adiciona suporte para nome do grupo nas figurinhas
+                commonFunctions.remoteJid = webMessage.key.remoteJid;
+                commonFunctions.isGroup = webMessage.key.remoteJid.endsWith('@g.us');
+                commonFunctions.sock = socket;
 
                 await dynamicCommand(commonFunctions, startProcess);
             }

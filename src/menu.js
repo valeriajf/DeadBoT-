@@ -31,9 +31,11 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
+ • ${prefix}resetar-agendamento-global
  • ${prefix}restart
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
+ • ${prefix}ver-agendamento-global
  • ${prefix}zerar-rank (grupo)
  • ${prefix}zerar-rank global 
 
@@ -77,6 +79,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}lista-negra-add
  • ${prefix}lista-negra-remover
  • ${prefix}mute
+ • ${prefix}niver (1/0)
  • ${prefix}only-admin (1/0)
  • ${prefix}promover
  • ${prefix}rebaixar
@@ -114,7 +117,12 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}get-lid
  • ${prefix}google-search
  • ${prefix}lyrics
+ • ${prefix}meu-lid
  • ${prefix}motivar
+ • ${prefix}niver-delete
+ • ${prefix}niver-listar
+ • ${prefix}niver-meu
+ • ${prefix}niver-reg
  • ${prefix}parabens
  • ${prefix}perfil
  • ${prefix}ping

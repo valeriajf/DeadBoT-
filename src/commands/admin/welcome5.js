@@ -3,59 +3,43 @@ const { InvalidParameterError, WarningError } = require(`${BASE_DIR}/errors`);
 const fs = require('fs');
 const path = require('path');
 
-const WELCOME5_DB_PATH = path.join(`${BASE_DIR}`, 'database', 'welcome5.json');
+const WELCOME5_DB_PATH = path.join(__dirname, '..', '..', 'database', 'welcome5.json');
 
 function loadWelcome5Data() {
   try {
-    if (fs.existsSync(WELCOME5_DB_PATH)) {
-      const data = fs.readFileSync(WELCOME5_DB_PATH, 'utf8');
-      return JSON.parse(data);
-    }
+    if (fs.existsSync(WELCOME5_DB_PATH)) return JSON.parse(fs.readFileSync(WELCOME5_DB_PATH, 'utf8'));
     return {};
-  } catch (error) {
-    console.error('Erro ao carregar welcome5.json:', error);
-    return {};
-  }
+  } catch { return {}; }
 }
 
 function saveWelcome5Data(data) {
   try {
     const dbDir = path.dirname(WELCOME5_DB_PATH);
-    if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
-    }
-    
+    if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
     fs.writeFileSync(WELCOME5_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Erro ao salvar welcome5.json:', error);
-  }
+  } catch {}
 }
 
-function activateWelcome5Group(groupId) {
+function activateWelcome5Group(groupId, groupName) {
   const data = loadWelcome5Data();
   if (!data[groupId]) {
-    data[groupId] = {
-      active: true,
-      customMessage: null,
-      gifFileName: null
-    };
+    data[groupId] = { active: true, groupName: groupName || null, customMessage: null, gifFileName: null };
   } else {
     data[groupId].active = true;
+    if (groupName) data[groupId].groupName = groupName;
   }
   saveWelcome5Data(data);
 }
 
 function deactivateWelcome5Group(groupId) {
   const data = loadWelcome5Data();
-  if (data[groupId]) {
-    data[groupId].active = false;
-  }
+  if (data[groupId]) data[groupId].active = false;
   saveWelcome5Data(data);
 }
 
 function isActiveWelcome5Group(groupId) {
   const data = loadWelcome5Data();
-  return data[groupId] && data[groupId].active === true;
+  return data[groupId]?.active === true;
 }
 
 function getGifFileName(groupId) {
@@ -70,70 +54,40 @@ function getCustomWelcome5Message(groupId) {
 
 module.exports = {
   name: "welcome5",
-  description: "Ativa/desativa as boas-vindas com GIF",
-  commands: [
-    "welcome5",
-    "bemvindo5",
-    "boasvinda5",
-    "bv5",
-  ],
+  description: "Ativa/desativa boas-vindas com GIF.",
+  commands: ["welcome5", "bemvindo5", "boasvinda5", "bv5"],
   usage: `${PREFIX}welcome5 (1/0)`,
-  /**
-   * @param {CommandHandleProps} props
-   * @returns {Promise<void>}
-   */
-  handle: async ({ args, sendReply, sendSuccessReact, remoteJid }) => {
-    if (!args.length) {
-      throw new InvalidParameterError(
-        "Você precisa digitar 1 ou 0!\n\n" +
-        `${PREFIX}welcome5 1 - Ativar\n` +
-        `${PREFIX}welcome5 0 - Desativar`
-      );
+  handle: async ({ args, sendReply, sendSuccessReact, remoteJid, getGroupName }) => {
+    if (!args.length || !["1", "0"].includes(args[0])) {
+      throw new InvalidParameterError("Voce precisa digitar 1 ou 0 (ligar ou desligar)!");
     }
 
-    const welcome = args[0] == "1";
-    const notWelcome = args[0] == "0";
+    const welcome = args[0] === "1";
+    const isActive = isActiveWelcome5Group(remoteJid);
 
-    if (!welcome && !notWelcome) {
-      throw new InvalidParameterError(
-        "Você precisa digitar 1 ou 0!"
-      );
-    }
-
-    const hasActive = welcome && isActiveWelcome5Group(remoteJid);
-    const hasInactive = notWelcome && !isActiveWelcome5Group(remoteJid);
-
-    if (hasActive || hasInactive) {
-      throw new WarningError(
-        `As boas-vindas já estão ${welcome ? "ativadas" : "desativadas"}!`
-      );
-    }
+    if (welcome && isActive) throw new WarningError("O welcome5 ja esta ativado!");
+    if (!welcome && !isActive) throw new WarningError("O welcome5 ja esta desativado!");
 
     if (welcome) {
-      activateWelcome5Group(remoteJid);
+      const groupName = await getGroupName();
+      activateWelcome5Group(remoteJid, groupName);
     } else {
       deactivateWelcome5Group(remoteJid);
     }
 
     await sendSuccessReact();
 
-    const gifFile = getGifFileName(remoteJid);
-    const customMessage = getCustomWelcome5Message(remoteJid);
-
     if (welcome) {
+      const gifFile = getGifFileName(remoteJid);
+      const customMsg = getCustomWelcome5Message(remoteJid);
       await sendReply(
-        `Boas-vindas ativadas!\n\n` +
-        `*Configuração atual:*\n` +
-        `GIF: ${gifFile ? '✅ Configurado' : '⚠️ Não configurado'}\n` +
-        `Mensagem: ${customMessage ? '✅ Personalizada' : '⚠️ Padrão'}\n\n` +
-        `${!gifFile ? `Configure o GIF:\n${PREFIX}set-gif-bv5 (responder GIF)\n\n` : ''}` +
-        `${!customMessage ? `Personalize a mensagem:\n${PREFIX}legenda-bv5 Sua mensagem` : ''}`
+        "Boas-vindas com GIF ativadas com sucesso!\n\n" +
+        "Status atual:\n" +
+        "GIF: " + (gifFile ? "Configurado" : "Nao configurado - use " + PREFIX + "set-gif-bv5 (responder GIF)") + "\n" +
+        "Mensagem: " + (customMsg ? "Personalizada" : "Padrao - use " + PREFIX + "legenda-bv5 para personalizar")
       );
     } else {
-      await sendReply(
-        `Boas-vindas desativadas!\n\n` +
-        `Para reativar:\n${PREFIX}welcome5 1`
-      );
+      await sendReply("Boas-vindas com GIF desativadas com sucesso!");
     }
   },
 };

@@ -1,14 +1,2450 @@
 {
   "120363406027458811@g.us": {
     "163351011319890@lid": {
-      "messages": 2,
+      "messages": 35,
       "stickers": 0,
-      "commands": 2,
+      "commands": 14,
       "audios": 0,
-      "lastActivity": "2026-02-20T18:12:50.089Z",
+      "lastActivity": "2026-02-23T01:40:09.511Z",
       "joinDate": "2026-02-20T18:12:36.358Z",
       "displayName": "Valéria",
       "lastKnownName": "Valéria"
+    },
+    "242404347146484@lid": {
+      "messages": 34,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:29:22.839Z",
+      "joinDate": "2026-02-21T19:56:21.372Z",
+      "displayName": "Dead-v1",
+      "lastKnownName": "Dead-v1"
+    }
+  },
+  "120363417816517583@g.us": {
+    "163351011319890@lid": {
+      "messages": 126,
+      "stickers": 32,
+      "commands": 27,
+      "audios": 12,
+      "lastActivity": "2026-02-22T12:39:48.510Z",
+      "joinDate": "2026-02-20T19:00:06.258Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "86436787306731@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T22:50:27.884Z",
+      "joinDate": "2026-02-20T19:06:42.433Z",
+      "displayName": "Deilza",
+      "lastKnownName": "Deilza"
+    },
+    "124928250667116@lid": {
+      "messages": 56,
+      "stickers": 21,
+      "commands": 0,
+      "audios": 6,
+      "lastActivity": "2026-02-21T01:46:47.674Z",
+      "joinDate": "2026-02-20T19:07:40.837Z",
+      "displayName": "Thais 🌹",
+      "lastKnownName": "Thais 🌹"
+    },
+    "200776936882351@lid": {
+      "messages": 11,
+      "stickers": 13,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T01:38:02.426Z",
+      "joinDate": "2026-02-20T22:43:22.872Z",
+      "displayName": "Rodrigo",
+      "lastKnownName": "Rodrigo"
+    },
+    "177623288250596@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T02:40:11.719Z",
+      "joinDate": "2026-02-20T22:45:59.287Z",
+      "displayName": "⚖️igor-sann👑",
+      "lastKnownName": "⚖️igor-sann👑"
+    },
+    "270652296695959@lid": {
+      "messages": 4,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T23:16:46.585Z",
+      "joinDate": "2026-02-20T23:14:00.810Z",
+      "displayName": "igor sann",
+      "lastKnownName": "igor sann"
+    },
+    "113236879896651@lid": {
+      "messages": 5,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T18:56:32.697Z",
+      "joinDate": "2026-02-21T16:53:16.812Z",
+      "displayName": "Érika",
+      "lastKnownName": "Érika"
+    },
+    "5515224596569@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:24:10.371Z",
+      "joinDate": "2026-02-22T12:24:10.371Z",
+      "displayName": "Leiliane Surtadinha 😡✍🏼",
+      "lastKnownName": "Leiliane Surtadinha 😡✍🏼"
+    }
+  },
+  "120363421108908380@g.us": {
+    "260692234006552@lid": {
+      "messages": 387,
+      "stickers": 87,
+      "commands": 0,
+      "audios": 24,
+      "lastActivity": "2026-02-22T18:19:28.114Z",
+      "joinDate": "2026-02-20T19:01:14.884Z",
+      "displayName": "🇧🇼Paulo🇧🇼",
+      "lastKnownName": "🇧🇼Paulo🇧🇼"
+    },
+    "107400338120880@lid": {
+      "messages": 17,
+      "stickers": 12,
+      "commands": 0,
+      "audios": 5,
+      "lastActivity": "2026-02-22T12:26:13.626Z",
+      "joinDate": "2026-02-20T19:01:27.872Z",
+      "displayName": "⭐💫💎❣️",
+      "lastKnownName": "⭐💫💎❣️"
+    },
+    "138611831865462@lid": {
+      "messages": 37,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:37:05.129Z",
+      "joinDate": "2026-02-20T19:09:30.519Z",
+      "displayName": "Flavio Sampaio",
+      "lastKnownName": "Flavio Sampaio"
+    },
+    "184464667852826@lid": {
+      "messages": 56,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T17:28:00.549Z",
+      "joinDate": "2026-02-20T19:25:49.181Z",
+      "displayName": "🌸Tere🌸",
+      "lastKnownName": "🌸Tere🌸"
+    },
+    "254725920452645@lid": {
+      "messages": 176,
+      "stickers": 14,
+      "commands": 1,
+      "audios": 29,
+      "lastActivity": "2026-02-22T18:19:34.765Z",
+      "joinDate": "2026-02-20T19:26:15.487Z",
+      "displayName": "Thiago Bispo",
+      "lastKnownName": "Thiago Bispo"
+    },
+    "46498020601955@lid": {
+      "messages": 44,
+      "stickers": 6,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:44:50.617Z",
+      "joinDate": "2026-02-20T19:31:51.813Z",
+      "displayName": "LIh😇",
+      "lastKnownName": "LIh😇"
+    },
+    "119366368649282@lid": {
+      "messages": 94,
+      "stickers": 36,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T18:27:55.493Z",
+      "joinDate": "2026-02-20T19:34:19.227Z",
+      "displayName": "Amarildo mileski",
+      "lastKnownName": "Amarildo mileski"
+    },
+    "54610609848363@lid": {
+      "messages": 20,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:20:54.157Z",
+      "joinDate": "2026-02-20T19:51:11.830Z",
+      "displayName": "🇮🇹 ⓛⓔⓐⓝⓓⓡⓞ 🐷🙏🏻",
+      "lastKnownName": "🇮🇹 ⓛⓔⓐⓝⓓⓡⓞ 🐷🙏🏻"
+    },
+    "5515224596569@lid": {
+      "messages": 537,
+      "stickers": 29,
+      "commands": 6,
+      "audios": 57,
+      "lastActivity": "2026-02-22T18:19:08.006Z",
+      "joinDate": "2026-02-20T20:07:31.719Z",
+      "displayName": "Leiliane Surtadinha 😡✍🏼",
+      "lastKnownName": "Leiliane Surtadinha 😡✍🏼"
+    },
+    "65597639549079@lid": {
+      "messages": 49,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:37:47.978Z",
+      "joinDate": "2026-02-20T20:34:52.025Z",
+      "displayName": "Morgana 💫☘️",
+      "lastKnownName": "Morgana 💫☘️"
+    },
+    "132083817132038@lid": {
+      "messages": 20,
+      "stickers": 12,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T15:59:44.653Z",
+      "joinDate": "2026-02-20T20:55:28.676Z",
+      "displayName": "Léo",
+      "lastKnownName": "Léo"
+    },
+    "17536972279912@lid": {
+      "messages": 129,
+      "stickers": 24,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:16:15.800Z",
+      "joinDate": "2026-02-20T23:28:44.297Z",
+      "displayName": "lucia",
+      "lastKnownName": "lucia"
+    },
+    "116428090958034@lid": {
+      "messages": 13,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:26:32.817Z",
+      "joinDate": "2026-02-20T23:36:14.697Z",
+      "displayName": "Alex",
+      "lastKnownName": "Alex"
+    },
+    "133148767740151@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T23:38:45.735Z",
+      "joinDate": "2026-02-20T23:38:45.320Z",
+      "displayName": "🥱",
+      "lastKnownName": "🥱"
+    },
+    "208315007152218@lid": {
+      "messages": 56,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:11:40.997Z",
+      "joinDate": "2026-02-21T00:14:16.638Z",
+      "displayName": "João. H",
+      "lastKnownName": "João. H"
+    },
+    "77168314974424@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T01:02:18.374Z",
+      "joinDate": "2026-02-21T01:02:18.374Z",
+      "displayName": "oliveiragabrielde323",
+      "lastKnownName": "oliveiragabrielde323"
+    },
+    "184151554691134@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:56:22.493Z",
+      "joinDate": "2026-02-21T01:02:19.124Z",
+      "displayName": "Wellington Barbosa",
+      "lastKnownName": "Wellington Barbosa"
+    },
+    "7946461270017@lid": {
+      "messages": 88,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T17:31:50.189Z",
+      "joinDate": "2026-02-21T01:03:23.481Z",
+      "displayName": "LEQUINHO BRASIL",
+      "lastKnownName": "LEQUINHO BRASIL"
+    },
+    "163351011319890@lid": {
+      "messages": 4,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T09:29:41.761Z",
+      "joinDate": "2026-02-21T01:04:13.858Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "156031967580290@lid": {
+      "messages": 85,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:15:59.062Z",
+      "joinDate": "2026-02-21T01:12:17.847Z",
+      "displayName": "Neiva🧑🏻‍🦽💓",
+      "lastKnownName": "Neiva🧑🏻‍🦽💓"
+    },
+    "147236260475112@lid": {
+      "messages": 42,
+      "stickers": 6,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:16:39.179Z",
+      "joinDate": "2026-02-21T01:51:00.745Z",
+      "displayName": "Jhonny 👉🤪👈",
+      "lastKnownName": "Jhonny 👉🤪👈"
+    },
+    "155379233243372@lid": {
+      "messages": 3,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T19:14:03.251Z",
+      "joinDate": "2026-02-21T08:45:09.586Z",
+      "displayName": "Pekenna",
+      "lastKnownName": "Pekenna"
+    },
+    "224154980720709@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T09:12:31.749Z",
+      "joinDate": "2026-02-21T09:12:31.749Z",
+      "displayName": "robertosergio9276",
+      "lastKnownName": "robertosergio9276"
+    },
+    "268671796670598@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T10:24:38.568Z",
+      "joinDate": "2026-02-21T10:24:38.568Z",
+      "displayName": "Isaías",
+      "lastKnownName": "Isaías"
+    },
+    "254077833343120@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:56:16.201Z",
+      "joinDate": "2026-02-21T11:40:34.846Z",
+      "displayName": "gabi🦋",
+      "lastKnownName": "gabi🦋"
+    },
+    "154649457860843@lid": {
+      "messages": 2,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T13:03:54.443Z",
+      "joinDate": "2026-02-21T11:47:54.517Z",
+      "displayName": "꧁༒ ᏀᗩᗷᖇᏆᗴし✌🏽🤡⁹²༒꧂⁣⁣🏴‍☠",
+      "lastKnownName": "꧁༒ ᏀᗩᗷᖇᏆᗴし✌🏽🤡⁹²༒꧂⁣⁣🏴‍☠"
+    },
+    "120182378868948@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T13:03:18.756Z",
+      "joinDate": "2026-02-21T13:03:18.756Z",
+      "displayName": "W",
+      "lastKnownName": "W"
+    },
+    "85960230473731@lid": {
+      "messages": 11,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:25:59.516Z",
+      "joinDate": "2026-02-21T13:35:59.198Z",
+      "displayName": "Rainha Do Gelo Arendelle",
+      "lastKnownName": "Rainha Do Gelo Arendelle"
+    },
+    "126556227801310@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T14:35:23.226Z",
+      "joinDate": "2026-02-21T14:35:23.226Z",
+      "displayName": "Matheus",
+      "lastKnownName": "Matheus"
+    },
+    "57003477069892@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T15:09:30.725Z",
+      "joinDate": "2026-02-21T15:09:30.725Z",
+      "displayName": "Karlla Alves Advogada",
+      "lastKnownName": "Karlla Alves Advogada"
+    },
+    "277236280254696@lid": {
+      "messages": 8,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T04:14:30.682Z",
+      "joinDate": "2026-02-21T15:10:17.423Z",
+      "displayName": "José Luiz Griebeler",
+      "lastKnownName": "José Luiz Griebeler"
+    },
+    "159437910184021@lid": {
+      "messages": 19,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:27:41.046Z",
+      "joinDate": "2026-02-21T15:22:18.925Z",
+      "displayName": "Marcos Oliveira Rodrigues",
+      "lastKnownName": "Marcos Oliveira Rodrigues"
+    },
+    "280728172499177@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:16:16.263Z",
+      "joinDate": "2026-02-21T17:31:48.946Z",
+      "displayName": "yuricosta",
+      "lastKnownName": "yuricosta"
+    },
+    "159867843178678@lid": {
+      "messages": 40,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T18:11:56.587Z",
+      "joinDate": "2026-02-21T17:42:55.866Z",
+      "displayName": "simoni Longato",
+      "lastKnownName": "simoni Longato"
+    },
+    "238727838363817@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T17:49:41.101Z",
+      "joinDate": "2026-02-21T17:49:41.101Z",
+      "displayName": "dnt",
+      "lastKnownName": "dnt"
+    },
+    "153270907596936@lid": {
+      "messages": 8,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:51:35.383Z",
+      "joinDate": "2026-02-21T22:01:36.965Z",
+      "displayName": "Valdemh🦁🫶🏼",
+      "lastKnownName": "Valdemh🦁🫶🏼"
+    },
+    "134609157259334@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:42:35.404Z",
+      "joinDate": "2026-02-21T23:55:21.088Z",
+      "displayName": "dede😍😋😍😘💚💙💗",
+      "lastKnownName": "dede😍😋😍😘💚💙💗"
+    },
+    "102074813575305@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T00:03:30.972Z",
+      "joinDate": "2026-02-22T00:02:58.249Z",
+      "displayName": "Fábio Rodrigues",
+      "lastKnownName": "Fábio Rodrigues"
+    },
+    "30039638831138@lid": {
+      "messages": 6,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T02:23:18.573Z",
+      "joinDate": "2026-02-22T01:59:03.946Z",
+      "displayName": "KEILA",
+      "lastKnownName": "KEILA"
+    },
+    "189292294983779@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:25:49.190Z",
+      "joinDate": "2026-02-22T15:11:19.862Z",
+      "displayName": "Laura❤️",
+      "lastKnownName": "Laura❤️"
+    },
+    "170455054946386@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 12,
+      "lastActivity": "2026-02-22T17:31:10.902Z",
+      "joinDate": "2026-02-22T16:10:19.647Z",
+      "displayName": "ricardo",
+      "lastKnownName": "ricardo"
+    }
+  },
+  "120363362886567059@g.us": {
+    "5648553136187@lid": {
+      "messages": 169,
+      "stickers": 10,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:26:50.083Z",
+      "joinDate": "2026-02-20T19:01:44.125Z",
+      "displayName": "Rafaela",
+      "lastKnownName": "Rafaela"
+    },
+    "86436787306731@lid": {
+      "messages": 579,
+      "stickers": 230,
+      "commands": 9,
+      "audios": 19,
+      "lastActivity": "2026-02-22T18:28:34.105Z",
+      "joinDate": "2026-02-20T19:04:01.466Z",
+      "displayName": "Deilza",
+      "lastKnownName": "Deilza"
+    },
+    "118012866764922@lid": {
+      "messages": 44,
+      "stickers": 11,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:00:49.417Z",
+      "joinDate": "2026-02-20T19:06:02.421Z",
+      "displayName": "Leoa 🦁🌻",
+      "lastKnownName": "Leoa 🦁🌻"
+    },
+    "12795194138696@lid": {
+      "messages": 3,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T01:42:02.373Z",
+      "joinDate": "2026-02-20T19:12:37.959Z",
+      "displayName": ".",
+      "lastKnownName": "."
+    },
+    "199192664350968@lid": {
+      "messages": 67,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T17:55:14.855Z",
+      "joinDate": "2026-02-20T19:16:20.609Z",
+      "displayName": "Ph🤪🇧🇷",
+      "lastKnownName": "Ph🤪🇧🇷"
+    },
+    "172525195665431@lid": {
+      "messages": 219,
+      "stickers": 37,
+      "commands": 0,
+      "audios": 30,
+      "lastActivity": "2026-02-22T16:57:13.005Z",
+      "joinDate": "2026-02-20T19:23:36.274Z",
+      "displayName": "Valentina arendelle suprema",
+      "lastKnownName": "Valentina arendelle suprema"
+    },
+    "98527002804254@lid": {
+      "messages": 53,
+      "stickers": 14,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:09:33.176Z",
+      "joinDate": "2026-02-20T19:27:48.689Z",
+      "displayName": "R",
+      "lastKnownName": "R"
+    },
+    "31341047472167@lid": {
+      "messages": 47,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:29:10.615Z",
+      "joinDate": "2026-02-20T19:31:46.418Z",
+      "displayName": "vincenzo",
+      "lastKnownName": "vincenzo"
+    },
+    "154301632630804@lid": {
+      "messages": 64,
+      "stickers": 21,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:25:24.039Z",
+      "joinDate": "2026-02-20T19:35:39.202Z",
+      "displayName": "🎼ঙ💙ঙ[ ρяєτα ]ঙ💙ঙ🎼",
+      "lastKnownName": "🎼ঙ💙ঙ[ ρяєτα ]ঙ💙ঙ🎼"
+    },
+    "188510963278010@lid": {
+      "messages": 149,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 34,
+      "lastActivity": "2026-02-22T18:28:45.337Z",
+      "joinDate": "2026-02-20T19:37:19.929Z",
+      "displayName": "Stephanie",
+      "lastKnownName": "Stephanie"
+    },
+    "85960230473731@lid": {
+      "messages": 66,
+      "stickers": 9,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:25:11.597Z",
+      "joinDate": "2026-02-20T19:38:30.412Z",
+      "displayName": "Rainha Do Gelo Arendelle",
+      "lastKnownName": "Rainha Do Gelo Arendelle"
+    },
+    "231052278792365@lid": {
+      "messages": 119,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 4,
+      "lastActivity": "2026-02-22T18:30:58.917Z",
+      "joinDate": "2026-02-20T19:46:43.728Z",
+      "displayName": "Beto",
+      "lastKnownName": "Beto"
+    },
+    "269848852566028@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T22:00:26.718Z",
+      "joinDate": "2026-02-20T19:56:37.309Z",
+      "displayName": "Corinthians",
+      "lastKnownName": "Corinthians"
+    },
+    "231589082591367@lid": {
+      "messages": 62,
+      "stickers": 6,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:14:08.982Z",
+      "joinDate": "2026-02-20T20:12:12.629Z",
+      "displayName": "🪽Débora Leg🪽",
+      "lastKnownName": "🪽Débora Leg🪽"
+    },
+    "154855700201526@lid": {
+      "messages": 39,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T13:29:32.200Z",
+      "joinDate": "2026-02-20T20:22:02.905Z",
+      "displayName": "cacauzinha☺️",
+      "lastKnownName": "cacauzinha☺️"
+    },
+    "200691691855921@lid": {
+      "messages": 68,
+      "stickers": 23,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:59:18.275Z",
+      "joinDate": "2026-02-20T20:30:17.245Z",
+      "displayName": "Paulista🔥",
+      "lastKnownName": "Paulista🔥"
+    },
+    "167611501424868@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:17:56.014Z",
+      "joinDate": "2026-02-20T20:37:02.437Z",
+      "displayName": "💎💎💎 💎Robson 💎💎💎💎",
+      "lastKnownName": "💎💎💎 💎Robson 💎💎💎💎"
+    },
+    "11605437841644@lid": {
+      "messages": 231,
+      "stickers": 78,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:04:41.069Z",
+      "joinDate": "2026-02-20T21:06:38.745Z",
+      "displayName": "Cristini",
+      "lastKnownName": "Cristini"
+    },
+    "196907724972212@lid": {
+      "messages": 50,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:21:01.477Z",
+      "joinDate": "2026-02-20T21:22:03.497Z",
+      "displayName": "Will",
+      "lastKnownName": "Will"
+    },
+    "123536396026096@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T22:33:49.264Z",
+      "joinDate": "2026-02-20T21:29:54.045Z",
+      "displayName": "Smith😎",
+      "lastKnownName": "Smith😎"
+    },
+    "202946264486030@lid": {
+      "messages": 1,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T21:29:55.795Z",
+      "joinDate": "2026-02-20T21:29:55.234Z",
+      "displayName": "Fb11",
+      "lastKnownName": "Fb11"
+    },
+    "167882151465141@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:37:20.468Z",
+      "joinDate": "2026-02-20T22:28:11.831Z",
+      "displayName": "Rodrigo",
+      "lastKnownName": "Rodrigo"
+    },
+    "127397856817316@lid": {
+      "messages": 88,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:30:50.859Z",
+      "joinDate": "2026-02-20T22:28:12.443Z",
+      "displayName": "Fabio",
+      "lastKnownName": "Fabio"
+    },
+    "57995077644419@lid": {
+      "messages": 5,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T23:12:52.117Z",
+      "joinDate": "2026-02-20T22:28:19.882Z",
+      "displayName": "Atleta ⚽",
+      "lastKnownName": "Atleta ⚽"
+    },
+    "187479651004555@lid": {
+      "messages": 52,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T15:16:35.437Z",
+      "joinDate": "2026-02-20T22:28:26.499Z",
+      "displayName": "Neurotoxic Venon",
+      "lastKnownName": "Neurotoxic Venon"
+    },
+    "80870459314265@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:24:57.717Z",
+      "joinDate": "2026-02-20T22:29:14.281Z",
+      "displayName": "Luane Cristine",
+      "lastKnownName": "Luane Cristine"
+    },
+    "164995581087822@lid": {
+      "messages": 161,
+      "stickers": 47,
+      "commands": 0,
+      "audios": 22,
+      "lastActivity": "2026-02-22T13:02:24.068Z",
+      "joinDate": "2026-02-20T22:36:40.825Z",
+      "displayName": "🅻🆄🅸🆂 🆁🅾🅱🅴🆁🆃🅾",
+      "lastKnownName": "🅻🆄🅸🆂 🆁🅾🅱🅴🆁🆃🅾"
+    },
+    "40802273235194@lid": {
+      "messages": 393,
+      "stickers": 132,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:32:28.552Z",
+      "joinDate": "2026-02-20T22:37:53.648Z",
+      "displayName": "Kiterya",
+      "lastKnownName": "Kiterya"
+    },
+    "55791725854796@lid": {
+      "messages": 12,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:13:28.115Z",
+      "joinDate": "2026-02-20T22:44:32.341Z",
+      "displayName": "LOBO SOLITARIO .COM",
+      "lastKnownName": "LOBO SOLITARIO .COM"
+    },
+    "275535724830918@lid": {
+      "messages": 33,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 8,
+      "lastActivity": "2026-02-22T02:21:58.005Z",
+      "joinDate": "2026-02-20T22:44:50.411Z",
+      "displayName": "⚡Pedrinho ⚡",
+      "lastKnownName": "⚡Pedrinho ⚡"
+    },
+    "101756952428565@lid": {
+      "messages": 155,
+      "stickers": 21,
+      "commands": 0,
+      "audios": 17,
+      "lastActivity": "2026-02-22T18:09:12.326Z",
+      "joinDate": "2026-02-20T22:51:03.988Z",
+      "displayName": "Bull fighters",
+      "lastKnownName": "Bull fighters"
+    },
+    "13035309670481@lid": {
+      "messages": 148,
+      "stickers": 50,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:47:42.014Z",
+      "joinDate": "2026-02-20T23:35:40.320Z",
+      "displayName": "💗ྀིg̊⫶ï̊⫶ℓ̊⫶𝕄̊⫶å̊⫶ŕ̊⫶å💗ྀི",
+      "lastKnownName": "💗ྀིg̊⫶ï̊⫶ℓ̊⫶𝕄̊⫶å̊⫶ŕ̊⫶å💗ྀི"
+    },
+    "155633173156037@lid": {
+      "messages": 9,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T14:11:28.740Z",
+      "joinDate": "2026-02-20T23:38:41.742Z",
+      "displayName": "Valmir",
+      "lastKnownName": "Valmir"
+    },
+    "137735977320509@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:25:31.270Z",
+      "joinDate": "2026-02-20T23:50:14.152Z",
+      "displayName": "Junior Mendonça",
+      "lastKnownName": "Junior Mendonça"
+    },
+    "175986435989504@lid": {
+      "messages": 10,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:00:18.764Z",
+      "joinDate": "2026-02-21T00:17:40.144Z",
+      "displayName": "Claudinei",
+      "lastKnownName": "Claudinei"
+    },
+    "256186528071888@lid": {
+      "messages": 36,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:26:06.446Z",
+      "joinDate": "2026-02-21T00:23:07.593Z",
+      "displayName": "trabalho",
+      "lastKnownName": "trabalho"
+    },
+    "115178775531643@lid": {
+      "messages": 11,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:16:36.161Z",
+      "joinDate": "2026-02-21T00:57:53.867Z",
+      "displayName": "Marcos",
+      "lastKnownName": "Marcos"
+    },
+    "110269074276540@lid": {
+      "messages": 204,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 5,
+      "lastActivity": "2026-02-22T16:46:54.489Z",
+      "joinDate": "2026-02-21T01:26:39.088Z",
+      "displayName": "Valentino",
+      "lastKnownName": "Valentino"
+    },
+    "167873326624768@lid": {
+      "messages": 51,
+      "stickers": 39,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T15:48:55.418Z",
+      "joinDate": "2026-02-21T01:35:08.380Z",
+      "displayName": "🌟❤️ BRILHODS ESTREL❤️🌟",
+      "lastKnownName": "🌟❤️ BRILHODS ESTREL❤️🌟"
+    },
+    "203096152088830@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:00:21.873Z",
+      "joinDate": "2026-02-21T01:40:44.715Z",
+      "displayName": "fabi2018kunhonski",
+      "lastKnownName": "fabi2018kunhonski"
+    },
+    "78688766967901@lid": {
+      "messages": 5,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T02:21:33.581Z",
+      "joinDate": "2026-02-21T01:41:02.174Z",
+      "displayName": "s00398971neia Oliveira",
+      "lastKnownName": "s00398971neia Oliveira"
+    },
+    "195344105210011@lid": {
+      "messages": 8,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-21T22:32:14.599Z",
+      "joinDate": "2026-02-21T02:34:34.522Z",
+      "displayName": "Marli Figueredo",
+      "lastKnownName": "Marli Figueredo"
+    },
+    "156813618069672@lid": {
+      "messages": 4,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T09:42:37.463Z",
+      "joinDate": "2026-02-21T09:16:40.306Z",
+      "displayName": "CAVALEIRO DAS TREVAS MITIZUKKI",
+      "lastKnownName": "CAVALEIRO DAS TREVAS MITIZUKKI"
+    },
+    "113791450775601@lid": {
+      "messages": 27,
+      "stickers": 7,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T15:03:53.331Z",
+      "joinDate": "2026-02-21T09:45:21.515Z",
+      "displayName": "🥶🥶🥶",
+      "lastKnownName": "🥶🥶🥶"
+    },
+    "150423193268414@lid": {
+      "messages": 28,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T18:02:02.625Z",
+      "joinDate": "2026-02-21T09:51:41.415Z",
+      "displayName": "Léo 2010🌬️🌬️💨🙅🏽‍♂️",
+      "lastKnownName": "Léo 2010🌬️🌬️💨🙅🏽‍♂️"
+    },
+    "135914290458831@lid": {
+      "messages": 9,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:00:11.204Z",
+      "joinDate": "2026-02-21T10:21:22.009Z",
+      "displayName": "My Love",
+      "lastKnownName": "My Love"
+    },
+    "140145068105974@lid": {
+      "messages": 8,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:41:24.532Z",
+      "joinDate": "2026-02-21T10:47:28.701Z",
+      "displayName": "Vladimeia",
+      "lastKnownName": "Vladimeia"
+    },
+    "61731581776033@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:48:22.949Z",
+      "joinDate": "2026-02-21T10:50:02.658Z",
+      "displayName": "Luiza Melo",
+      "lastKnownName": "Luiza Melo"
+    },
+    "163351011319890@lid": {
+      "messages": 9,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:00:14.844Z",
+      "joinDate": "2026-02-21T10:58:58.778Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "61285358112838@lid": {
+      "messages": 32,
+      "stickers": 7,
+      "commands": 0,
+      "audios": 4,
+      "lastActivity": "2026-02-21T16:21:09.376Z",
+      "joinDate": "2026-02-21T11:44:32.982Z",
+      "displayName": "Kátia",
+      "lastKnownName": "Kátia"
+    },
+    "38766525857938@lid": {
+      "messages": 50,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 14,
+      "lastActivity": "2026-02-22T18:31:16.019Z",
+      "joinDate": "2026-02-21T12:09:08.860Z",
+      "displayName": "𝐅𝐈𝐋𝐇𝐀 𝐃𝐎  REI😎🥰",
+      "lastKnownName": "𝐅𝐈𝐋𝐇𝐀 𝐃𝐎  REI😎🥰"
+    },
+    "213936850923662@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T12:10:10.062Z",
+      "joinDate": "2026-02-21T12:10:10.062Z",
+      "displayName": "🤍🕊️",
+      "lastKnownName": "🤍🕊️"
+    },
+    "202653820788784@lid": {
+      "messages": 8,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T13:27:07.631Z",
+      "joinDate": "2026-02-21T13:14:29.027Z",
+      "displayName": "Leandro safadão",
+      "lastKnownName": "Leandro safadão"
+    },
+    "67766413475995@lid": {
+      "messages": 8,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T14:32:43.135Z",
+      "joinDate": "2026-02-21T14:02:29.437Z",
+      "displayName": "Cássio",
+      "lastKnownName": "Cássio"
+    },
+    "136576336195672@lid": {
+      "messages": 34,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T15:03:23.007Z",
+      "joinDate": "2026-02-21T14:37:05.186Z",
+      "displayName": "tropa do justo 💪🏾🚩",
+      "lastKnownName": "tropa do justo 💪🏾🚩"
+    },
+    "179460947071025@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T14:42:50.733Z",
+      "joinDate": "2026-02-21T14:42:50.733Z",
+      "displayName": "C@belo🚛💨💨💨😎✌🏾🫱🏾‍🫲🏾",
+      "lastKnownName": "C@belo🚛💨💨💨😎✌🏾🫱🏾‍🫲🏾"
+    },
+    "224940506771559@lid": {
+      "messages": 77,
+      "stickers": 15,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T15:33:47.895Z",
+      "joinDate": "2026-02-21T14:47:14.627Z",
+      "displayName": "Veronica Ilarreguy",
+      "lastKnownName": "Veronica Ilarreguy"
+    },
+    "253532422840507@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T17:45:35.438Z",
+      "joinDate": "2026-02-21T17:45:35.438Z",
+      "displayName": "Conde Drácula",
+      "lastKnownName": "Conde Drácula"
+    },
+    "174002144325705@lid": {
+      "messages": 11,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:48:39.945Z",
+      "joinDate": "2026-02-21T17:49:44.291Z",
+      "displayName": "Techedow",
+      "lastKnownName": "Techedow"
+    },
+    "221019319103710@lid": {
+      "messages": 29,
+      "stickers": 17,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:29:40.689Z",
+      "joinDate": "2026-02-21T17:49:51.289Z",
+      "displayName": "📚MEN-TA-liST✴️",
+      "lastKnownName": "📚MEN-TA-liST✴️"
+    },
+    "231078031790177@lid": {
+      "messages": 49,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 13,
+      "lastActivity": "2026-02-21T23:37:43.955Z",
+      "joinDate": "2026-02-21T17:55:56.368Z",
+      "displayName": "Billy",
+      "lastKnownName": "Billy"
+    },
+    "78770371326148@lid": {
+      "messages": 36,
+      "stickers": 20,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:01:27.438Z",
+      "joinDate": "2026-02-21T18:17:07.619Z",
+      "displayName": "LEDA",
+      "lastKnownName": "LEDA"
+    },
+    "248735145672798@lid": {
+      "messages": 31,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 27,
+      "lastActivity": "2026-02-22T14:55:02.834Z",
+      "joinDate": "2026-02-21T18:33:59.480Z",
+      "displayName": "Herick☠️",
+      "lastKnownName": "Herick☠️"
+    },
+    "105824320004249@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:34:07.098Z",
+      "joinDate": "2026-02-21T19:19:36.143Z",
+      "displayName": "Gih",
+      "lastKnownName": "Gih"
+    },
+    "281338208850104@lid": {
+      "messages": 33,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 3,
+      "lastActivity": "2026-02-22T17:58:58.492Z",
+      "joinDate": "2026-02-21T19:30:07.367Z",
+      "displayName": "desconhecidomaxsolayne",
+      "lastKnownName": "desconhecidomaxsolayne"
+    },
+    "232267569987689@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:41:39.180Z",
+      "joinDate": "2026-02-21T21:39:04.886Z",
+      "displayName": "Rubens silva",
+      "lastKnownName": "Rubens silva"
+    },
+    "99256794910836@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T01:13:31.120Z",
+      "joinDate": "2026-02-21T21:43:34.588Z",
+      "displayName": "Edson MF 🇧🇷🇧🇷🇧🇷2️⃣2️⃣",
+      "lastKnownName": "Edson MF 🇧🇷🇧🇷🇧🇷2️⃣2️⃣"
+    },
+    "160017848217791@lid": {
+      "messages": 15,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:25:11.677Z",
+      "joinDate": "2026-02-21T21:48:15.343Z",
+      "displayName": "Julio família 🥰",
+      "lastKnownName": "Julio família 🥰"
+    },
+    "204831989956836@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:49:57.804Z",
+      "joinDate": "2026-02-21T21:49:57.804Z",
+      "displayName": "Sarah Emídia Sena",
+      "lastKnownName": "Sarah Emídia Sena"
+    },
+    "153257922031679@lid": {
+      "messages": 19,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:20:08.701Z",
+      "joinDate": "2026-02-21T22:17:23.827Z",
+      "displayName": "ACREANA🇬🇫❤🧿",
+      "lastKnownName": "ACREANA🇬🇫❤🧿"
+    },
+    "164128668807385@lid": {
+      "messages": 1,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:17:52.690Z",
+      "joinDate": "2026-02-22T00:14:31.408Z",
+      "displayName": "Juninho",
+      "lastKnownName": "Juninho"
+    },
+    "193553305227515@lid": {
+      "messages": 13,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:31:52.845Z",
+      "joinDate": "2026-02-22T01:18:28.298Z",
+      "displayName": "César",
+      "lastKnownName": "César"
+    },
+    "79366851678242@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T04:58:26.594Z",
+      "joinDate": "2026-02-22T04:58:26.594Z",
+      "displayName": "🤍🤍ONKA🤍🤍",
+      "lastKnownName": "🤍🤍ONKA🤍🤍"
+    },
+    "146591612674131@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:30:39.083Z",
+      "joinDate": "2026-02-22T10:12:57.532Z",
+      "displayName": "Carrezinho",
+      "lastKnownName": "Carrezinho"
+    },
+    "145921581043743@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:59:26.765Z",
+      "joinDate": "2026-02-22T11:59:26.765Z",
+      "displayName": "Deus É Bom Sempre",
+      "lastKnownName": "Deus É Bom Sempre"
+    },
+    "144955179806945@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:57:50.138Z",
+      "joinDate": "2026-02-22T12:57:50.138Z",
+      "displayName": "Julio Mota",
+      "lastKnownName": "Julio Mota"
+    },
+    "200296303177901@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:32:32.244Z",
+      "joinDate": "2026-02-22T14:13:16.945Z",
+      "displayName": "Thay",
+      "lastKnownName": "Thay"
+    },
+    "3766971560027@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T15:01:07.758Z",
+      "joinDate": "2026-02-22T14:57:27.122Z",
+      "displayName": "Cantor Leonardo Nunes",
+      "lastKnownName": "Cantor Leonardo Nunes"
+    },
+    "153910471868597@lid": {
+      "messages": 10,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:57:41.959Z",
+      "joinDate": "2026-02-22T15:14:39.767Z",
+      "displayName": "Sara Santos",
+      "lastKnownName": "Sara Santos"
+    },
+    "242086536311022@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:36:57.954Z",
+      "joinDate": "2026-02-22T16:36:57.954Z",
+      "displayName": "Léo 🦅",
+      "lastKnownName": "Léo 🦅"
+    },
+    "233023484215346@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:13:41.284Z",
+      "joinDate": "2026-02-22T18:12:16.339Z",
+      "displayName": "🌷Sônia 🌸",
+      "lastKnownName": "🌷Sônia 🌸"
+    }
+  },
+  "120363421275714747@g.us": {
+    "238044888203370@lid": {
+      "messages": 12,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T01:13:17.439Z",
+      "joinDate": "2026-02-20T19:07:04.883Z",
+      "displayName": "SKINNY",
+      "lastKnownName": "SKINNY"
+    },
+    "168190919335949@lid": {
+      "messages": 141,
+      "stickers": 14,
+      "commands": 0,
+      "audios": 9,
+      "lastActivity": "2026-02-22T17:01:08.013Z",
+      "joinDate": "2026-02-20T19:27:42.010Z",
+      "displayName": "✠ I Santos Dumont✠",
+      "lastKnownName": "✠ I Santos Dumont✠"
+    },
+    "195198176989344@lid": {
+      "messages": 22,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T03:46:43.473Z",
+      "joinDate": "2026-02-20T19:46:39.439Z",
+      "displayName": "K&W SISTEMAS INTELIGENTES",
+      "lastKnownName": "K&W SISTEMAS INTELIGENTES"
+    },
+    "113236879896651@lid": {
+      "messages": 14,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:47:37.792Z",
+      "joinDate": "2026-02-20T19:56:20.948Z",
+      "displayName": "Érika",
+      "lastKnownName": "Érika"
+    },
+    "100580081012837@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:26:04.206Z",
+      "joinDate": "2026-02-20T20:26:02.418Z",
+      "displayName": "Silvinha卍",
+      "lastKnownName": "Silvinha卍"
+    },
+    "44260158099602@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:31:03.992Z",
+      "joinDate": "2026-02-20T20:31:03.992Z",
+      "displayName": "⭐️⭐️⭐️⭐️",
+      "lastKnownName": "⭐️⭐️⭐️⭐️"
+    },
+    "8946635002003@lid": {
+      "messages": 132,
+      "stickers": 14,
+      "commands": 0,
+      "audios": 11,
+      "lastActivity": "2026-02-22T11:00:16.302Z",
+      "joinDate": "2026-02-20T20:34:35.305Z",
+      "displayName": "André 🇪🇪",
+      "lastKnownName": "André 🇪🇪"
+    },
+    "29570900193443@lid": {
+      "messages": 51,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:15:12.658Z",
+      "joinDate": "2026-02-20T20:45:01.908Z",
+      "displayName": "Jangada👾",
+      "lastKnownName": "Jangada👾"
+    },
+    "274801151189157@lid": {
+      "messages": 228,
+      "stickers": 75,
+      "commands": 21,
+      "audios": 40,
+      "lastActivity": "2026-02-22T17:15:33.963Z",
+      "joinDate": "2026-02-20T20:48:53.604Z",
+      "displayName": "Allan Patrick",
+      "lastKnownName": "Allan Patrick"
+    },
+    "163351011319890@lid": {
+      "messages": 7,
+      "stickers": 5,
+      "commands": 5,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:07:56.551Z",
+      "joinDate": "2026-02-20T20:52:58.223Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "133968821227609@lid": {
+      "messages": 20,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:52:34.757Z",
+      "joinDate": "2026-02-20T21:08:25.422Z",
+      "displayName": "Adriana",
+      "lastKnownName": "Adriana"
+    },
+    "115805220008124@lid": {
+      "messages": 114,
+      "stickers": 15,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:01:26.059Z",
+      "joinDate": "2026-02-20T22:28:12.888Z",
+      "displayName": "🌾",
+      "lastKnownName": "🌾"
+    },
+    "145530755752153@lid": {
+      "messages": 29,
+      "stickers": 2,
+      "commands": 1,
+      "audios": 3,
+      "lastActivity": "2026-02-22T16:45:48.371Z",
+      "joinDate": "2026-02-20T22:29:14.288Z",
+      "displayName": "Matheus Araújo",
+      "lastKnownName": "Matheus Araújo"
+    },
+    "138534220505103@lid": {
+      "messages": 84,
+      "stickers": 10,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:19:30.373Z",
+      "joinDate": "2026-02-20T22:34:09.809Z",
+      "displayName": "😻",
+      "lastKnownName": "😻"
+    },
+    "281075595092160@lid": {
+      "messages": 16,
+      "stickers": 6,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:17:27.771Z",
+      "joinDate": "2026-02-20T23:07:02.274Z",
+      "displayName": "Lua 🌙🌝",
+      "lastKnownName": "Lua 🌙🌝"
+    },
+    "114182108254293@lid": {
+      "messages": 38,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T11:12:48.898Z",
+      "joinDate": "2026-02-20T23:50:22.152Z",
+      "displayName": "macaco louco",
+      "lastKnownName": "macaco louco"
+    },
+    "182214625075246@lid": {
+      "messages": 97,
+      "stickers": 9,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:01:21.099Z",
+      "joinDate": "2026-02-20T23:57:20.966Z",
+      "displayName": "M",
+      "lastKnownName": "M"
+    },
+    "4415427715277@lid": {
+      "messages": 20,
+      "stickers": 8,
+      "commands": 1,
+      "audios": 1,
+      "lastActivity": "2026-02-22T16:37:15.376Z",
+      "joinDate": "2026-02-21T00:48:35.812Z",
+      "displayName": "Andressa",
+      "lastKnownName": "Andressa"
+    },
+    "185302253625450@lid": {
+      "messages": 31,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 3,
+      "lastActivity": "2026-02-22T15:49:49.549Z",
+      "joinDate": "2026-02-21T13:10:41.008Z",
+      "displayName": "Zezito Souza",
+      "lastKnownName": "Zezito Souza"
+    },
+    "131271481118769@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T19:09:14.274Z",
+      "joinDate": "2026-02-21T19:09:14.274Z",
+      "displayName": "𐚁Julia Ivy𐚁",
+      "lastKnownName": "𐚁Julia Ivy𐚁"
+    }
+  },
+  "120363424665581220@g.us": {
+    "124928250667116@lid": {
+      "messages": 55,
+      "stickers": 251,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T16:11:25.462Z",
+      "joinDate": "2026-02-20T19:07:10.483Z",
+      "displayName": "Thais 🌹",
+      "lastKnownName": "Thais 🌹"
+    },
+    "183387151147026@lid": {
+      "messages": 3,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:06:59.625Z",
+      "joinDate": "2026-02-20T19:08:52.716Z",
+      "displayName": "Denilson",
+      "lastKnownName": "Denilson"
+    },
+    "42967255498759@lid": {
+      "messages": 4,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:03:57.410Z",
+      "joinDate": "2026-02-20T19:35:40.754Z",
+      "displayName": "etzin de Marte",
+      "lastKnownName": "etzin de Marte"
+    },
+    "82558297616493@lid": {
+      "messages": 171,
+      "stickers": 25,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:20:09.512Z",
+      "joinDate": "2026-02-20T20:02:30.160Z",
+      "displayName": "Morenah💍❤️😍......",
+      "lastKnownName": "Morenah💍❤️😍......"
+    },
+    "163351011319890@lid": {
+      "messages": 6,
+      "stickers": 14,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:47:53.346Z",
+      "joinDate": "2026-02-20T20:05:07.261Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "47970590412885@lid": {
+      "messages": 39,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T19:30:00.096Z",
+      "joinDate": "2026-02-20T20:15:14.377Z",
+      "displayName": "PeDrO",
+      "lastKnownName": "PeDrO"
+    },
+    "86179105996891@lid": {
+      "messages": 10,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T23:02:09.062Z",
+      "joinDate": "2026-02-20T21:03:33.910Z",
+      "displayName": "Claudir",
+      "lastKnownName": "Claudir"
+    },
+    "109659323129966@lid": {
+      "messages": 10,
+      "stickers": 35,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:44:20.206Z",
+      "joinDate": "2026-02-20T21:16:31.848Z",
+      "displayName": "Andre",
+      "lastKnownName": "Andre"
+    },
+    "172061087547439@lid": {
+      "messages": 19,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 1,
+      "lastActivity": "2026-02-22T14:00:25.634Z",
+      "joinDate": "2026-02-21T01:38:23.213Z",
+      "displayName": "Deus E Fiel",
+      "lastKnownName": "Deus E Fiel"
+    },
+    "252982331457594@lid": {
+      "messages": 62,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:21:10.180Z",
+      "joinDate": "2026-02-21T09:52:30.274Z",
+      "displayName": "Fábio jr",
+      "lastKnownName": "Fábio jr"
+    },
+    "485448802550@lid": {
+      "messages": 5,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:07:15.367Z",
+      "joinDate": "2026-02-21T12:55:00.165Z",
+      "displayName": "•~•",
+      "lastKnownName": "•~•"
+    },
+    "95881151918243@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-21T15:24:34.865Z",
+      "joinDate": "2026-02-21T15:24:33.785Z",
+      "displayName": "Bilaraujo",
+      "lastKnownName": "Bilaraujo"
+    },
+    "112339718271068@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:26:58.676Z",
+      "joinDate": "2026-02-21T15:56:18.581Z",
+      "displayName": "Laís",
+      "lastKnownName": "Laís"
+    },
+    "114680693551265@lid": {
+      "messages": 2,
+      "stickers": 20,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T19:28:05.409Z",
+      "joinDate": "2026-02-21T19:26:53.482Z",
+      "displayName": "Alexsssandro",
+      "lastKnownName": "Alexsssandro"
+    },
+    "254773752234210@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:41:19.130Z",
+      "joinDate": "2026-02-21T22:57:26.163Z",
+      "displayName": "khätyä sännttös🎀",
+      "lastKnownName": "khätyä sännttös🎀"
+    },
+    "107825204342943@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:20:01.199Z",
+      "joinDate": "2026-02-22T00:19:06.305Z",
+      "displayName": "Markim",
+      "lastKnownName": "Markim"
+    },
+    "20483084963973@lid": {
+      "messages": 12,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T01:13:47.515Z",
+      "joinDate": "2026-02-22T00:58:02.247Z",
+      "displayName": "Ayrone Hermes",
+      "lastKnownName": "Ayrone Hermes"
+    },
+    "162126945611903@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T09:14:33.208Z",
+      "joinDate": "2026-02-22T08:40:35.248Z",
+      "displayName": "Ana Flávia",
+      "lastKnownName": "Ana Flávia"
+    },
+    "279787473993829@lid": {
+      "messages": 12,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:30:52.221Z",
+      "joinDate": "2026-02-22T14:29:41.566Z",
+      "displayName": "Jυαи",
+      "lastKnownName": "Jυαи"
+    }
+  },
+  "120363404988905236@g.us": {
+    "86436787306731@lid": {
+      "messages": 163,
+      "stickers": 83,
+      "commands": 12,
+      "audios": 20,
+      "lastActivity": "2026-02-22T18:27:32.905Z",
+      "joinDate": "2026-02-20T19:07:15.105Z",
+      "displayName": "Deilza",
+      "lastKnownName": "Deilza"
+    },
+    "46433025675322@lid": {
+      "messages": 34,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:42:16.483Z",
+      "joinDate": "2026-02-20T19:56:18.599Z",
+      "displayName": "Mary",
+      "lastKnownName": "Mary"
+    },
+    "163351011319890@lid": {
+      "messages": 17,
+      "stickers": 3,
+      "commands": 1,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:08:01.155Z",
+      "joinDate": "2026-02-20T20:04:08.525Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "196907724972212@lid": {
+      "messages": 29,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:33:24.187Z",
+      "joinDate": "2026-02-20T20:08:26.539Z",
+      "displayName": "Will",
+      "lastKnownName": "Will"
+    },
+    "105751271972894@lid": {
+      "messages": 21,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 2,
+      "lastActivity": "2026-02-22T18:14:17.704Z",
+      "joinDate": "2026-02-20T20:16:21.744Z",
+      "displayName": "Elton Mars",
+      "lastKnownName": "Elton Mars"
+    },
+    "134673296572630@lid": {
+      "messages": 11,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:45:20.470Z",
+      "joinDate": "2026-02-20T20:25:39.117Z",
+      "displayName": "Andrew",
+      "lastKnownName": "Andrew"
+    },
+    "154855700201526@lid": {
+      "messages": 19,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:46:27.958Z",
+      "joinDate": "2026-02-20T22:40:31.885Z",
+      "displayName": "cacauzinha☺️",
+      "lastKnownName": "cacauzinha☺️"
+    },
+    "231589082591367@lid": {
+      "messages": 6,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:38:16.043Z",
+      "joinDate": "2026-02-20T23:52:47.397Z",
+      "displayName": "🪽Débora Leg🪽",
+      "lastKnownName": "🪽Débora Leg🪽"
+    },
+    "137735977320509@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:25:58.692Z",
+      "joinDate": "2026-02-21T00:25:58.692Z",
+      "displayName": "Junior Mendonça",
+      "lastKnownName": "Junior Mendonça"
+    },
+    "71563365888184@lid": {
+      "messages": 8,
+      "stickers": 7,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:02:10.248Z",
+      "joinDate": "2026-02-21T01:00:11.390Z",
+      "displayName": "Izael",
+      "lastKnownName": "Izael"
+    },
+    "261431119360237@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T11:11:44.088Z",
+      "joinDate": "2026-02-21T11:11:44.088Z",
+      "displayName": "vtr",
+      "lastKnownName": "vtr"
+    },
+    "251436579434512@lid": {
+      "messages": 38,
+      "stickers": 2,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:23:16.751Z",
+      "joinDate": "2026-02-21T14:00:38.023Z",
+      "displayName": "🔥❤️dhonyh 380🔥❤️",
+      "lastKnownName": "🔥❤️dhonyh 380🔥❤️"
+    },
+    "277339493675194@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:19:26.125Z",
+      "joinDate": "2026-02-21T15:05:09.721Z",
+      "displayName": "gir",
+      "lastKnownName": "gir"
+    },
+    "85830760681644@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T17:17:06.837Z",
+      "joinDate": "2026-02-21T17:17:06.837Z",
+      "displayName": "Silvia Fátima",
+      "lastKnownName": "Silvia Fátima"
+    },
+    "90886541201439@lid": {
+      "messages": 34,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:13:00.843Z",
+      "joinDate": "2026-02-22T15:03:22.089Z",
+      "displayName": "Fe Em Deus",
+      "lastKnownName": "Fe Em Deus"
+    },
+    "201214939664582@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:39:03.549Z",
+      "joinDate": "2026-02-22T17:34:37.920Z",
+      "displayName": "WL👑",
+      "lastKnownName": "WL👑"
+    },
+    "213902927351919@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:08:25.864Z",
+      "joinDate": "2026-02-22T18:08:25.864Z",
+      "displayName": "Eric",
+      "lastKnownName": "Eric"
+    },
+    "214361935196260@lid": {
+      "messages": 5,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T18:12:12.542Z",
+      "joinDate": "2026-02-22T18:10:12.686Z",
+      "displayName": "Ary",
+      "lastKnownName": "Ary"
+    }
+  },
+  "555184033465-1558458733@g.us": {
+    "101593760407643@lid": {
+      "messages": 1,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T19:10:47.722Z",
+      "joinDate": "2026-02-20T19:10:43.413Z",
+      "displayName": "Chara🤬",
+      "lastKnownName": "Chara🤬"
+    },
+    "78683901583593@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T19:16:02.461Z",
+      "joinDate": "2026-02-20T19:16:02.461Z",
+      "displayName": "Cris",
+      "lastKnownName": "Cris"
+    },
+    "18116725706973@lid": {
+      "messages": 3,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T09:42:25.854Z",
+      "joinDate": "2026-02-20T19:17:01.867Z",
+      "displayName": "LZ",
+      "lastKnownName": "LZ"
+    },
+    "261112670986362@lid": {
+      "messages": 3,
+      "stickers": 20,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T19:38:00.152Z",
+      "joinDate": "2026-02-20T19:20:55.047Z",
+      "displayName": "Mb",
+      "lastKnownName": "Mb"
+    },
+    "9346419277899@lid": {
+      "messages": 10,
+      "stickers": 87,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:12:26.892Z",
+      "joinDate": "2026-02-20T19:28:56.659Z",
+      "displayName": "gracielly",
+      "lastKnownName": "gracielly"
+    },
+    "269673010589705@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T19:40:55.556Z",
+      "joinDate": "2026-02-20T19:40:55.556Z",
+      "displayName": "𝘾𝙀𝙎𝘼𝙍",
+      "lastKnownName": "𝘾𝙀𝙎𝘼𝙍"
+    },
+    "167327664451594@lid": {
+      "messages": 1,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:21:27.389Z",
+      "joinDate": "2026-02-20T20:21:20.782Z",
+      "displayName": "Patrícia Moraes",
+      "lastKnownName": "Patrícia Moraes"
+    },
+    "175162355921112@lid": {
+      "messages": 3,
+      "stickers": 12,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:48:51.768Z",
+      "joinDate": "2026-02-20T20:45:00.007Z",
+      "displayName": "📿Jádyna 🧿",
+      "lastKnownName": "📿Jádyna 🧿"
+    },
+    "39900581748882@lid": {
+      "messages": 1,
+      "stickers": 9,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T21:03:54.927Z",
+      "joinDate": "2026-02-20T21:03:45.679Z",
+      "displayName": "Thiago",
+      "lastKnownName": "Thiago"
+    },
+    "200776936882351@lid": {
+      "messages": 12,
+      "stickers": 31,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T20:57:02.083Z",
+      "joinDate": "2026-02-20T22:43:44.312Z",
+      "displayName": "Rodrigo",
+      "lastKnownName": "Rodrigo"
+    },
+    "105256797118588@lid": {
+      "messages": 2,
+      "stickers": 55,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T03:48:50.048Z",
+      "joinDate": "2026-02-20T23:20:13.893Z",
+      "displayName": "Leonardo Moreno",
+      "lastKnownName": "Leonardo Moreno"
+    },
+    "133479161434299@lid": {
+      "messages": 4,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:58:25.327Z",
+      "joinDate": "2026-02-20T23:48:47.296Z",
+      "displayName": "Liliane costa Costa",
+      "lastKnownName": "Liliane costa Costa"
+    },
+    "216762788397161@lid": {
+      "messages": 1,
+      "stickers": 16,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:15:32.249Z",
+      "joinDate": "2026-02-21T00:15:20.096Z",
+      "displayName": "ㅤㅤㅤ",
+      "lastKnownName": "ㅤㅤㅤ"
+    },
+    "190301494874293@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:16:16.837Z",
+      "joinDate": "2026-02-21T00:16:16.837Z",
+      "displayName": "Alessandra Maia🌸",
+      "lastKnownName": "Alessandra Maia🌸"
+    },
+    "163351011319890@lid": {
+      "messages": 33,
+      "stickers": 5,
+      "commands": 5,
+      "audios": 1,
+      "lastActivity": "2026-02-22T09:30:22.933Z",
+      "joinDate": "2026-02-21T01:05:43.317Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "244259571638424@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T22:09:50.783Z",
+      "joinDate": "2026-02-21T09:17:03.401Z",
+      "displayName": "José Zanon x Leonice Zano",
+      "lastKnownName": "José Zanon x Leonice Zano"
+    },
+    "54507916501026@lid": {
+      "messages": 1,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T10:07:16.830Z",
+      "joinDate": "2026-02-21T10:07:02.370Z",
+      "displayName": "Blessed",
+      "lastKnownName": "Blessed"
+    },
+    "242223857840185@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T12:36:51.749Z",
+      "joinDate": "2026-02-21T12:36:51.749Z",
+      "displayName": "Scremin",
+      "lastKnownName": "Scremin"
+    },
+    "35210410340585@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T13:40:10.630Z",
+      "joinDate": "2026-02-21T13:40:10.630Z",
+      "displayName": "Mira",
+      "lastKnownName": "Mira"
+    },
+    "150079579140342@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T14:51:49.269Z",
+      "joinDate": "2026-02-21T14:51:49.269Z",
+      "displayName": "Flørïänø",
+      "lastKnownName": "Flørïänø"
+    },
+    "113039328190538@lid": {
+      "messages": 3,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T22:56:40.564Z",
+      "joinDate": "2026-02-21T17:32:30.090Z",
+      "displayName": "Laissa",
+      "lastKnownName": "Laissa"
+    },
+    "147579639726275@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:20:54.172Z",
+      "joinDate": "2026-02-21T21:20:54.172Z",
+      "displayName": "kellen Cristina Oliveira",
+      "lastKnownName": "kellen Cristina Oliveira"
+    },
+    "216874524639232@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T21:33:50.253Z",
+      "joinDate": "2026-02-21T21:33:50.253Z",
+      "displayName": "Mary Demori 💛",
+      "lastKnownName": "Mary Demori 💛"
+    },
+    "269754027786315@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:34:40.820Z",
+      "joinDate": "2026-02-22T11:34:40.820Z",
+      "displayName": "Arnaldo ✌🏻😎",
+      "lastKnownName": "Arnaldo ✌🏻😎"
+    },
+    "21268728443101@lid": {
+      "messages": 1,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:46:18.827Z",
+      "joinDate": "2026-02-22T12:46:16.458Z",
+      "displayName": "🖤𝘗𝘢𝘶𝘭𝘢🖤𝘍𝘢𝘨𝘶𝘯𝘥𝘦𝘴🖤🖤",
+      "lastKnownName": "🖤𝘗𝘢𝘶𝘭𝘢🖤𝘍𝘢𝘨𝘶𝘯𝘥𝘦𝘴🖤🖤"
+    },
+    "128557044994092@lid": {
+      "messages": 1,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T13:56:04.305Z",
+      "joinDate": "2026-02-22T13:56:03.696Z",
+      "displayName": "Larissa Vieira Nader",
+      "lastKnownName": "Larissa Vieira Nader"
+    },
+    "98908902559995@lid": {
+      "messages": 0,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:33:34.259Z",
+      "joinDate": "2026-02-22T14:33:34.259Z",
+      "displayName": "✡️☪️☦️",
+      "lastKnownName": "✡️☪️☦️"
+    },
+    "117833216303161@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:28:01.700Z",
+      "joinDate": "2026-02-22T15:28:01.700Z",
+      "displayName": "Small Cherry 🍒",
+      "lastKnownName": "Small Cherry 🍒"
+    },
+    "49211768885317@lid": {
+      "messages": 1,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T15:59:37.962Z",
+      "joinDate": "2026-02-22T15:59:32.639Z",
+      "displayName": "Laís 🩵",
+      "lastKnownName": "Laís 🩵"
+    }
+  },
+  "120363405821801516@g.us": {
+    "180324772393192@lid": {
+      "messages": 40,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:23:42.847Z",
+      "joinDate": "2026-02-20T19:12:54.098Z",
+      "displayName": "samuel🤟",
+      "lastKnownName": "samuel🤟"
+    },
+    "211372671520969@lid": {
+      "messages": 72,
+      "stickers": 37,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:50:35.703Z",
+      "joinDate": "2026-02-20T19:14:48.585Z",
+      "displayName": "Řømeø J̌ř. 🐯",
+      "lastKnownName": "Řømeø J̌ř. 🐯"
+    },
+    "147940551205095@lid": {
+      "messages": 15,
+      "stickers": 37,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:17:24.779Z",
+      "joinDate": "2026-02-20T19:18:33.940Z",
+      "displayName": "Eduardo Braga",
+      "lastKnownName": "Eduardo Braga"
+    },
+    "11493701595215@lid": {
+      "messages": 7,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T14:47:34.718Z",
+      "joinDate": "2026-02-20T19:52:40.050Z",
+      "displayName": "< Sinho.js /> 👑",
+      "lastKnownName": "< Sinho.js /> 👑"
+    },
+    "14135408484366@lid": {
+      "messages": 276,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:50:51.588Z",
+      "joinDate": "2026-02-20T19:53:03.901Z",
+      "displayName": "👑 𝙈𝙞𝙡𝙡𝙚𝙣𝙞𝙪𝙢 ⚖️",
+      "lastKnownName": "👑 𝙈𝙞𝙡𝙡𝙚𝙣𝙞𝙪𝙢 ⚖️"
+    },
+    "177623288250596@lid": {
+      "messages": 48,
+      "stickers": 8,
+      "commands": 2,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:57:14.824Z",
+      "joinDate": "2026-02-20T19:53:34.565Z",
+      "displayName": "⚖️igor-sann👑",
+      "lastKnownName": "⚖️igor-sann👑"
+    },
+    "212915101679714@lid": {
+      "messages": 1,
+      "stickers": 5,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T20:22:06.161Z",
+      "joinDate": "2026-02-20T20:21:59.610Z",
+      "displayName": "-@",
+      "lastKnownName": "-@"
+    },
+    "168225413308667@lid": {
+      "messages": 9,
+      "stickers": 41,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:42:47.855Z",
+      "joinDate": "2026-02-20T20:26:27.895Z",
+      "displayName": "🎀𝓐𝓷𝓪 𝓟𝓪𝓾𝓵𝓪🎀",
+      "lastKnownName": "🎀𝓐𝓷𝓪 𝓟𝓪𝓾𝓵𝓪🎀"
+    },
+    "274543050530920@lid": {
+      "messages": 19,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:42:11.865Z",
+      "joinDate": "2026-02-20T20:56:35.218Z",
+      "displayName": "🦋Ana🦋",
+      "lastKnownName": "🦋Ana🦋"
+    },
+    "50379999965281@lid": {
+      "messages": 40,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T12:27:35.991Z",
+      "joinDate": "2026-02-20T21:15:38.536Z",
+      "displayName": "PåūlØ MøūrÅ",
+      "lastKnownName": "PåūlØ MøūrÅ"
+    },
+    "112958378123296@lid": {
+      "messages": 94,
+      "stickers": 33,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:15:57.642Z",
+      "joinDate": "2026-02-20T23:12:35.892Z",
+      "displayName": ".",
+      "lastKnownName": "."
+    },
+    "35249484509384@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T23:12:45.545Z",
+      "joinDate": "2026-02-20T23:12:45.545Z",
+      "displayName": "EMANUELE - CURY CONSTRUTORA",
+      "lastKnownName": "EMANUELE - CURY CONSTRUTORA"
+    },
+    "35391117742331@lid": {
+      "messages": 1,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-20T23:37:39.981Z",
+      "joinDate": "2026-02-20T23:37:39.980Z",
+      "displayName": "᚛ᷝ ͣ ͫ ἝṨҬἿĿὋẔἿƝƝ ὋҒƇ  ͭ",
+      "lastKnownName": "᚛ᷝ ͣ ͫ ἝṨҬἿĿὋẔἿƝƝ ὋҒƇ  ͭ"
+    },
+    "270652296695959@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 1,
+      "audios": 0,
+      "lastActivity": "2026-02-21T00:36:11.042Z",
+      "joinDate": "2026-02-21T00:35:47.962Z",
+      "displayName": "igor sann",
+      "lastKnownName": "igor sann"
+    },
+    "149207818186917@lid": {
+      "messages": 5,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T01:59:44.108Z",
+      "joinDate": "2026-02-21T01:56:13.709Z",
+      "displayName": "Tron ~",
+      "lastKnownName": "Tron ~"
+    },
+    "184086677209183@lid": {
+      "messages": 7,
+      "stickers": 16,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T16:39:30.573Z",
+      "joinDate": "2026-02-21T02:16:15.752Z",
+      "displayName": "....",
+      "lastKnownName": "...."
+    },
+    "122715990184118@lid": {
+      "messages": 16,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T23:30:06.134Z",
+      "joinDate": "2026-02-21T02:16:46.996Z",
+      "displayName": "Igor",
+      "lastKnownName": "Igor"
+    },
+    "209014617034906@lid": {
+      "messages": 15,
+      "stickers": 4,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:43:41.481Z",
+      "joinDate": "2026-02-21T02:20:53.458Z",
+      "displayName": "ᒍᗴՏՏY",
+      "lastKnownName": "ᒍᗴՏՏY"
+    },
+    "263187626766586@lid": {
+      "messages": 14,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T14:44:24.788Z",
+      "joinDate": "2026-02-21T02:37:31.997Z",
+      "displayName": "Thiago Alves",
+      "lastKnownName": "Thiago Alves"
+    },
+    "180358662348992@lid": {
+      "messages": 20,
+      "stickers": 1,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T17:50:48.879Z",
+      "joinDate": "2026-02-21T09:50:22.853Z",
+      "displayName": "Aluisio Lopes",
+      "lastKnownName": "Aluisio Lopes"
+    },
+    "163351011319890@lid": {
+      "messages": 16,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T11:00:15.605Z",
+      "joinDate": "2026-02-21T10:37:39.442Z",
+      "displayName": "Valéria",
+      "lastKnownName": "Valéria"
+    },
+    "51952528412714@lid": {
+      "messages": 8,
+      "stickers": 0,
+      "commands": 4,
+      "audios": 0,
+      "lastActivity": "2026-02-22T01:36:43.134Z",
+      "joinDate": "2026-02-21T10:55:30.608Z",
+      "displayName": "Natã B.",
+      "lastKnownName": "Natã B."
+    },
+    "109027778379819@lid": {
+      "messages": 1,
+      "stickers": 3,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-21T22:25:54.384Z",
+      "joinDate": "2026-02-21T22:25:51.377Z",
+      "displayName": "Davi Rocha",
+      "lastKnownName": "Davi Rocha"
+    },
+    "205595940507760@lid": {
+      "messages": 2,
+      "stickers": 0,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T00:18:03.374Z",
+      "joinDate": "2026-02-21T23:36:58.479Z",
+      "displayName": "Vitor",
+      "lastKnownName": "Vitor"
+    },
+    "273851996991595@lid": {
+      "messages": 1,
+      "stickers": 6,
+      "commands": 0,
+      "audios": 0,
+      "lastActivity": "2026-02-22T01:34:26.883Z",
+      "joinDate": "2026-02-22T01:34:15.808Z",
+      "displayName": "Tatavão",
+      "lastKnownName": "Tatavão"
     }
   }
 }

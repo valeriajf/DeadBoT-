@@ -1,6 +1,7 @@
 /**
  * Comando para criar figurinhas de imagem, gif ou vídeo
  * Adaptado para o formato DeadBoT
+ * ✅ VERSÃO FINAL: Texto ajustado conforme solicitado
  * 
  *
  * @author VaL 
@@ -26,6 +27,9 @@ module.exports = {
     sendSuccessReact,
     sendStickerFromFile,
     userJid,
+    remoteJid,
+    isGroup,
+    sock,
   }) => {
     // Usa baileysIs para verificar se tem imagem ou vídeo (suporta quoted e viewOnce)
     const isImage = baileysIs(webMessage, "image");
@@ -60,10 +64,35 @@ module.exports = {
       webMessage.notifyName ||
       userJid.replace(/@s.whatsapp.net/, "");
 
+    // ══════════════════════════════════════════════════════════════
+    // ✨ BUSCA NOME DO GRUPO
+    // ══════════════════════════════════════════════════════════════
+    let groupName = "";
+    
+    if (isGroup && remoteJid) {
+      try {
+        if (sock && typeof sock.groupMetadata === 'function') {
+          const groupMetadata = await sock.groupMetadata(remoteJid);
+          groupName = groupMetadata.subject || "Grupo";
+        } else {
+          groupName = "Grupo";
+        }
+      } catch (error) {
+        console.error("⚠️ [STICKER] Erro ao obter nome do grupo:", error.message);
+        groupName = "Grupo";
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 🎨 METADADOS PERSONALIZADOS
+    // ══════════════════════════════════════════════════════════════
     const metadata = {
-      username: username,
-      botName: `${BOT_EMOJI} ${BOT_NAME}`,
+      username: isGroup 
+        ? `⚙️ Criada por: ${username}\n🪀 Grupo: ${groupName}\n💚 By` 
+        : `⚙️ Criada por: ${username}\n💚 By`,
+      botName: BOT_NAME,
     };
+    // ══════════════════════════════════════════════════════════════
 
     const outputTempPath = path.resolve(TEMP_DIR, getRandomName("webp"));
     let inputPath = null;

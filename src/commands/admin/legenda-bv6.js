@@ -1,6 +1,32 @@
 const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 const { PREFIX } = require(`${BASE_DIR}/config`);
-const { setWelcome6Caption } = require(`${BASE_DIR}/utils/database`);
+const fs = require('fs');
+const path = require('path');
+
+// ✅ CORRIGIDO: salva direto no src/database/
+const WELCOME6_DB_PATH = path.join(__dirname, '..', '..', 'database', 'welcome6.json');
+
+function loadWelcome6Data() {
+  try {
+    if (fs.existsSync(WELCOME6_DB_PATH)) return JSON.parse(fs.readFileSync(WELCOME6_DB_PATH, 'utf8'));
+    return {};
+  } catch { return {}; }
+}
+
+function saveWelcome6Data(data) {
+  try {
+    const dbDir = path.dirname(WELCOME6_DB_PATH);
+    if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+    fs.writeFileSync(WELCOME6_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
+  } catch {}
+}
+
+function setWelcome6Caption(groupId, caption) {
+  const data = loadWelcome6Data();
+  if (!data[groupId]) data[groupId] = {};
+  data[groupId].customMessage = caption;
+  saveWelcome6Data(data);
+}
 
 module.exports = {
   name: "legenda-bv6",
@@ -24,20 +50,15 @@ module.exports = {
     }
 
     const caption = fullArgs.trim();
-    await setWelcome6Caption(remoteJid, caption);
+    setWelcome6Caption(remoteJid, caption);
 
-    // Criar preview com todos os formatos
     const preview = caption
-      // Formato {membro} e {grupo}
       .replace(/{membro}/gi, "@usuario")
       .replace(/{grupo}/gi, "Nome do Grupo")
-      // Formato @member e @group
       .replace(/@member/gi, "@usuario")
       .replace(/@group/gi, "Nome do Grupo")
-      // Formato [membro] e [grupo]
       .replace(/\[membro\]/gi, "@usuario")
       .replace(/\[grupo\]/gi, "Nome do Grupo")
-      // Formato {{membro}} e {{grupo}}
       .replace(/{{membro}}/gi, "@usuario")
       .replace(/{{grupo}}/gi, "Nome do Grupo");
 

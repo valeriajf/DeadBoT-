@@ -1,11 +1,11 @@
 /**
- * INSTALAÇÃO: /sdcard/DeadBoT-/src/loader.js
- * 
- * Este script é responsável por carregar os eventos
- * que serão escutados pelo socket do WhatsApp.
- * 
- * @author Dev Gui
- */
+Este script é responsável
+por carregar os eventos
+que serão escutados pelo
+socket do WhatsApp.
+
+@author Dev Gui
+*/
 const { TIMEOUT_IN_MILLISECONDS_BY_EVENT } = require("./config");
 const { onMessagesUpsert } = require("./middlewares/onMesssagesUpsert");
 const { onGroupParticipantsUpdate } = require("./middlewares/onGroupParticipantsUpdate");
@@ -13,7 +13,6 @@ const { initX9Monitoring } = require("./middlewares/x9Monitoring");
 const path = require("node:path");
 
 exports.load = (socket) => {
-  // BASE_DIR = src/ (PADRÃO DO BOT)
   global.BASE_DIR = path.resolve(__dirname);
 
   // IMPORTANTE: só importar depois do BASE_DIR existir
@@ -42,6 +41,16 @@ exports.load = (socket) => {
       console.error('Erro ao inicializar agendamentos:', error.message);
     }
   }, 3000);
+
+  // 🎂 Inicia o sistema de aniversários automáticos (parabéns às 7h)
+  setTimeout(() => {
+    try {
+      const { startNiverScheduler } = require(`${BASE_DIR}/services/niverScheduler`);
+      startNiverScheduler(socket);
+    } catch (error) {
+      console.error('Erro ao inicializar sistema de aniversários:', error.message);
+    }
+  }, 5000);
 
   // ⭐ Limpeza automática de confirmações BANGHOST (1 vez apenas)
   setInterval(() => {

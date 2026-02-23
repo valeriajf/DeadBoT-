@@ -40,5 +40,10 @@
     "active": false,
     "customMessage": "{membro} seja bem vindo ao {grupo}",
     "gifFileName": "welcome5-120363422312164-1767235388443.mp4"
+  },
+  "120363406027458811@g.us": {
+    "active": true,
+    "customMessage": "Oi {membro} seja muito bem vindo ao grupo {grupo} ☺️",
+    "gifFileName": "welcome5-120363406027458-1771706265107.mp4"
   }
 }

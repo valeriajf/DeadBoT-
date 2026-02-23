@@ -1,6 +1,32 @@
 const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 const { PREFIX } = require(`${BASE_DIR}/config`);
-const { setWelcome7Caption } = require(`${BASE_DIR}/utils/database`);
+const fs = require('fs');
+const path = require('path');
+
+// ✅ CORRIGIDO: salva direto no src/database/
+const WELCOME7_DB_PATH = path.join(__dirname, '..', '..', 'database', 'welcome7.json');
+
+function loadWelcome7Data() {
+  try {
+    if (fs.existsSync(WELCOME7_DB_PATH)) return JSON.parse(fs.readFileSync(WELCOME7_DB_PATH, 'utf8'));
+    return {};
+  } catch { return {}; }
+}
+
+function saveWelcome7Data(data) {
+  try {
+    const dbDir = path.dirname(WELCOME7_DB_PATH);
+    if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+    fs.writeFileSync(WELCOME7_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
+  } catch {}
+}
+
+function setWelcome7Caption(groupId, caption) {
+  const data = loadWelcome7Data();
+  if (!data[groupId]) data[groupId] = {};
+  data[groupId].customMessage = caption;
+  saveWelcome7Data(data);
+}
 
 module.exports = {
   name: "legenda-bv7",
@@ -24,7 +50,7 @@ module.exports = {
     }
 
     const caption = fullArgs.trim();
-    await setWelcome7Caption(remoteJid, caption);
+    setWelcome7Caption(remoteJid, caption);
 
     const preview = caption
       .replace(/{membro}/gi, "@usuario")
