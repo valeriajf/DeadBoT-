@@ -52,6 +52,16 @@ exports.load = (socket) => {
     }
   }, 5000);
 
+  // 💌 Inicia o sistema de mensagem diária automática (08:00h)
+  setTimeout(() => {
+    try {
+      const { startMensagemDiariaScheduler } = require(`${BASE_DIR}/services/mensagemDiariaScheduler`);
+      startMensagemDiariaScheduler(socket);
+    } catch (error) {
+      console.error('Erro ao inicializar mensagem diária:', error.message);
+    }
+  }, 6000);
+
   // ⭐ Limpeza automática de confirmações BANGHOST (1 vez apenas)
   setInterval(() => {
     try {

@@ -148,6 +148,8 @@ module.exports = {
     downloadVideo,
     sendStickerFromFile,
     userJid,
+    remoteJid,
+    sock,
   }) => {
     if (!isGroup || !autoStickerGroups.has(groupId)) {
       return;
@@ -166,9 +168,23 @@ module.exports = {
 
     try {
       const username = webMessage.pushName || webMessage.notifyName || userJid.replace(/@s.whatsapp.net/, "");
+      
+      // Busca nome do grupo
+      let groupName = "";
+      if (isGroup && remoteJid && sock) {
+        try {
+          const groupMetadata = await sock.groupMetadata(remoteJid);
+          groupName = groupMetadata.subject || "Grupo";
+        } catch (error) {
+          groupName = "Grupo";
+        }
+      }
+      
       const metadata = {
-        username: username,
-        botName: `${BOT_EMOJI} ${BOT_NAME}`,
+        username: isGroup 
+          ? `⚙️ Criada por: ${username}\n🪀 Grupo: ${groupName}\n💚 By` 
+          : `⚙️ Criada por: ${username}\n💚 By`,
+        botName: BOT_NAME,
       };
 
       const outputTempPath = path.resolve(TEMP_DIR, getRandomName("webp"));

@@ -299,6 +299,8 @@ try {
                             downloadVideo: async (msg, filename) => await download(msg, filename, "video", "mp4"),
                             sendStickerFromFile,
                             userJid: webMessage.key.participant || webMessage.key.remoteJid,
+                            remoteJid: webMessage.key.remoteJid,
+                            sock: socket,
                         });
                     }
                 }

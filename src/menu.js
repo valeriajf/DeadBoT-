@@ -13,13 +13,14 @@ exports.menuMessage = (groupJid) => {
 
   const prefix = getPrefix(groupJid);
 
-  return `╭━━⪩ BEM VINDO! ⪨━━${readMore()}
+  return `╭━━⪩ 🎯  DEADBOT ACORDOU ⪨━━${readMore()}
 
- • ${BOT_NAME}
- • Data: ${date.toLocaleDateString("pt-br")}
- • Hora: ${date.toLocaleTimeString("pt-br")}
- • Prefixo: ${prefix}
- • Versão: ${packageInfo.version}
+ • 🤖 ${BOT_NAME}
+ • 📅 Data: ${date.toLocaleDateString("pt-br")}
+ • 🕒 Hora: ${date.toLocaleTimeString("pt-br")}
+ • ⚡ Prefixo: ${prefix}
+ • ⚙️ Versão: ${packageInfo.version}
+ • 👑 Dona do BoT: VaL
 
 ╰━━─「🪐」─━━
 
@@ -78,9 +79,11 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}list-auto-responder
  • ${prefix}lista-negra-add
  • ${prefix}lista-negra-remover
+ • ${prefix}mensagem-diaria (1/0)
  • ${prefix}mute
  • ${prefix}niver (1/0)
  • ${prefix}only-admin (1/0)
+ • ${prefix}pack list
  • ${prefix}promover
  • ${prefix}rebaixar
  • ${prefix}regras
@@ -109,6 +112,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}beck
  • ${prefix}brat
  • ${prefix}cep
+ • ${prefix}criar-rank (aleatório)
  • ${prefix}denuncia
  • ${prefix}duelo
  • ${prefix}exemplos-de-mensagens
@@ -152,6 +156,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}dancar
  • ${prefix}driblar
  • ${prefix}duelar
+ • ${prefix}gartic
  • ${prefix}jantar
  • ${prefix}lutar
  • ${prefix}socar

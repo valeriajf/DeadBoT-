@@ -11,32 +11,32 @@
     "active": true,
     "customMessage": "📌 \n{membro}\nBem-vindo(a) ao nosso grupo de amizades e figurinhas 👏🏼❤️\n\nPara mantermos uma comunidade unida e agradável, pedimos que faça uma breve apresentação:\n— Nome \n— 🎂 Idade\n— 📍 Cidade Estado\n\nAproveite o grupo, leia as regras e participe Sua presença é muito bem-vinda."
   },
-  "555184033465-1558458733@g.us": {
-    "active": true,
-    "customMessage": "{membro} bem vindo ao {grupo}"
-  },
-  "120363424665581220@g.us": {
-    "active": false,
-    "customMessage": "{membro} bem vindo ao {grupo} se liga nas regras!!!"
-  },
   "120363422312164587@g.us": {
     "active": false,
     "customMessage": "{membro} bem vindo ao {grupo}"
   },
-  "120363421108908380@g.us": {
-    "active": true,
-    "customMessage": "👋 E aí {membro}!!!\n Seja muito bem-vindo(a) ao {grupo}\n\nAqui é lugar de resenha, amizade e boas vibes 😎✨\nPra gente te conhecer melhor, se apresenta pra galera:\n📌 nome\n📌 idade\n📌 cidade\n📌 hobbies ou algo que curte fazer\n\nFica à vontade e já chega interagindo! 🚀"
-  },
   "120363404988905236@g.us": {
     "active": true,
-    "customMessage": "{membro} bem vindo ao {grupo}, se apresente:"
-  },
-  "120363421275714747@g.us": {
-    "active": true,
-    "customMessage": "{membro} bem vindo ao {grupo} se liga nas regras!!!"
+    "customMessage": "{membro} bem vindo ao {grupo}, se apresente:",
+    "groupName": "🫂❤️🅔🅝🅣🅡🅔 🅐🅜🅘🅖🅞🅢 🅔 🅐🅜🅞🅡🅔🅢 🫂❤️"
   },
   "120363421059121716@g.us": {
     "active": true,
     "customMessage": "*Manual de sobrevivência rápido* do {grupo}  {membro} Chegou? 🫟 Bem-vindx 🫀 Aqui é figurinhas + zoeira, sem manual de instruções 🚫 Evite: gore, pornô, links, e preconceito ✅ Tá liberado: bullying recreativo sem ofensas. Finja que os adm's não existem...#p∆$ 🤍"
+  },
+  "555184033465-1558458733@g.us": {
+    "active": false,
+    "groupName": "★La casa de stickers★",
+    "customMessage": "Olá {membro} ✨ bem vindo ao nosso grupo {grupo} 🎯 Não esqueça de ler as regras ☺️"
+  },
+  "120363421275714747@g.us": {
+    "active": true,
+    "groupName": "ℝ𝔼𝕊𝔼ℕℍ𝔸 𝔻𝕆𝕊 𝔸𝕄𝕀𝔾𝕆𝕊 𝟚.𝟘🔥💥",
+    "customMessage": "Olá {membro} 😃 bem vindo ao grupo {grupo} Se liga nas regras e divirta-se!!!"
+  },
+  "120363421108908380@g.us": {
+    "active": true,
+    "groupName": "🅲⃢🅻⃢🆄⃢🅱⃢🅴⃢ 🅳⃢🅰⃢ 🅰⃢🅼⃢🅸⃢🆉⃢🅰⃢🅳⃢🅴",
+    "customMessage": "👋 E aí {membro} ✨ Seja muito bem-vindo(a) ao {grupo} 🥳\nAqui é lugar de resenha, amizade e boas vibes 😎✨\nPra gente te conhecer melhor, se apresenta pra galera:\n📌 nome\n📌 idade\n📌 cidade\n📌 hobbies ou algo que curte fazer\n\nFica à vontade e já chega interagindo! 🚀"
   }
 }
