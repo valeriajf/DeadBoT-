@@ -182,6 +182,36 @@ const STICKER_TAG_ADM_IDS = [
 ];
 
 // =============================
+// FIGURINHAS DE ANIVERSÁRIO
+// Cole os IDs aqui após usar o #get-sticker
+// =============================
+const STICKER_BIRTHDAY_IDS = [
+  "139,215,18,180,251,46,208,76,103,43,59,13,96,20,150,233,156,171,39,165,17,196,251,34,213,73,237,64,52,16,128,182",
+
+  "66,228,32,154,83,211,7,23,143,60,78,70,80,112,219,28,170,7,208,161,252,205,92,58,148,27,202,245,224,76,86,97",
+  
+  "237,196,168,72,218,80,192,75,250,40,231,150,244,120,252,246,132,83,193,66,143,135,40,235,11,74,201,143,41,79,1,252",
+  
+  "60,148,244,101,224,55,217,57,247,251,126,186,245,204,142,146,107,218,37,100,242,202,153,247,100,42,73,91,127,123,107,193",
+
+];
+
+// Mensagens rotativas de aniversário
+// {nome} será substituído pelo nome real da pessoa marcada
+const BIRTHDAY_MESSAGES = [
+  "🎂 Parabéns, {nome}! Que seu dia seja repleto de alegria e felicidade! 🎉",
+  "🥳 Feliz aniversário, {nome}! Que todos os seus sonhos se realizem! 🌟",
+  "🎈 Hoje é dia de {nome}! Parabéns! Que venham muitos anos mais! 🎊",
+  "🎁 Muitas felicidades pra você, {nome}! Hoje é o seu dia especial! 💛",
+  "🎉 Parabéns, {nome}! Que Deus abençoe cada passo da sua vida! 🙏",
+  "🌟 Feliz aniversário, {nome}! Saúde, paz e muito sucesso! 🚀",
+  "🥂 Hoje é aniversário de {nome}! O grupo inteiro celebra com você! 🎂",
+  "🎊 Parabéns, {nome}! Que este novo ano de vida seja incrível! ✨",
+  "💫 Feliz aniversário, {nome}! Que a vida te reserve coisas lindas! 🌻",
+  "🎂 O DeadBoT deseja um feliz aniversário pra {nome}! Viva! 🎉",
+];
+
+// =============================
 // PATHS DOS ARQUIVOS DE DADOS
 // =============================
 const warnsFile = path.join(__dirname, '../../warns.json');
@@ -1083,6 +1113,81 @@ async function handleSmartStickers(socket, webMessage) {
   }
 }
 
+// =============================
+// HANDLER DE ANIVERSÁRIO
+// Responde com mensagem rotativa puxando o nome da pessoa marcada
+// =============================
+async function handleStickerBirthday(socket, webMessage) {
+  try {
+    if (!webMessage.message?.stickerMessage) return;
+
+    // Se a lista estiver vazia, não faz nada
+    if (!STICKER_BIRTHDAY_IDS.length) return;
+
+    const fileSha = webMessage.message.stickerMessage.fileSha256;
+    if (!fileSha || fileSha.length === 0) return;
+
+    const buf = Buffer.from(fileSha);
+    const numericId = Array.from(buf).join(",");
+
+    if (!STICKER_BIRTHDAY_IDS.includes(numericId)) return;
+
+    const remoteJid = webMessage.key.remoteJid;
+    if (!remoteJid.endsWith("@g.us")) return;
+
+    const contextInfo = webMessage.message.stickerMessage.contextInfo;
+
+    // Precisa marcar alguém
+    if (!contextInfo || !contextInfo.stanzaId || !contextInfo.participant) {
+      await socket.sendMessage(remoteJid, {
+        text: '🎯 *Marque a mensagem do aniversariante para parabenizá-lo!*'
+      });
+      return;
+    }
+
+    // Apenas ADM pode usar
+    const metadata = await socket.groupMetadata(remoteJid);
+    const senderJid = webMessage.key.participant;
+    const senderParticipant = metadata.participants.find(p => p.id === senderJid);
+
+    if (!senderParticipant?.admin && !isOwner(senderJid)) return;
+
+    const targetJid = contextInfo.participant;
+
+    // Busca o participante nos metadados — resolve LID para JID real (@s.whatsapp.net)
+    const targetParticipant = metadata.participants.find(
+      p => p.id === targetJid || p.lid === targetJid
+    );
+
+    // JID real para o mentions (precisa ser @s.whatsapp.net para a menção ser clicável)
+    const realJid = (targetParticipant?.id?.includes('@s.whatsapp.net'))
+      ? targetParticipant.id
+      : targetJid;
+
+    // Número limpo para o @menção no texto (igual ao criar-rank)
+    const mentionNumber = realJid.split('@')[0];
+
+    // Mensagem rotativa por grupo (cache independente das smart stickers)
+    const cacheKey = `birthday_${remoteJid}`;
+    let index = stickerMessageCache.get(cacheKey) || 0;
+    const template = BIRTHDAY_MESSAGES[index];
+    index = (index + 1) % BIRTHDAY_MESSAGES.length;
+    stickerMessageCache.set(cacheKey, index);
+
+    // Substitui {nome} por @NUMERO — WhatsApp converte em menção clicável
+    // desde que o JID real esteja no array mentions
+    const finalMessage = template.replace("{nome}", `@${mentionNumber}`);
+
+    await socket.sendMessage(remoteJid, {
+      text: finalMessage,
+      mentions: [realJid]
+    }, { quoted: webMessage });
+
+  } catch (error) {
+    console.error("Erro no sticker de aniversário:", error);
+  }
+}
+
 async function handleStickerGroupLink(socket, webMessage) {
   try {
     if (!webMessage.message?.stickerMessage) return;
@@ -1267,6 +1372,7 @@ exports.messageHandler = async (socket, webMessage) => {
     await handleStickerAdminOnly(socket, webMessage);
     await handleStickerTagAdmins(socket, webMessage);
     await handleSmartStickers(socket, webMessage);
+    await handleStickerBirthday(socket, webMessage);
     await handleStickerGroupLink(socket, webMessage);
     await handleStickerGroupDescription(socket, webMessage);
 

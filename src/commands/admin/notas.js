@@ -9,11 +9,11 @@ const { PREFIX } = require(`${BASE_DIR}/config`);
 const fs = require('fs');
 const path = require('path');
 
-const NOTAS_FILE = path.join(BASE_DIR, 'data', 'notas.json');
+const NOTAS_FILE = path.join(BASE_DIR, 'database', 'notas.json');
 
-// Garantir que o diretório data existe
+// Garantir que o diretório database existe
 function ensureDataDir() {
-  const dataDir = path.join(BASE_DIR, 'data');
+  const dataDir = path.join(BASE_DIR, 'database');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }

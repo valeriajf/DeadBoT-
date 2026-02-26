@@ -20,14 +20,13 @@ exports.menuMessage = (groupJid) => {
  • 🕒 Hora: ${date.toLocaleTimeString("pt-br")}
  • ⚡ Prefixo: ${prefix}
  • ⚙️ Versão: ${packageInfo.version}
- • 👑 Dona do BoT: VaL
+ • 👑 Dona do BoT: VaLéria
 
 ╰━━─「🪐」─━━
 
 ╭━━⪩ DONO ⪨━━
 
  • ${prefix}anti-pv (1/0)
- • ${prefix}clearauth 
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}off
@@ -37,7 +36,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
  • ${prefix}ver-agendamento-global
- • ${prefix}zerar-rank (grupo)
+ • ${prefix}zerar-rank grupo
  • ${prefix}zerar-rank global 
 
 ╰━━─「🌌」─━━
@@ -71,6 +70,8 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}exit (1/0)
  • ${prefix}exit2 (1/0)
  • ${prefix}fechar
+ • ${prefix}fig-tag 
+ • ${prefix}get-hash
  • ${prefix}get-sticker
  • ${prefix}grupo-abrir (agendado)
  • ${prefix}grupo-fechar (agendado)

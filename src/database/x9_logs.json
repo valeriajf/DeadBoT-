@@ -1422,5 +1422,69 @@
     },
     "target": null,
     "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 90,
+    "timestamp": "2026-02-25T08:00:10.753Z",
+    "date": "25/02/2026, 05:00:10",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 91,
+    "timestamp": "2026-02-25T10:00:10.844Z",
+    "date": "25/02/2026, 07:00:10",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 92,
+    "timestamp": "2026-02-25T23:00:52.362Z",
+    "date": "25/02/2026, 20:00:52",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 93,
+    "timestamp": "2026-02-26T02:00:04.970Z",
+    "date": "25/02/2026, 23:00:04",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
   }
 ]
