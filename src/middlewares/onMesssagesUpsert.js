@@ -503,7 +503,7 @@ if (chatId?.endsWith("@g.us") && msgText.startsWith("#") && msgText.trim() !== "
                             }
                             try {
                                 await socket.groupParticipantsUpdate(chatId, [targetJid], "remove");
-                                await socket.sendMessage(chatId, { text: "🚫 Usuário removido com sucesso!" });
+                                await socket.sendMessage(chatId, { text: "☠️ Ban aplicado com sucesso. Reclamações? Fale com o Wolverine." });
                             } catch (banErr) {
                                 await socket.sendMessage(chatId, { text: "⚠️ Não consegui remover o usuário. Tenho certeza que sou administrador?" });
                             }

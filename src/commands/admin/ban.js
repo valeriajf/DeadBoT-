@@ -72,7 +72,7 @@ ${PREFIX}ban (mencionando uma mensagem)`,
 
       await sendSuccessReact();
 
-      await sendReply("Membro removido com sucesso!");
+      await sendReply("☠️ Ban aplicado com sucesso. Reclamações? Fale com o Wolverine.");
     } catch (error) {
       console.log(error);
       await sendErrorReply(
