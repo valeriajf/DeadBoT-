@@ -134,7 +134,6 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}ping
  • ${prefix}qc
  • ${prefix}qc2
- • ${prefix}quiz
  • ${prefix}rank-ativo
  • ${prefix}rank-inativo
  • ${prefix}raw-message
@@ -163,6 +162,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}jantar
  • ${prefix}lutar
  • ${prefix}palmas
+ • ${prefix}quiz
  • ${prefix}socar
  • ${prefix}tapa
 
