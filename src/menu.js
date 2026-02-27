@@ -102,6 +102,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}welcome5 (1/0) Com Gif 
  • ${prefix}welcome6 (1/0) Com Vídeo 
  • ${prefix}welcome7 (1/0) Com Áudio 
+ • ${prefix}welcome8 (1/0) Com IMG 
 
 ╰━━─「⭐」─━━
 
@@ -160,6 +161,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}gartic
  • ${prefix}jantar
  • ${prefix}lutar
+ • ${prefix}palmas
  • ${prefix}socar
  • ${prefix}tapa
 

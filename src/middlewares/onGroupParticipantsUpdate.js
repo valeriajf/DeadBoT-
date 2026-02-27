@@ -28,6 +28,7 @@ const { handleWelcome4NewMember } = require("../utils/welcome4Handler");
 const { handleWelcome5NewMember } = require("../utils/welcome5Handler");
 const { handleWelcome6NewMember } = require("../utils/welcome6Handler");
 const { handleWelcome7NewMember } = require("../utils/welcome7Handler");
+const { handleWelcome8NewMember } = require("../utils/welcome8Handler");
 
 // CORRIGIDO: Usar o mesmo blacklist.json da raiz do projeto
 const BLACKLIST_FILE = path.join(__dirname, "../../blacklist.json");
@@ -484,6 +485,28 @@ exports.onGroupParticipantsUpdate = async ({
         });
       } catch (err) {
         console.error('[WELCOME7] Erro:', err.message);
+      }
+
+      // WELCOME8
+      try {
+        await handleWelcome8NewMember({
+          groupId: remoteJid,
+          groupName: groupMetadata.subject,
+          newMemberId: userJid,
+          newMemberNumber: userNumber,
+          pushname,
+          sendImageFromFile: async (filePath, caption, mentions) => {
+            await socket.sendMessage(remoteJid, {
+              image: fs.readFileSync(filePath),
+              caption,
+              mentions,
+            });
+          },
+          sendTextWithMention: async ({ caption, mentions }) =>
+            await socket.sendMessage(remoteJid, { text: caption, mentions }),
+        });
+      } catch (err) {
+        console.error('[WELCOME8] Erro:', err.message);
       }
     }
   } catch (err) {

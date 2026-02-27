@@ -14,6 +14,7 @@ if [ "$LOCAL" != "$REMOTE" ]; then
     cp -r database/ /tmp/database-backup
     git reset --hard origin/main >> "$LOG_FILE" 2>&1
     cp -r /tmp/database-backup/. database/
+    chmod +x "$PROJECT_DIR/auto-update.sh"
     pm2 restart dead-bot >> "$LOG_FILE" 2>&1
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Restart concluído." >> "$LOG_FILE"
 fi

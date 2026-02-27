@@ -1,0 +1,22 @@
+[
+  {
+    "match": "Oi",
+    "answer": "Olá, tudo bem?"
+  },
+  {
+    "match": "Dead",
+    "answer": "Tô na área"
+  },
+  {
+    "match": "Bom dia",
+    "answer": "Tenha um bom dia"
+  },
+  {
+    "match": "Boa tarde",
+    "answer": "Opa, boa tarde"
+  },
+  {
+    "match": "Boa noite",
+    "answer": "Boa noite pra você também"
+  }
+]
