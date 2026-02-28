@@ -546,7 +546,7 @@ function getDiasFimAno(data) {
 async function enviarMensagemParaGrupo(socket, groupJid) {
   try {
     // Require feito aqui dentro para garantir que BASE_DIR já existe
-    const DB_PATH = path.join(BASE_DIR, "../database/mensagemDiaria.json");
+    const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
 
     const now = new Date();
     const dia = String(now.getDate()).padStart(2, "0");
@@ -628,23 +628,24 @@ function startMensagemDiariaScheduler(socket) {
       console.log("[MensagemDiaria] ⏰ São 08:00! Enviando mensagem diária...");
 
       try {
-        const DB_PATH = path.join(BASE_DIR, "../database/mensagemDiaria.json");
+        const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
         if (!require("node:fs").existsSync(DB_PATH)) return;
 
         const db = JSON.parse(require("node:fs").readFileSync(DB_PATH, "utf-8"));
         const gruposAtivos = Object.entries(db)
-          .filter(([, ativo]) => ativo)
-          .map(([jid]) => jid);
+          .filter(([, entrada]) => entrada?.ativo === true)
+          .map(([jid, entrada]) => ({ jid, nome: entrada?.nome || "Grupo sem nome" }));
 
         if (gruposAtivos.length === 0) {
           console.log("[MensagemDiaria] Nenhum grupo ativo.");
           return;
         }
 
-        console.log(`[MensagemDiaria] 📋 Enviando para ${gruposAtivos.length} grupo(s)...`);
+        console.log(`[MensagemDiaria] 📋 ${gruposAtivos.length} grupo(s) ativo(s)...`);
 
-        for (const groupJid of gruposAtivos) {
-          await enviarMensagemParaGrupo(socket, groupJid);
+        for (const { jid, nome } of gruposAtivos) {
+          console.log(`[MensagemDiaria] 📤 Enviando para: ${nome} (${jid})`);
+          await enviarMensagemParaGrupo(socket, jid);
           await new Promise((resolve) => setTimeout(resolve, 1500));
         }
       } catch (err) {

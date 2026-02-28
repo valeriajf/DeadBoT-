@@ -13,7 +13,7 @@ const path = require("node:path");
 const fs = require("node:fs");
 const { PREFIX } = require(`${BASE_DIR}/config`);
 
-const DB_PATH = path.join(BASE_DIR, "../database/mensagemDiaria.json");
+const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
 
 function loadDB() {
   if (!fs.existsSync(DB_PATH)) {
@@ -23,6 +23,15 @@ function loadDB() {
     return JSON.parse(fs.readFileSync(DB_PATH, "utf-8"));
   } catch {
     return {};
+  }
+}
+
+async function getNomeGrupo(socket, remoteJid) {
+  try {
+    const meta = await socket.groupMetadata(remoteJid);
+    return meta.subject || "Grupo sem nome";
+  } catch {
+    return "Grupo sem nome";
   }
 }
 
@@ -63,7 +72,8 @@ module.exports = {
     }
 
     const db = loadDB();
-    const ativo = db[remoteJid] || false;
+    const entrada = db[remoteJid] || null;
+    const ativo = entrada ? entrada.ativo : false;
 
     // Sem argumento: mostra status
     if (!args || !args[0]) {
@@ -85,7 +95,8 @@ module.exports = {
           `✅ A mensagem diária já está *ativada* neste grupo!\nChego todo dia às *08:00* (Brasília) 🌅`
         );
       }
-      db[remoteJid] = true;
+      const nome = await getNomeGrupo(socket, remoteJid);
+      db[remoteJid] = { ativo: true, nome };
       saveDB(db);
 
       return sendReply(
@@ -106,7 +117,8 @@ module.exports = {
       if (!ativo) {
         return sendReply("❌ A mensagem diária já está *desativada* neste grupo!");
       }
-      db[remoteJid] = false;
+      const nomeAtual = db[remoteJid]?.nome || "Grupo sem nome";
+      db[remoteJid] = { ativo: false, nome: nomeAtual };
       saveDB(db);
 
       return sendReply(
