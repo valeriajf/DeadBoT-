@@ -84,27 +84,39 @@
     "ativo": true
   },
   "120363417816517583@g.us": {
-    "id": "9FLJQLSN",
+    "id": "SA60H3M5",
     "groupId": "120363417816517583@g.us",
     "nomeGrupo": "DeadBoT SuporTe 🤖",
     "quantidade": 30,
     "tipo": "dias",
     "duracao": "30 dias",
-    "expira": "28/03/2026, 10:24:07",
-    "expiraTimestamp": 1774704247966,
-    "registradoEm": "2026-02-26T13:24:07.966Z",
+    "expira": "27/03/2026, 08:05:22",
+    "expiraTimestamp": 1774609522827,
+    "registradoEm": "2026-02-25T11:05:22.827Z",
     "ativo": true
   },
   "555184033465-1558458733@g.us": {
-    "id": "PEEBOTAT",
+    "id": "G4M09ZE7",
     "groupId": "555184033465-1558458733@g.us",
     "nomeGrupo": "★La casa de stickers★",
     "quantidade": 30,
     "tipo": "dias",
     "duracao": "30 dias",
-    "expira": "28/03/2026, 13:13:24",
-    "expiraTimestamp": 1774714404611,
-    "registradoEm": "2026-02-26T16:13:24.612Z",
+    "expira": "27/03/2026, 14:33:05",
+    "expiraTimestamp": 1774632785191,
+    "registradoEm": "2026-02-25T17:33:05.191Z",
+    "ativo": true
+  },
+  "120363425860893012@g.us": {
+    "id": "VSUHYDLZ",
+    "groupId": "120363425860893012@g.us",
+    "nomeGrupo": "☣ AUTO EXÍLIO ⛧ ✶",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "28/03/2026, 05:30:45",
+    "expiraTimestamp": 1774686645301,
+    "registradoEm": "2026-02-26T08:30:45.301Z",
     "ativo": true
   }
 }

@@ -1,1 +1,21 @@
-{}
+{
+  "120363421275714747@g.us_27/02/2026_9:00": {
+    "horario": "9:00",
+    "data": "27/02/2026",
+    "grupoJid": "120363421275714747@g.us",
+    "participantes": [
+      {
+        "jid": "238044888203370@lid",
+        "numero": "238044888203370"
+      },
+      {
+        "jid": "145530755752153@lid",
+        "numero": "145530755752153"
+      }
+    ],
+    "criadoEm": "2026-02-27T11:16:39.958Z",
+    "notificado": true,
+    "notificado10min": true,
+    "notificado5min": true
+  }
+}

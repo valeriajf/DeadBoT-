@@ -1550,5 +1550,101 @@
     },
     "target": null,
     "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 98,
+    "timestamp": "2026-02-28T01:17:19.311Z",
+    "date": "27/02/2026, 22:17:19",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "53022075973794@lid",
+      "name": "53022075973794"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Solicitação às 22:17:19"
+  },
+  {
+    "id": 99,
+    "timestamp": "2026-02-28T01:17:31.572Z",
+    "date": "27/02/2026, 22:17:31",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "53022075973794",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 100,
+    "timestamp": "2026-02-28T02:00:05.233Z",
+    "date": "27/02/2026, 23:00:05",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 101,
+    "timestamp": "2026-02-28T10:05:08.666Z",
+    "date": "28/02/2026, 07:05:08",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "DeadLaB 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 102,
+    "timestamp": "2026-02-28T10:06:18.895Z",
+    "date": "28/02/2026, 07:06:18",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "DeadLaB 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro removido"
+  },
+  {
+    "id": 103,
+    "timestamp": "2026-02-28T10:06:18.913Z",
+    "date": "28/02/2026, 07:06:18",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "242404347146484@lid",
+      "name": "242404347146484"
+    },
+    "group": {
+      "id": "120363406027458811@g.us",
+      "name": "DeadLaB 🧫"
+    },
+    "target": "183897715433715",
+    "details": "Membro removido do grupo"
   }
 ]
