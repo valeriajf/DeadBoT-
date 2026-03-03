@@ -106,6 +106,20 @@ const STICKER_SMART_MESSAGES = {
     "⚡ Levanta e faz acontecer!",
     "🙌 Você consegue. Só não pode parar."
   ],
+  
+  // 💀 DEADPOOL (10 mensagens)
+ "112,177,9,226,185,240,67,5,11,183,199,59,210,4,41,144,161,47,165,250,134,22,255,104,231,48,194,181,166,76,0,139": [
+    "💀 Olha quem apareceu... Eu mesmo. O anti-herói favorito do grupo 😎",
+    "🔫 Calma, eu não resolvo tudo na bala… às vezes é só no sarcasmo mesmo.",
+    "😏 Relaxa grupo, eu estou aqui. Agora tudo vai dar errado… digo, certo!",
+    "🩸 Se o caos tivesse um representante, provavelmente seria eu.",
+    "🎭 Herói? Vilão? Eu prefiro 'problema bem-humorado'.",
+    "🔥 Vim trazer ordem... ou pelo menos entretenimento.",
+    "💬 Falaram meu nome 3 vezes? Então pronto, apareci.",
+    "💣 Cuidado grupo… nível de zoeira aumentado.",
+    "😈 Eu não sou o herói que vocês merecem… mas sou o que apareceu.",
+    "🗡️ Tranquilos, hoje eu estou de bom humor. Acho."
+  ],
 
   // 📢 PROPAGANDA
   "46,236,42,124,67,226,113,152,9,74,125,190,81,113,231,122,52,9,48,194,76,105,121,225,255,28,21,218,193,245,252,226": [
@@ -115,9 +129,11 @@ const STICKER_SMART_MESSAGES = {
 
 // Lista de figurinhas que disparam o tagall
 const STICKER_TRIGGER_IDS = [
-  "129,87,177,77,83,34,15,210,55,224,44,157,170,143,32,124,136,28,167,155,24,45,192,9,58,122,224,81,97,125,133,213",
+  "237,240,88,140,212,171,71,87,143,170,31,4,161,59,231,26,145,206,63,43,179,14,239,118,100,145,78,161,21,50,181,188",
   
-  "220,221,248,6,183,219,144,172,117,218,136,49,102,69,38,59,20,27,230,207,174,117,140,78,25,63,75,228,144,4,204,165",
+  "227,2,178,16,230,157,98,114,129,2,96,110,160,98,30,56,152,65,8,32,147,236,62,49,147,235,170,116,161,151,222,127",
+  
+  "74,136,209,171,160,196,81,112,218,236,146,215,180,206,153,154,238,90,73,46,43,22,97,156,64,34,55,66,155,253,26,70"
   
 ];
 

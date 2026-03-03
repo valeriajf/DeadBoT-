@@ -1058,7 +1058,7 @@ module.exports = {
               setTimeout(sendNextQuestion, 3000);
             }
           }
-        }, 30000);
+        }, 60000);
 
         await sendText(
           `🧠 *QUIZ - CONHECIMENTOS GERAIS*\n` +
@@ -1066,7 +1066,7 @@ module.exports = {
             `${"▓".repeat(num)}${"░".repeat(total - num)}\n\n` +
             `❓ *${q.pergunta}*\n\n` +
             `${q.opcoes.join("\n")}\n\n` +
-            `⏱️ *30 segundos para responder!*\n` +
+            `⏱️ *60 segundos para responder!*\n` +
             `📝 Use: ${PREFIX}quiz A, B, C ou D`
         );
       };

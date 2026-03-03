@@ -62,6 +62,17 @@ exports.load = (socket) => {
     }
   }, 6000);
 
+  // 🛡️ Inicia o sistema de auto-backup (00:00 | 06:00 | 12:00 | 18:00)
+  setTimeout(() => {
+    try {
+      const { startAutoBackup } = require(`${BASE_DIR}/services/autoBackup`);
+      const { OWNER_NUMBER } = require(`${BASE_DIR}/config`);
+      startAutoBackup(socket, OWNER_NUMBER);
+    } catch (error) {
+      console.error('Erro ao inicializar auto-backup:', error.message);
+    }
+  }, 7000);
+
   // ⭐ Limpeza automática de confirmações BANGHOST (1 vez apenas)
   setInterval(() => {
     try {
@@ -90,7 +101,7 @@ exports.load = (socket) => {
     } catch (error) {
       console.error('❌ [BANGHOST] Erro na limpeza:', error.message);
     }
-  }, 30000); // A cada 30 segundos
+  }, 30000);
 
   // Evento de mensagens
   socket.ev.on("messages.upsert", async (data) => {

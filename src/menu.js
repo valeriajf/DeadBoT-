@@ -27,14 +27,17 @@ exports.menuMessage = (groupJid) => {
 ╭━━⪩ DONO ⪨━━
 
  • ${prefix}anti-pv (1/0)
+ • ${prefix}backup
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}off
  • ${prefix}on
+ • ${prefix}reg-sistema
  • ${prefix}resetar-agendamento-global
  • ${prefix}restart
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
+ • ${prefix}status-sistema
  • ${prefix}ver-agendamento-global
  • ${prefix}zerar-rank grupo
  • ${prefix}zerar-rank global 
@@ -95,6 +98,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}totag
  • ${prefix}unmute
  • ${prefix}x9 (1/0)
+ • ${prefix}welcome-check
  • ${prefix}welcome (1/0)
  • ${prefix}welcome2 (1/0) Foto Usuário 
  • ${prefix}welcome3 (1/0) Foto Grupo 
@@ -152,19 +156,19 @@ exports.menuMessage = (groupJid) => {
 
 ╭━━⪩ BRINCADEIRAS ⪨━━
 
- • ${prefix}abracar
- • ${prefix}beijar
- • ${prefix}dado
- • ${prefix}dancar
- • ${prefix}driblar
- • ${prefix}duelar
- • ${prefix}gartic
- • ${prefix}jantar
- • ${prefix}lutar
- • ${prefix}palmas
- • ${prefix}quiz
- • ${prefix}socar
- • ${prefix}tapa
+ • ${prefix}abracar (@usuario)
+ • ${prefix}beijar (@usuario)
+ • ${prefix}dado (1 a 6)
+ • ${prefix}dancar (@usuario)
+ • ${prefix}driblar (@usuario)
+ • ${prefix}duelar (@usuario)
+ • ${prefix}gartic (iniciar)
+ • ${prefix}jantar (@usuario)
+ • ${prefix}lutar (@usuario)
+ • ${prefix}palmas (@usuario)
+ • ${prefix}quiz (iniciar)
+ • ${prefix}socar (@usuario)
+ • ${prefix}tapa (@usuario)
 
 ╰━━─「🎡」─━━
 

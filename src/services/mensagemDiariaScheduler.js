@@ -4,8 +4,8 @@
  * Serviço de agendamento de mensagem diária automática.
  *
  * Como funciona:
- *   - Roda um intervalo a cada minuto verificando se são 08:00h
- *   - Ao atingir 08:00h, percorre todos os grupos com sistema ativo
+ *   - Roda um intervalo a cada minuto verificando se são 06:00h (Brasília)
+ *   - Ao atingir 06:00h, percorre todos os grupos com sistema ativo
  *   - Para cada grupo, gera e envia a mensagem do dia
  *   - Controla para não repetir a mensagem no mesmo dia
  *
@@ -548,7 +548,8 @@ async function enviarMensagemParaGrupo(socket, groupJid) {
     // Require feito aqui dentro para garantir que BASE_DIR já existe
     const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
 
-    const now = new Date();
+    // Usa horário de Brasília para gerar os dados da mensagem
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
     const dia = String(now.getDate()).padStart(2, "0");
     const mes = String(now.getMonth() + 1).padStart(2, "0");
     const ano = now.getFullYear();
@@ -601,31 +602,32 @@ async function enviarMensagemParaGrupo(socket, groupJid) {
 
 /**
  * Inicia o agendador de mensagem diária.
- * Verifica se são 08:00h a cada minuto e envia para todos os grupos ativos.
+ * Verifica se são 06:00h (Brasília) a cada minuto e envia para todos os grupos ativos.
  * @param {import('@whiskeysockets/baileys').WASocket} socket
  */
 function startMensagemDiariaScheduler(socket) {
   console.log("[MensagemDiaria] 💌 Agendador de mensagem diária iniciado!");
 
   let alreadySentToday = false;
-  let lastDay = new Date().getDate();
+  let lastDay = null;
 
   setInterval(async () => {
-    const now = new Date();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const day = now.getDate();
+    // Sempre usa horário de Brasília (UTC-3) independente do servidor
+    const nowBRT = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+    const hour = nowBRT.getHours();
+    const minute = nowBRT.getMinutes();
+    const day = nowBRT.getDate();
 
-    // Resetar controle ao virar o dia
+    // Resetar controle ao virar o dia (em horário de Brasília)
     if (day !== lastDay) {
       alreadySentToday = false;
       lastDay = day;
     }
 
-    // Dispara exatamente às 08:00 e só uma vez por dia
-    if (hour === 8 && minute === 0 && !alreadySentToday) {
+    // Dispara exatamente às 06:00 (Brasília) e só uma vez por dia
+    if (hour === 6 && minute === 0 && !alreadySentToday) {
       alreadySentToday = true;
-      console.log("[MensagemDiaria] ⏰ São 08:00! Enviando mensagem diária...");
+      console.log("[MensagemDiaria] ⏰ São 06:00 (Brasília)! Enviando mensagem diária...");
 
       try {
         const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");

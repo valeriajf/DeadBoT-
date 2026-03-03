@@ -3,10 +3,6 @@
     "active": false,
     "customMessage": "𝐒𝐄𝐉𝐀 𝐁𝐄𝐌 𝐕𝐈𝐍𝐃𝐎! {membro}\n𝐏𝐀𝐑𝐀 𝐆𝐀𝐑𝐀𝐍𝐓𝐈𝐑 𝐒𝐄𝐔 𝐂𝐎𝐍𝐅𝐎𝐑𝐓𝐎 𝐍𝐎 𝐆𝐑𝐔𝐏𝐎, 𝐋𝐄𝐈𝐀 𝐀𝐒 𝐑𝐄𝐆𝐑𝐀𝐒 𝐄 𝐒𝐈𝐆𝐀 𝐄𝐋𝐀𝐒 𝐃𝐄 𝐀𝐂𝐎𝐑𝐃𝐎 𝐂𝐎𝐌 𝐀 𝐄𝐒𝐂𝐑𝐈𝐓𝐀 !\n(っ◔◡◔)っ 🦁 *Agradecemos sua presença, sua participação é fundamental para nosso crescimento!*\n ╔═════ஜ🏆🏆🏆🏆🏆🏆🏆🏆ஜ═════╗\n ♜•♖•♜•₪₪₪𝐂𝐎𝐋𝐈𝐒𝐄𝐔 𝐀𝐑𝐄𝐍𝐀 𝐔𝐅𝐂 ₪₪•♜•♖•♜\n ╚═════ஜ🏆🏆🏆🏆🏆🏆🏆🏆ஜ═════╝"
   },
-  "120363417816517583@g.us": {
-    "active": true,
-    "customMessage": "{membro} bem vindo ao {grupo}"
-  },
   "120363419168076035@g.us": {
     "active": true,
     "customMessage": "📌 \n{membro}\nBem-vindo(a) ao nosso grupo de amizades e figurinhas 👏🏼❤️\n\nPara mantermos uma comunidade unida e agradável, pedimos que faça uma breve apresentação:\n— Nome \n— 🎂 Idade\n— 📍 Cidade Estado\n\nAproveite o grupo, leia as regras e participe Sua presença é muito bem-vinda."
@@ -14,11 +10,6 @@
   "120363422312164587@g.us": {
     "active": false,
     "customMessage": "{membro} bem vindo ao {grupo}"
-  },
-  "120363404988905236@g.us": {
-    "active": true,
-    "customMessage": "{membro} bem vindo ao {grupo}, se apresente:",
-    "groupName": "🫂❤️🅔🅝🅣🅡🅔 🅐🅜🅘🅖🅞🅢 🅔 🅐🅜🅞🅡🅔🅢 🫂❤️"
   },
   "120363421059121716@g.us": {
     "active": true,
@@ -32,11 +23,16 @@
   "120363421275714747@g.us": {
     "active": true,
     "groupName": "ℝ𝔼𝕊𝔼ℕℍ𝔸 𝔻𝕆𝕊 𝔸𝕄𝕀𝔾𝕆𝕊 𝟚.𝟘🔥💥",
-    "customMessage": "Olá {membro} 😃 bem vindo ao grupo {grupo} Se liga nas regras e divirta-se!!!"
+    "customMessage": "✨ {membro} bem vind@ ao grupo {grupo} \n\n👾 •𝑬𝑵𝑻𝑹𝑶𝑼 𝑺𝑬 𝑨𝑷𝑹𝑬𝑺𝑬𝑵𝑻𝑨•\n📸 •F𝜣T𝜣\n👻 •N𝜣ME\n📌 •CID∆DE\n🗓️ •ID∆DE\n⚠️ •LEI∆ ∆S REGR∆S D𝜣 GRUP𝜣\n\n*APROVEITE O GRUPO!*"
   },
   "120363421108908380@g.us": {
     "active": true,
     "groupName": "🅲⃢🅻⃢🆄⃢🅱⃢🅴⃢ 🅳⃢🅰⃢ 🅰⃢🅼⃢🅸⃢🆉⃢🅰⃢🅳⃢🅴",
     "customMessage": "👋 E aí {membro} ✨ Seja muito bem-vindo(a) ao {grupo} 🥳\nAqui é lugar de resenha, amizade e boas vibes 😎✨\nPra gente te conhecer melhor, se apresenta pra galera:\n📌 nome\n📌 idade\n📌 cidade\n📌 hobbies ou algo que curte fazer\n\nFica à vontade e já chega interagindo! 🚀"
+  },
+  "120363404988905236@g.us": {
+    "active": true,
+    "groupName": "🫂❤️🅔🅝🅣🅡🅔 🅐🅜🅘🅖🅞🅢 🅔 🅐🅜🅞🅡🅔🅢 🫂❤️",
+    "customMessage": "{membro} bem-vind@ ao grupo {grupo}\n📌 Se apresente com foto, nome, idade e cidade.\n🚫 Proibido conteúdo impróprio, menores de 18, invasão de PV, links externos, brigas, desrespeito, palavrões e inatividade.\n✅ Aqui pode: fazer amizade, conversar, brincar, compartilhar músicas vídeos e usar figurinhas normais.\n📩 Dúvidas? Fale com um ADM.\n💖 Respeito sempre!"
   }
 }

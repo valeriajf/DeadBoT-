@@ -1646,5 +1646,517 @@
     },
     "target": "183897715433715",
     "details": "Membro removido do grupo"
+  },
+  {
+    "id": 104,
+    "timestamp": "2026-02-28T14:39:17.905Z",
+    "date": "28/02/2026, 14:39:17",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "82558297616493@lid",
+      "name": "82558297616493"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "66319261163524",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 105,
+    "timestamp": "2026-02-28T16:40:31.176Z",
+    "date": "28/02/2026, 16:40:31",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 106,
+    "timestamp": "2026-02-28T16:41:04.909Z",
+    "date": "28/02/2026, 16:41:04",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 107,
+    "timestamp": "2026-02-28T16:41:16.385Z",
+    "date": "28/02/2026, 16:41:16",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 108,
+    "timestamp": "2026-02-28T23:00:28.241Z",
+    "date": "28/02/2026, 23:00:28",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 109,
+    "timestamp": "2026-03-01T02:00:43.189Z",
+    "date": "01/03/2026, 02:00:43",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 110,
+    "timestamp": "2026-03-01T06:27:46.442Z",
+    "date": "01/03/2026, 06:27:46",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "35275304652961@lid",
+      "name": "35275304652961"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Solicitação às 03:27:45"
+  },
+  {
+    "id": 111,
+    "timestamp": "2026-03-01T07:20:27.030Z",
+    "date": "01/03/2026, 07:20:27",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 112,
+    "timestamp": "2026-03-01T08:00:48.907Z",
+    "date": "01/03/2026, 08:00:48",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 113,
+    "timestamp": "2026-03-01T08:35:13.578Z",
+    "date": "01/03/2026, 08:35:13",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "82558297616493@lid",
+      "name": "82558297616493"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "35275304652961",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 114,
+    "timestamp": "2026-03-01T10:00:38.580Z",
+    "date": "01/03/2026, 10:00:38",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 115,
+    "timestamp": "2026-03-01T20:44:49.766Z",
+    "date": "01/03/2026, 20:44:49",
+    "action": "Alterar Foto do Grupo",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Foto do grupo foi alterada"
+  },
+  {
+    "id": 116,
+    "timestamp": "2026-03-01T22:46:04.881Z",
+    "date": "01/03/2026, 22:46:04",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "114487336108240",
+    "details": "Membro removido"
+  },
+  {
+    "id": 117,
+    "timestamp": "2026-03-01T22:46:04.887Z",
+    "date": "01/03/2026, 22:46:04",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "114487336108240",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 118,
+    "timestamp": "2026-03-01T22:46:25.872Z",
+    "date": "01/03/2026, 22:46:25",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "121844497686774",
+    "details": "Membro removido"
+  },
+  {
+    "id": 119,
+    "timestamp": "2026-03-01T22:46:25.877Z",
+    "date": "01/03/2026, 22:46:25",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "121844497686774",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 120,
+    "timestamp": "2026-03-01T22:46:40.593Z",
+    "date": "01/03/2026, 22:46:40",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "73280748839107",
+    "details": "Membro removido"
+  },
+  {
+    "id": 121,
+    "timestamp": "2026-03-01T22:46:40.601Z",
+    "date": "01/03/2026, 22:46:40",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "73280748839107",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 122,
+    "timestamp": "2026-03-01T22:46:50.223Z",
+    "date": "01/03/2026, 22:46:50",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "60400930447433",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 123,
+    "timestamp": "2026-03-01T22:46:50.228Z",
+    "date": "01/03/2026, 22:46:50",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "60400930447433",
+    "details": "Membro removido"
+  },
+  {
+    "id": 124,
+    "timestamp": "2026-03-01T22:48:43.351Z",
+    "date": "01/03/2026, 22:48:43",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "233715577921587",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 125,
+    "timestamp": "2026-03-01T22:48:43.355Z",
+    "date": "01/03/2026, 22:48:43",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "233715577921587",
+    "details": "Membro removido"
+  },
+  {
+    "id": 126,
+    "timestamp": "2026-03-01T22:51:29.275Z",
+    "date": "01/03/2026, 22:51:29",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "104441390833732",
+    "details": "Membro removido"
+  },
+  {
+    "id": 127,
+    "timestamp": "2026-03-01T22:51:29.279Z",
+    "date": "01/03/2026, 22:51:29",
+    "action": "Remover Membro",
+    "admin": {
+      "id": "124928250667116@lid",
+      "name": "124928250667116"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "104441390833732",
+    "details": "Membro removido do grupo"
+  },
+  {
+    "id": 128,
+    "timestamp": "2026-03-01T23:00:44.448Z",
+    "date": "01/03/2026, 23:00:44",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 129,
+    "timestamp": "2026-03-02T02:00:44.832Z",
+    "date": "02/03/2026, 02:00:44",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
+  },
+  {
+    "id": 130,
+    "timestamp": "2026-03-02T05:44:38.285Z",
+    "date": "02/03/2026, 05:44:38",
+    "action": "Solicitação de Entrada",
+    "admin": {
+      "id": "13439640539145@lid",
+      "name": "13439640539145"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Solicitação às 02:44:37"
+  },
+  {
+    "id": 131,
+    "timestamp": "2026-03-02T08:00:58.291Z",
+    "date": "02/03/2026, 08:00:58",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 132,
+    "timestamp": "2026-03-02T10:00:02.574Z",
+    "date": "02/03/2026, 10:00:02",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Todos os membros"
+  },
+  {
+    "id": 133,
+    "timestamp": "2026-03-02T10:57:17.420Z",
+    "date": "02/03/2026, 10:57:17",
+    "action": "Recusar Entrada",
+    "admin": {
+      "id": "82558297616493@lid",
+      "name": "82558297616493"
+    },
+    "group": {
+      "id": "120363424665581220@g.us",
+      "name": "Amizades e figurinhas ❤️👏🏼☺️😉"
+    },
+    "target": "13439640539145",
+    "details": "Solicitação recusada"
+  },
+  {
+    "id": 134,
+    "timestamp": "2026-03-02T19:27:49.586Z",
+    "date": "02/03/2026, 19:27:49",
+    "action": "Adicionar Membro",
+    "admin": {
+      "id": "163351011319890@lid",
+      "name": "163351011319890"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": "242404347146484",
+    "details": "Membro adicionado"
+  },
+  {
+    "id": 135,
+    "timestamp": "2026-03-02T23:00:52.454Z",
+    "date": "02/03/2026, 23:00:52",
+    "action": "Alterar Configurações",
+    "admin": {
+      "id": "52674217148583@lid",
+      "name": "52674217148583"
+    },
+    "group": {
+      "id": "120363417816517583@g.us",
+      "name": "DeadBoT SuporTe 🤖"
+    },
+    "target": null,
+    "details": "Enviar mensagens: Apenas admins"
   }
 ]

@@ -1,6 +1,6 @@
 /**
  * INSTALAÇÃO: /sdcard/DeadBoT-/src/commands/admin/ver-agendamento.js
- * COMANDO RENOMEADO: #ver-agendamento (antes era #ver-status)
+ * COMANDO: #ver-agendamento
  */
 const { PREFIX } = require(`${BASE_DIR}/config`);
 const { DangerError } = require(`${BASE_DIR}/errors`);
@@ -95,7 +95,7 @@ module.exports = {
       }
 
       mensagem += `\n⚠️ *Para resetar todos os agendamentos:*\n`;
-      mensagem += `${PREFIX}resetar-agendamentos`;
+      mensagem += `${PREFIX}resetar-agendamento`;
 
       await sendSuccessReply(mensagem);
 
