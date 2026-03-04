@@ -14,6 +14,7 @@ const ROOT_DIR = path.resolve(BASE_DIR, "..");
 const BACKUP_SCRIPT = path.join(ROOT_DIR, "backup_deadbot.sh");
 const BACKUP_DIR = path.join(ROOT_DIR, "backups");
 const LAST_BACKUP_JSON = path.join(BACKUP_DIR, "last_backup.json");
+const STATE_FILE = path.join(BACKUP_DIR, "backup_state.json");
 
 const MAX_BACKUPS = 4;
 const BACKUP_HOURS = [0, 6, 12, 18];
@@ -29,6 +30,22 @@ function setOwnerJid(jid) {
     ownerJidReal = jid;
     console.log(`✅ [AutoBackup] JID do dono registrado.`);
   }
+}
+
+// ── ESTADO ATIVO/INATIVO ───────────────────────────────────────
+function isBackupAtivo() {
+  try {
+    if (!fs.existsSync(STATE_FILE)) return true; // ativo por padrão
+    const state = JSON.parse(fs.readFileSync(STATE_FILE, "utf-8"));
+    return state.ativo !== false;
+  } catch (_) {
+    return true;
+  }
+}
+
+function setBackupAtivo(valor) {
+  fs.mkdirSync(BACKUP_DIR, { recursive: true });
+  fs.writeFileSync(STATE_FILE, JSON.stringify({ ativo: valor }));
 }
 
 // ── CALCULA MS ATÉ O PRÓXIMO HORÁRIO DE BACKUP (Brasília) ─────
@@ -57,16 +74,19 @@ function agendarProximoBackup(socket, ownerNumber) {
   const proxima = new Date(Date.now() + ms);
 
   console.log(
-    `⏰ [AutoBackup] Próximo backup agendado para: ` +
-    `${proxima.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} (em ${Math.round(ms / 60000)} minutos)`
+    `⏰[AutoBackup] Próximo backup: ${proxima.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
   );
 
   setTimeout(async () => {
-    console.log(`🕐 [AutoBackup] Iniciando backup das ${new Date().getHours()}:00...`);
-    try {
-      await runBackup(socket, ownerNumber);
-    } catch (e) {
-      console.error("❌ [AutoBackup] Falha no backup agendado:", e.message);
+    if (!isBackupAtivo()) {
+      console.log("⏸️  [AutoBackup] Backup desativado, pulando horário.");
+    } else {
+      console.log(`🕐 [AutoBackup] Iniciando backup das ${new Date().getHours()}:00...`);
+      try {
+        await runBackup(socket, ownerNumber);
+      } catch (e) {
+        console.error("❌ [AutoBackup] Falha no backup agendado:", e.message);
+      }
     }
     agendarProximoBackup(socket, ownerNumber);
   }, ms);
@@ -88,12 +108,10 @@ function runBackup(socket, ownerNumber) {
         const info = JSON.parse(fs.readFileSync(LAST_BACKUP_JSON, "utf-8"));
         const backupFilePath = path.join(BACKUP_DIR, info.filename);
 
-        // Envia no WhatsApp
         if (ownerNumber) {
           await sendBackupToWhatsApp(socket, ownerNumber, info, backupFilePath);
         }
 
-        // Envia no Telegram
         const { enviarBackupTelegram } = require(`${BASE_DIR}/services/telegramBackup`);
         await enviarBackupTelegram(info, backupFilePath);
 
@@ -128,7 +146,7 @@ async function sendBackupToWhatsApp(socket, ownerNumber, info, backupFilePath) {
         `🕐 *Gerado em:* ${info.timestamp}\n` +
         `💾 *Tamanho:* ${info.size}\n` +
         `📁 *Backups salvos:* ${info.total}/${MAX_BACKUPS}\n\n` +
-        `💡 Mantenha este arquivo para restauração rápida em caso de queda da VPS.`,
+        `💡 Arquivo para restauração no servidor.`,
     });
 
     console.log("📩 [AutoBackup] Arquivo de backup enviado no WhatsApp com sucesso!");
@@ -144,9 +162,10 @@ function startAutoBackup(socket, ownerNumber) {
     return;
   }
   agendadorIniciado = true;
-  console.log("🛡️  [AutoBackup] Sistema de backup iniciado.");
-  console.log(`   Horários programados: 00:00 | 06:00 | 12:00 | 18:00`);
+
+  const ativo = isBackupAtivo();
+  console.log(`📁[AutoBackup] Backup iniciado. Status: ${ativo ? "✅ Ativo" : "⏸️  Inativo"}`);
   agendarProximoBackup(socket, ownerNumber);
 }
 
-module.exports = { startAutoBackup, runBackup, setOwnerJid };
+module.exports = { startAutoBackup, runBackup, setOwnerJid, isBackupAtivo, setBackupAtivo };

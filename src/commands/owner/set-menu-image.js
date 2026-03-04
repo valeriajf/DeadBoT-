@@ -35,27 +35,32 @@ module.exports = {
     }
 
     try {
-      const menuImagePath = path.join(ASSETS_DIR, "images", "takeshi-bot.png");
+      const imagesPath = path.join(ASSETS_DIR, "images");
+      const menuImagePath = path.join(imagesPath, "takeshi-bot.png");
 
-      let backupPath = "";
+      // Remove o GIF se existir para evitar conflito
+      const gifPath = path.join(imagesPath, "takeshi-bot.gif");
+      if (fs.existsSync(gifPath)) {
+        const gifBackupPath = path.join(imagesPath, "takeshi-bot-backup.gif");
+        fs.copyFileSync(gifPath, gifBackupPath);
+        fs.unlinkSync(gifPath);
+      }
 
+      // Backup da imagem anterior se existir
       if (fs.existsSync(menuImagePath)) {
-        backupPath = path.join(ASSETS_DIR, "images", "takeshi-bot-backup.png");
-
+        const backupPath = path.join(imagesPath, "takeshi-bot-backup.png");
         fs.copyFileSync(menuImagePath, backupPath);
+        fs.unlinkSync(menuImagePath);
       }
 
       const tempPath = await downloadImage(webMessage, "new-menu-image-temp");
 
-      if (fs.existsSync(menuImagePath)) {
-        fs.unlinkSync(menuImagePath);
-      }
+      fs.copyFileSync(tempPath, menuImagePath);
+      fs.unlinkSync(tempPath);
 
-      fs.renameSync(tempPath, menuImagePath);
-
-      await sendSuccessReply("Imagem do menu atulizada com sucesso !");
+      await sendSuccessReply("Imagem do menu atualizada com sucesso!");
     } catch (error) {
-      errorLog(`Erro ao alterar imagem do menu:  ${error}`);
+      errorLog(`Erro ao alterar imagem do menu: ${error}`);
       await sendErrorReply(
         "Ocorreu um erro ao tentar alterar a imagem do menu. Por favor, tente novamente."
       );

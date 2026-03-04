@@ -30,7 +30,7 @@ async function enviarBackupTelegram(info, backupFilePath) {
       `🕐 Gerado em: ${info.timestamp}\n` +
       `💾 Tamanho: ${info.size}\n` +
       `📁 Backups salvos: ${info.total}/4\n\n` +
-      `💡 Mantenha este arquivo para restauração rápida em caso de queda da VPS.`;
+      `💡 Arquivo para restauração no servidor.`;
 
     // Monta o multipart/form-data manualmente
     const bodyParts = [];

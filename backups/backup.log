@@ -1,122 +1,24 @@
-[01/03/2026 00:41:48] 🚀 Iniciando backup completo: deadbot_backup_20260301_004148.tar.gz
-[01/03/2026 00:41:48] 📂 Raiz do bot: /home/container
-[01/03/2026 00:41:51] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 00:41:51] 📦 Backups salvos: 1/4
-[01/03/2026 00:41:51] ✔️  Concluído: deadbot_backup_20260301_004148.tar.gz
-[01/03/2026 00:41:51] ───────────────────────────────────────────────
-[01/03/2026 06:00:46] 🚀 Iniciando backup completo: deadbot_backup_20260301_060046.tar.gz
-[01/03/2026 06:00:46] 📂 Raiz do bot: /home/container
-[01/03/2026 06:00:49] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 06:00:49] 📦 Backups salvos: 2/4
-[01/03/2026 06:00:49] ✔️  Concluído: deadbot_backup_20260301_060046.tar.gz
-[01/03/2026 06:00:49] ───────────────────────────────────────────────
-[01/03/2026 06:18:46] 🚀 Iniciando backup completo: deadbot_backup_20260301_061846.tar.gz
-[01/03/2026 06:18:46] 📂 Raiz do bot: /home/container
-[01/03/2026 06:18:48] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 06:18:48] 📦 Backups salvos: 3/4
-[01/03/2026 06:18:48] ✔️  Concluído: deadbot_backup_20260301_061846.tar.gz
-[01/03/2026 06:18:48] ───────────────────────────────────────────────
-[01/03/2026 09:31:48] 🚀 Iniciando backup completo: deadbot_backup_20260301_093148.tar.gz
-[01/03/2026 09:31:48] 📂 Raiz do bot: /home/container
-[01/03/2026 09:31:51] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 09:31:51] 📦 Backups salvos: 4/4
-[01/03/2026 09:31:51] ✔️  Concluído: deadbot_backup_20260301_093148.tar.gz
-[01/03/2026 09:31:51] ───────────────────────────────────────────────
-[01/03/2026 09:38:29] 🚀 Iniciando backup completo: deadbot_backup_20260301_063829.tar.gz
-[01/03/2026 09:38:29] 📂 Raiz do bot: /home/container
-[01/03/2026 09:38:30] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 09:38:30] 🗑️  Removido: deadbot_backup_20260301_004148.tar.gz
-[01/03/2026 09:38:30] 📦 Backups salvos: 4/4
-[01/03/2026 09:38:30] ✔️  Concluído: deadbot_backup_20260301_063829.tar.gz
-[01/03/2026 09:38:30] ───────────────────────────────────────────────
-[01/03/2026 09:42:00] 🚀 Iniciando backup completo: deadbot_backup_20260301_064200.tar.gz
-[01/03/2026 09:42:00] 📂 Raiz do bot: /home/container
-[01/03/2026 09:42:02] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 09:42:02] 🗑️  Removido: deadbot_backup_20260301_060046.tar.gz
-[01/03/2026 09:42:02] 📦 Backups salvos: 4/4
-[01/03/2026 09:42:02] ✔️  Concluído: deadbot_backup_20260301_064200.tar.gz
-[01/03/2026 09:42:02] ───────────────────────────────────────────────
-[01/03/2026 12:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260301_090000.tar.gz
-[01/03/2026 12:00:00] 📂 Raiz do bot: /home/container
-[01/03/2026 12:00:04] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 12:00:04] 🗑️  Removido: deadbot_backup_20260301_061846.tar.gz
-[01/03/2026 12:00:04] 📦 Backups salvos: 4/4
-[01/03/2026 12:00:04] ✔️  Concluído: deadbot_backup_20260301_090000.tar.gz
-[01/03/2026 12:00:04] ───────────────────────────────────────────────
-[01/03/2026 12:13:35] 🚀 Iniciando backup completo: deadbot_backup_20260301_091335.tar.gz
-[01/03/2026 12:13:35] 📂 Raiz do bot: /home/container
-[01/03/2026 12:13:36] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 12:13:36] 🗑️  Removido: deadbot_backup_20260301_093148.tar.gz
-[01/03/2026 12:13:36] 📦 Backups salvos: 4/4
-[01/03/2026 12:13:36] ✔️  Concluído: deadbot_backup_20260301_091335.tar.gz
-[01/03/2026 12:13:36] ───────────────────────────────────────────────
-[01/03/2026 13:41:57] 🚀 Iniciando backup completo: deadbot_backup_20260301_104157.tar.gz
-[01/03/2026 13:41:57] 📂 Raiz do bot: /home/container
-[01/03/2026 13:41:59] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 13:41:59] 🗑️  Removido: deadbot_backup_20260301_063829.tar.gz
-[01/03/2026 13:41:59] 📦 Backups salvos: 4/4
-[01/03/2026 13:41:59] ✔️  Concluído: deadbot_backup_20260301_104157.tar.gz
-[01/03/2026 13:41:59] ───────────────────────────────────────────────
-[01/03/2026 15:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260301_120000.tar.gz
-[01/03/2026 15:00:00] 📂 Raiz do bot: /home/container
-[01/03/2026 15:00:04] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 15:00:04] 🗑️  Removido: deadbot_backup_20260301_064200.tar.gz
-[01/03/2026 15:00:04] 📦 Backups salvos: 4/4
-[01/03/2026 15:00:04] ✔️  Concluído: deadbot_backup_20260301_120000.tar.gz
-[01/03/2026 15:00:04] ───────────────────────────────────────────────
-[01/03/2026 18:44:23] 🚀 Iniciando backup completo: deadbot_backup_20260301_154423.tar.gz
-[01/03/2026 18:44:23] 📂 Raiz do bot: /home/container
-[01/03/2026 18:44:25] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 18:44:25] 🗑️  Removido: deadbot_backup_20260301_090000.tar.gz
-[01/03/2026 18:44:25] 📦 Backups salvos: 4/4
-[01/03/2026 18:44:25] ✔️  Concluído: deadbot_backup_20260301_154423.tar.gz
-[01/03/2026 18:44:25] ───────────────────────────────────────────────
-[01/03/2026 21:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260301_180000.tar.gz
-[01/03/2026 21:00:00] 📂 Raiz do bot: /home/container
-[01/03/2026 21:00:05] ✅ Backup criado! Tamanho: 32M
-[01/03/2026 21:00:05] 🗑️  Removido: deadbot_backup_20260301_091335.tar.gz
-[01/03/2026 21:00:05] 📦 Backups salvos: 4/4
-[01/03/2026 21:00:05] ✔️  Concluído: deadbot_backup_20260301_180000.tar.gz
-[01/03/2026 21:00:05] ───────────────────────────────────────────────
-[02/03/2026 03:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260302_000000.tar.gz
-[02/03/2026 03:00:00] 📂 Raiz do bot: /home/container
-[02/03/2026 03:00:11] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 03:00:11] 🗑️  Removido: deadbot_backup_20260301_104157.tar.gz
-[02/03/2026 03:00:11] 📦 Backups salvos: 4/4
-[02/03/2026 03:00:12] ✔️  Concluído: deadbot_backup_20260302_000000.tar.gz
-[02/03/2026 03:00:12] ───────────────────────────────────────────────
-[02/03/2026 09:41:33] 🚀 Iniciando backup completo: deadbot_backup_20260302_064133.tar.gz
-[02/03/2026 09:41:33] 📂 Raiz do bot: /home/container
-[02/03/2026 09:41:36] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 09:41:36] 🗑️  Removido: deadbot_backup_20260301_120000.tar.gz
-[02/03/2026 09:41:36] 📦 Backups salvos: 4/4
-[02/03/2026 09:41:36] ✔️  Concluído: deadbot_backup_20260302_064133.tar.gz
-[02/03/2026 09:41:36] ───────────────────────────────────────────────
-[02/03/2026 15:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260302_120000.tar.gz
-[02/03/2026 15:00:00] 📂 Raiz do bot: /home/container
-[02/03/2026 15:00:06] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 15:00:06] 🗑️  Removido: deadbot_backup_20260301_154423.tar.gz
-[02/03/2026 15:00:06] 📦 Backups salvos: 4/4
-[02/03/2026 15:00:06] ✔️  Concluído: deadbot_backup_20260302_120000.tar.gz
-[02/03/2026 15:00:06] ───────────────────────────────────────────────
-[02/03/2026 21:00:00] 🚀 Iniciando backup completo: deadbot_backup_20260302_180000.tar.gz
-[02/03/2026 21:00:00] 📂 Raiz do bot: /home/container
-[02/03/2026 21:00:07] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 21:00:07] 🗑️  Removido: deadbot_backup_20260301_180000.tar.gz
-[02/03/2026 21:00:07] 📦 Backups salvos: 4/4
-[02/03/2026 21:00:07] ✔️  Concluído: deadbot_backup_20260302_180000.tar.gz
-[02/03/2026 21:00:07] ───────────────────────────────────────────────
-[02/03/2026 21:07:54] 🚀 Iniciando backup completo: deadbot_backup_20260302_180754.tar.gz
-[02/03/2026 21:07:54] 📂 Raiz do bot: /home/container
-[02/03/2026 21:07:56] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 21:07:56] 🗑️  Removido: deadbot_backup_20260302_000000.tar.gz
-[02/03/2026 21:07:56] 📦 Backups salvos: 4/4
-[02/03/2026 21:07:56] ✔️  Concluído: deadbot_backup_20260302_180754.tar.gz
-[02/03/2026 21:07:56] ───────────────────────────────────────────────
-[02/03/2026 21:35:12] 🚀 Iniciando backup completo: deadbot_backup_20260302_183512.tar.gz
-[02/03/2026 21:35:12] 📂 Raiz do bot: /home/container
-[02/03/2026 21:35:13] ✅ Backup criado! Tamanho: 32M
-[02/03/2026 21:35:14] 🗑️  Removido: deadbot_backup_20260302_064133.tar.gz
-[02/03/2026 21:35:14] 📦 Backups salvos: 4/4
-[02/03/2026 21:35:14] ✔️  Concluído: deadbot_backup_20260302_183512.tar.gz
-[02/03/2026 21:35:14] ───────────────────────────────────────────────
+[03/03/2026 18:02:00] 🚀 Iniciando backup completo: deadbot_backup_20260303_180200.tar.gz
+[03/03/2026 18:02:01] 📂 Raiz do bot: /storage/emulated/0/DeadBoT
+[03/03/2026 18:02:08] ✅ Backup criado! Tamanho: 32M
+[03/03/2026 18:02:08] 📦 Backups salvos: 1/4
+[03/03/2026 18:02:08] ✔️  Concluído: deadbot_backup_20260303_180200.tar.gz
+[03/03/2026 18:02:08] ───────────────────────────────────────────────
+[03/03/2026 18:08:13] 🚀 Iniciando backup completo: deadbot_backup_20260303_180813.tar.gz
+[03/03/2026 18:08:13] 📂 Raiz do bot: /storage/emulated/0/DeadBoT
+[03/03/2026 18:08:20] ✅ Backup criado! Tamanho: 32M
+[03/03/2026 18:08:20] 📦 Backups salvos: 2/4
+[03/03/2026 18:08:20] ✔️  Concluído: deadbot_backup_20260303_180813.tar.gz
+[03/03/2026 18:08:20] ───────────────────────────────────────────────
+[03/03/2026 18:13:59] 🚀 Iniciando backup completo: deadbot_backup_20260303_181359.tar.gz
+[03/03/2026 18:13:59] 📂 Raiz do bot: /storage/emulated/0/DeadBoT
+[03/03/2026 18:14:07] ✅ Backup criado! Tamanho: 32M
+[03/03/2026 18:14:07] 📦 Backups salvos: 3/4
+[03/03/2026 18:14:07] ✔️  Concluído: deadbot_backup_20260303_181359.tar.gz
+[03/03/2026 18:14:07] ───────────────────────────────────────────────
+[04/03/2026 00:10:11] 🚀 Iniciando backup completo: deadbot_backup_20260304_001011.tar.gz
+[04/03/2026 00:10:11] 📂 Raiz do bot: /storage/emulated/0/DeadBoT
+[04/03/2026 00:10:23] ✅ Backup criado! Tamanho: 32M
+[04/03/2026 00:10:23] 📦 Backups salvos: 4/4
+[04/03/2026 00:10:23] ✔️  Concluído: deadbot_backup_20260304_001011.tar.gz
+[04/03/2026 00:10:23] ───────────────────────────────────────────────

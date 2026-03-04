@@ -606,7 +606,7 @@ async function enviarMensagemParaGrupo(socket, groupJid) {
  * @param {import('@whiskeysockets/baileys').WASocket} socket
  */
 function startMensagemDiariaScheduler(socket) {
-  console.log("[MensagemDiaria] 💌 Agendador de mensagem diária iniciado!");
+  console.log("[MensagemDiaria] 💌 Sistema iniciado!");
 
   let alreadySentToday = false;
   let lastDay = null;

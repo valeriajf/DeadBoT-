@@ -27,7 +27,7 @@ exports.menuMessage = (groupJid) => {
 ╭━━⪩ DONO ⪨━━
 
  • ${prefix}anti-pv (1/0)
- • ${prefix}backup
+ • ${prefix}backup (1/0)
  • ${prefix}exec
  • ${prefix}get-id
  • ${prefix}off
@@ -35,6 +35,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}reg-sistema
  • ${prefix}resetar-agendamento-global
  • ${prefix}restart
+ • ${prefix}set-menu-gif
  • ${prefix}set-menu-image
  • ${prefix}set-prefix
  • ${prefix}status-sistema

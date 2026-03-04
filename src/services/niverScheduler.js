@@ -112,7 +112,7 @@ async function checkAndSendBirthdays(socket) {
  * @param {import('@whiskeysockets/baileys').WASocket} socket
  */
 function startNiverScheduler(socket) {
-  console.log("[NiverScheduler] 🎂 Agendador de aniversários iniciado!");
+  console.log("[NiverScheduler] 🎂 Sistema iniciado!");
 
   let alreadySentToday = false;
   let lastDay = new Date().getDate();

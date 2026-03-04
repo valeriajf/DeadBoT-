@@ -30,6 +30,7 @@ const RESTRICTED_MESSAGES_FILE = "restricted-messages";
 const WELCOME_GROUPS_FILE = "welcome-groups";
 const WELCOME6_FILE = "welcome6";
 const WELCOME7_FILE = "welcome7";
+const WELCOME8_FILE = "welcome8";
 const X9_GROUPS_FILE = "x9-monitor-groups";
 const X9_LOGS_FILE = "x9-logs";
 
@@ -499,6 +500,61 @@ exports.setWelcome7Caption = (groupId, caption) => {
   if (!welcome7Data[groupId]) welcome7Data[groupId] = {};
   welcome7Data[groupId].caption = caption;
   writeJSON(filename, welcome7Data, {});
+};
+
+// ============================================
+// ============================================
+// WELCOME8
+// ============================================
+
+exports.isActiveWelcome8Group = (groupId) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  return welcome8Data[groupId]?.active || false;
+};
+
+exports.activateWelcome8Group = (groupId, groupName) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  if (!welcome8Data[groupId]) welcome8Data[groupId] = {};
+  welcome8Data[groupId].active = true;
+  if (groupName) welcome8Data[groupId].groupName = groupName;
+  writeJSON(filename, welcome8Data, {});
+};
+
+exports.deactivateWelcome8Group = (groupId) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  if (welcome8Data[groupId]) welcome8Data[groupId].active = false;
+  writeJSON(filename, welcome8Data, {});
+};
+
+exports.getWelcome8Photo = (groupId) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  return welcome8Data[groupId]?.photoPath || null;
+};
+
+exports.setWelcome8Photo = (groupId, photoPath) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  if (!welcome8Data[groupId]) welcome8Data[groupId] = {};
+  welcome8Data[groupId].photoPath = photoPath;
+  writeJSON(filename, welcome8Data, {});
+};
+
+exports.getWelcome8Caption = (groupId) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  return welcome8Data[groupId]?.caption || "Bem-vindo(a), {membro}! 👋";
+};
+
+exports.setWelcome8Caption = (groupId, caption) => {
+  const filename = WELCOME8_FILE;
+  const welcome8Data = readJSON(filename, {});
+  if (!welcome8Data[groupId]) welcome8Data[groupId] = {};
+  welcome8Data[groupId].caption = caption;
+  writeJSON(filename, welcome8Data, {});
 };
 
 // ============================================

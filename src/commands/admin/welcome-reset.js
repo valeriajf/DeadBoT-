@@ -1,9 +1,10 @@
 const { PREFIX } = require(`${BASE_DIR}/config`);
 const { WarningError } = require(`${BASE_DIR}/errors`);
+const { deactivateWelcomeGroup, isActiveWelcomeGroup } = require(`${BASE_DIR}/utils/database`);
 const fs = require('fs');
 const path = require('path');
 
-// Todos os JSONs de welcome — caminho relativo ao arquivo do comando
+// Todos os JSONs de welcome — src/database/
 const WELCOME_DBS = {
   welcome2: path.join(__dirname, '..', '..', 'database', 'welcome2.json'),
   welcome3: path.join(__dirname, '..', '..', 'database', 'welcome3.json'),
@@ -11,6 +12,7 @@ const WELCOME_DBS = {
   welcome5: path.join(__dirname, '..', '..', 'database', 'welcome5.json'),
   welcome6: path.join(__dirname, '..', '..', 'database', 'welcome6.json'),
   welcome7: path.join(__dirname, '..', '..', 'database', 'welcome7.json'),
+  welcome8: path.join(__dirname, '..', '..', 'database', 'welcome8.json'),
 };
 
 function loadJson(filePath) {
@@ -35,6 +37,14 @@ module.exports = {
     const removedFrom = [];
     const wasActive = [];
 
+    // ── WELCOME1 (gerenciado pelo database.js) ──
+    if (isActiveWelcomeGroup(remoteJid)) {
+      wasActive.push('welcome1');
+      deactivateWelcomeGroup(remoteJid);
+      removedFrom.push('welcome1');
+    }
+
+    // ── WELCOME2 ao WELCOME8 (JSONs próprios) ──
     for (const [name, dbPath] of Object.entries(WELCOME_DBS)) {
       const data = loadJson(dbPath);
       if (data[remoteJid]) {
@@ -47,19 +57,19 @@ module.exports = {
 
     if (removedFrom.length === 0) {
       throw new WarningError(
-        "Este grupo nao tem nenhuma configuracao de welcome salva para apagar!"
+        "Este grupo não tem nenhuma configuração de welcome salva para apagar!"
       );
     }
 
     await sendSuccessReact();
 
     const activeList = wasActive.length > 0
-      ? "\n\nEstavam ativos: " + wasActive.join(', ')
+      ? "\n\n⚡ Estavam ativos: " + wasActive.join(', ')
       : '';
 
     await sendReply(
-      "Dados de welcome deste grupo apagados com sucesso!\n\n" +
-      "Removido de: " + removedFrom.join(', ') +
+      "✅ Dados de welcome deste grupo apagados com sucesso!\n\n" +
+      "🗑️ Removido de: " + removedFrom.join(', ') +
       activeList +
       "\n\nPara configurar novamente, use " + PREFIX + "welcome2, " + PREFIX + "welcome3, etc."
     );
