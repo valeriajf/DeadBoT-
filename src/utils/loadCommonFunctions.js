@@ -251,24 +251,17 @@ exports.loadCommonFunctions = ({ socket, webMessage }) => {
   };
 
   const sendStickerFromURL = async (url, quoted = true) => {
-    const quotedObject = quoted
-      ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
-      : {};
-    console.log({
-      remoteJid,
-      data: {
-        sticker: { url },
-      },
-      add: { url, ...quotedObject },
-    });
-    return await socket.sendMessage(
-      remoteJid,
-      {
-        sticker: { url },
-      },
-      { url, ...quotedObject }
-    );
-  };
+  const quotedObject = quoted
+    ? { quoted: JSON.parse(JSON.stringify(webMessage)) }
+    : {};
+  return await socket.sendMessage(
+    remoteJid,
+    {
+      sticker: { url },
+    },
+    { url, ...quotedObject }
+  );
+};
 
   const sendImageFromFile = async (
     file,

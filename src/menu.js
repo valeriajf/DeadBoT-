@@ -124,6 +124,7 @@ exports.menuMessage = (groupJid) => {
  • ${prefix}duelo
  • ${prefix}exemplos-de-mensagens
  • ${prefix}fake-chat
+ • ${prefix}ficha
  • ${prefix}gerar-link
  • ${prefix}get-lid
  • ${prefix}google-search

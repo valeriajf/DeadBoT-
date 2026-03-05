@@ -19,8 +19,8 @@ const STATE_FILE = path.join(BACKUP_DIR, "backup_state.json");
 const MAX_BACKUPS = 4;
 const BACKUP_HOURS = [0, 6, 12, 18];
 
-// Garante que o agendador só inicia uma única vez
-let agendadorIniciado = false;
+// Referência do timeout ativo
+let timeoutAtivo = null;
 
 // JID real do dono capturado quando ele usa o #backup manual
 let ownerJidReal = null;
@@ -77,7 +77,7 @@ function agendarProximoBackup(socket, ownerNumber) {
     `⏰[AutoBackup] Próximo backup: ${proxima.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
   );
 
-  setTimeout(async () => {
+  timeoutAtivo = setTimeout(async () => {
     if (!isBackupAtivo()) {
       console.log("⏸️  [AutoBackup] Backup desativado, pulando horário.");
     } else {
@@ -157,11 +157,11 @@ async function sendBackupToWhatsApp(socket, ownerNumber, info, backupFilePath) {
 
 // ── INICIA O AGENDADOR ─────────────────────────────────────────
 function startAutoBackup(socket, ownerNumber) {
-  if (agendadorIniciado) {
-    console.log("⚠️  [AutoBackup] Agendador já está rodando, ignorando nova chamada.");
-    return;
+  // Cancela agendador anterior se existir
+  if (timeoutAtivo) {
+    clearTimeout(timeoutAtivo);
+    timeoutAtivo = null;
   }
-  agendadorIniciado = true;
 
   const ativo = isBackupAtivo();
   console.log(`📁[AutoBackup] Backup iniciado. Status: ${ativo ? "✅ Ativo" : "⏸️  Inativo"}`);

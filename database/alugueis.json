@@ -59,18 +59,6 @@
     "registradoEm": "2026-02-28T14:48:12.564Z",
     "ativo": true
   },
-  "120363424665581220@g.us": {
-    "id": "L884HTHR",
-    "groupId": "120363424665581220@g.us",
-    "nomeGrupo": "Amizades e figurinhas ❤️👏🏼☺️😉",
-    "quantidade": 4,
-    "tipo": "dias",
-    "duracao": "4 dias",
-    "expira": "04/03/2026, 14:49:23",
-    "expiraTimestamp": 1772635763748,
-    "registradoEm": "2026-02-28T14:49:23.748Z",
-    "ativo": true
-  },
   "120363421275714747@g.us": {
     "id": "KEP1DG9H",
     "groupId": "120363421275714747@g.us",
@@ -117,6 +105,18 @@
     "expira": "02/04/2026, 18:35:35",
     "expiraTimestamp": 1775165735540,
     "registradoEm": "2026-03-03T21:35:35.541Z",
+    "ativo": true
+  },
+  "120363424665581220@g.us": {
+    "id": "1WZC71RS",
+    "groupId": "120363424665581220@g.us",
+    "nomeGrupo": "Amizades e figurinhas ❤️👏🏼☺️😉",
+    "quantidade": 30,
+    "tipo": "dias",
+    "duracao": "30 dias",
+    "expira": "03/04/2026, 21:09:24",
+    "expiraTimestamp": 1775261364496,
+    "registradoEm": "2026-03-05T00:09:24.497Z",
     "ativo": true
   }
 }

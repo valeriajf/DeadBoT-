@@ -611,50 +611,80 @@ function startMensagemDiariaScheduler(socket) {
   let alreadySentToday = false;
   let lastDay = null;
 
-  setInterval(async () => {
-    // Sempre usa horário de Brasília (UTC-3) independente do servidor
-    const nowBRT = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
-    const hour = nowBRT.getHours();
-    const minute = nowBRT.getMinutes();
-    const day = nowBRT.getDate();
+  // Aguarda 30s antes de iniciar o intervalo para garantir conexão estável
+  setTimeout(() => {
+    setInterval(async () => {
+      // Sempre usa horário de Brasília (UTC-3) independente do servidor
+      const nowBRT = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      const hour = nowBRT.getHours();
+      const minute = nowBRT.getMinutes();
+      const day = nowBRT.getDate();
 
-    // Resetar controle ao virar o dia (em horário de Brasília)
-    if (day !== lastDay) {
-      alreadySentToday = false;
-      lastDay = day;
-    }
-
-    // Dispara exatamente às 06:00 (Brasília) e só uma vez por dia
-    if (hour === 6 && minute === 0 && !alreadySentToday) {
-      alreadySentToday = true;
-      console.log("[MensagemDiaria] ⏰ São 06:00 (Brasília)! Enviando mensagem diária...");
-
-      try {
-        const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
-        if (!require("node:fs").existsSync(DB_PATH)) return;
-
-        const db = JSON.parse(require("node:fs").readFileSync(DB_PATH, "utf-8"));
-        const gruposAtivos = Object.entries(db)
-          .filter(([, entrada]) => entrada?.ativo === true)
-          .map(([jid, entrada]) => ({ jid, nome: entrada?.nome || "Grupo sem nome" }));
-
-        if (gruposAtivos.length === 0) {
-          console.log("[MensagemDiaria] Nenhum grupo ativo.");
-          return;
-        }
-
-        console.log(`[MensagemDiaria] 📋 ${gruposAtivos.length} grupo(s) ativo(s)...`);
-
-        for (const { jid, nome } of gruposAtivos) {
-          console.log(`[MensagemDiaria] 📤 Enviando para: ${nome} (${jid})`);
-          await enviarMensagemParaGrupo(socket, jid);
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-        }
-      } catch (err) {
-        console.error("[MensagemDiaria] ❌ Erro geral:", err.message);
+      // Inicializa lastDay na primeira execução
+      if (lastDay === null) {
+        lastDay = day;
       }
-    }
-  }, 60 * 1000); // Checa a cada 1 minuto
+
+      // Resetar controle ao virar o dia (em horário de Brasília)
+      if (day !== lastDay) {
+        alreadySentToday = false;
+        lastDay = day;
+      }
+
+      // Dispara exatamente às 06:00 (Brasília) e só uma vez por dia
+      if (hour === 6 && minute === 0 && !alreadySentToday) {
+        alreadySentToday = true;
+        console.log("[MensagemDiaria] ⏰ São 06:00 (Brasília)! Enviando mensagem diária...");
+
+        try {
+          const DB_PATH = path.join(BASE_DIR, "../database/mensagem-diaria.json");
+          if (!require("node:fs").existsSync(DB_PATH)) return;
+
+          const db = JSON.parse(require("node:fs").readFileSync(DB_PATH, "utf-8"));
+          const gruposAtivos = Object.entries(db)
+            .filter(([, entrada]) => entrada?.ativo === true)
+            .map(([jid, entrada]) => ({ jid, nome: entrada?.nome || "Grupo sem nome" }));
+
+          if (gruposAtivos.length === 0) {
+            console.log("[MensagemDiaria] Nenhum grupo ativo.");
+            return;
+          }
+
+          console.log(`[MensagemDiaria] 📋 ${gruposAtivos.length} grupo(s) ativo(s)...`);
+
+          for (const { jid, nome } of gruposAtivos) {
+            console.log(`[MensagemDiaria] 📤 Enviando para: ${nome} (${jid})`);
+
+            // Tenta enviar com até 3 tentativas em caso de Connection Closed
+            let tentativa = 0;
+            let sucesso = false;
+            while (tentativa < 3 && !sucesso) {
+              try {
+                await enviarMensagemParaGrupo(socket, jid);
+                sucesso = true;
+              } catch (err) {
+                tentativa++;
+                console.warn(`[MensagemDiaria] ⚠️ Tentativa ${tentativa}/3 falhou para ${nome}: ${err.message}`);
+                if (tentativa < 3) {
+                  // Aguarda 5s antes de tentar novamente
+                  await new Promise((resolve) => setTimeout(resolve, 5000));
+                }
+              }
+            }
+
+            if (!sucesso) {
+              console.error(`[MensagemDiaria] ❌ Falhou após 3 tentativas: ${nome} (${jid})`);
+            }
+
+            // Delay entre grupos para não dar rate limit
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        } catch (err) {
+          console.error("[MensagemDiaria] ❌ Erro geral:", err.message);
+        }
+      }
+    }, 60 * 1000); // Checa a cada 1 minuto
+  }, 30000); // Aguarda 30s para conexão estabilizar antes de iniciar
 }
 
 module.exports = {
