@@ -52,11 +52,14 @@ exports.load = (socket) => {
     }
   }, 5000);
 
-  // 💌 Inicia o sistema de mensagem diária automática (08:00h)
+  // 💌 Inicia o sistema de mensagem diária automática (06:00h Brasília)
+  // startMensagemDiariaScheduler: inicia o scheduler na primeira vez
+  // updateMensagemDiariaSocket: atualiza o socket após reconexões (evita Connection Closed)
   setTimeout(() => {
     try {
-      const { startMensagemDiariaScheduler } = require(`${BASE_DIR}/services/mensagemDiariaScheduler`);
-      startMensagemDiariaScheduler(socket);
+      const { startMensagemDiariaScheduler, updateMensagemDiariaSocket } = require(`${BASE_DIR}/services/mensagemDiariaScheduler`);
+      if (startMensagemDiariaScheduler) startMensagemDiariaScheduler(socket);
+      if (updateMensagemDiariaSocket) updateMensagemDiariaSocket(socket);
     } catch (error) {
       console.error('Erro ao inicializar mensagem diária:', error.message);
     }

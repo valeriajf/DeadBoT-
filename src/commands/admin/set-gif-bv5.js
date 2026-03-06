@@ -5,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 const WELCOME5_DB_PATH = path.join(`${BASE_DIR}`, 'database', 'welcome5.json');
-const WELCOME5_IMAGES_DIR = path.join(ASSETS_DIR, 'images');
+// ✅ CORRIGIDO: salva na pasta assets/videos/ em vez de assets/images/
+const WELCOME5_VIDEOS_DIR = path.join(ASSETS_DIR, 'videos');
 
 function loadWelcome5Data() {
   try {
@@ -26,7 +27,6 @@ function saveWelcome5Data(data) {
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }
-    
     fs.writeFileSync(WELCOME5_DB_PATH, JSON.stringify(data, null, 2), 'utf8');
   } catch (error) {
     console.error('Erro ao salvar welcome5.json:', error);
@@ -62,10 +62,6 @@ module.exports = {
     "definir-gif-bv5",
   ],
   usage: `${PREFIX}set-gif-bv5 (responda a um GIF)`,
-  /**
-   * @param {CommandHandleProps} props
-   * @returns {Promise<void>}
-   */
   handle: async ({ 
     isVideo,
     isImage,
@@ -93,13 +89,19 @@ module.exports = {
       if (!videoContent && !imageContent) {
         throw new InvalidParameterError('Mídia não encontrada na mensagem citada!');
       }
+
+      // ✅ CORRIGIDO: garante que a pasta videos existe
+      if (!fs.existsSync(WELCOME5_VIDEOS_DIR)) {
+        fs.mkdirSync(WELCOME5_VIDEOS_DIR, { recursive: true });
+      }
       
       const groupIdClean = remoteJid.replace('@g.us', '').substring(0, 15);
       const timestamp = Date.now();
       const extension = isVideo ? 'mp4' : 'gif';
       const tempFileName = `welcome5-temp-${timestamp}`;
       const fileName = `welcome5-${groupIdClean}-${timestamp}.${extension}`;
-      const fullPath = path.join(WELCOME5_IMAGES_DIR, fileName);
+      // ✅ CORRIGIDO: salva em assets/videos/
+      const fullPath = path.join(WELCOME5_VIDEOS_DIR, fileName);
 
       const tempPath = await download(
         webMessage, 
@@ -112,15 +114,18 @@ module.exports = {
         throw new Error('Falha ao baixar o GIF');
       }
 
+      // Remove GIF antigo se existir
       const data = loadWelcome5Data();
       if (data[remoteJid]?.gifFileName) {
-        const oldPath = path.join(WELCOME5_IMAGES_DIR, data[remoteJid].gifFileName);
+        const oldPath = path.join(WELCOME5_VIDEOS_DIR, data[remoteJid].gifFileName);
         if (fs.existsSync(oldPath)) {
           fs.unlinkSync(oldPath);
         }
       }
 
-      fs.renameSync(tempPath, fullPath);
+      // ✅ CORRIGIDO: usa copyFileSync + unlinkSync para evitar erro cross-partition
+      fs.copyFileSync(tempPath, fullPath);
+      fs.unlinkSync(tempPath);
 
       setGifFile(remoteJid, fileName);
       await sendSuccessReact();
@@ -139,7 +144,6 @@ module.exports = {
 
     } catch (error) {
       console.error('[SET-GIF-BV5] Erro:', error);
-      
       await sendErrorReply(
         `Erro ao processar o GIF!\n\n` +
         `${error.message}\n\n` +

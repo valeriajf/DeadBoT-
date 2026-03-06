@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const WELCOME5_DB_PATH = path.join(__dirname, '..', 'database', 'welcome5.json');
-const WELCOME5_IMAGES_DIR = path.join(__dirname, '..', '..', 'assets', 'images');
+const WELCOME5_VIDEOS_DIR = path.join(__dirname, '..', '..', 'assets', 'videos');
 
 function loadWelcome5Data() {
   try {
@@ -34,7 +34,6 @@ function getGifFileName(groupId) {
   return data[groupId]?.gifFileName || null;
 }
 
-// ✅ NOVO: atualiza o nome do grupo no JSON sempre que o welcome dispara
 function updateGroupName(groupId, groupName) {
   const data = loadWelcome5Data();
   if (data[groupId] && groupName) {
@@ -55,7 +54,6 @@ async function handleWelcome5NewMember({
   try {
     if (!isActiveWelcome5Group(groupId)) return;
 
-    // ✅ Auto-corrige o nome do grupo no JSON
     updateGroupName(groupId, groupName);
 
     const customMessage = getCustomWelcome5Message(groupId);
@@ -71,7 +69,8 @@ async function handleWelcome5NewMember({
       return;
     }
 
-    const fullPath = path.join(WELCOME5_IMAGES_DIR, gifFileName);
+    // ✅ CORRIGIDO: busca na pasta assets/videos/
+    const fullPath = path.join(WELCOME5_VIDEOS_DIR, gifFileName);
 
     if (!fs.existsSync(fullPath)) {
       console.error('[WELCOME5] Arquivo não encontrado:', fullPath);

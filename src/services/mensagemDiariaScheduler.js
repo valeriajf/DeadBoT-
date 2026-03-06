@@ -605,16 +605,29 @@ async function enviarMensagemParaGrupo(socket, groupJid) {
  * Verifica se são 06:00h (Brasília) a cada minuto e envia para todos os grupos ativos.
  * @param {import('@whiskeysockets/baileys').WASocket} socket
  */
-// Flag global — garante que o scheduler só roda UMA vez mesmo com reconexões
+// Referência global ao socket — atualizada a cada reconexão
+let _socketAtual = null;
 let _schedulerIniciado = false;
 
+/**
+ * Atualiza o socket usado pelo scheduler após reconexão.
+ * Chamado pelo loader a cada vez que o bot reconecta.
+ * @param {import('@whiskeysockets/baileys').WASocket} socket
+ */
+function updateMensagemDiariaSocket(socket) {
+  _socketAtual = socket;
+  console.log("[MensagemDiaria] 🔄 Socket atualizado após reconexão.");
+}
+
 function startMensagemDiariaScheduler(socket) {
+  _socketAtual = socket;
+
   if (_schedulerIniciado) {
-    console.log("[MensagemDiaria] ⚠️ Scheduler já está rodando, ignorando nova chamada.");
+    console.log("[MensagemDiaria] ⚠️ Scheduler já rodando, apenas atualizando socket.");
     return;
   }
   _schedulerIniciado = true;
-  console.log("[MensagemDiaria] 💌 Sistema iniciado!");
+  console.log("[MensagemDiaria] 💌 Agendador de mensagem diária iniciado!");
 
   let alreadySentToday = false;
   let lastDay = null;
@@ -668,14 +681,15 @@ function startMensagemDiariaScheduler(socket) {
             let sucesso = false;
             while (tentativa < 3 && !sucesso) {
               try {
-                await enviarMensagemParaGrupo(socket, jid);
+                // Usa sempre _socketAtual — garantido atualizado após reconexões
+                await enviarMensagemParaGrupo(_socketAtual, jid);
                 sucesso = true;
               } catch (err) {
                 tentativa++;
                 console.warn(`[MensagemDiaria] ⚠️ Tentativa ${tentativa}/3 falhou para ${nome}: ${err.message}`);
                 if (tentativa < 3) {
-                  // Aguarda 5s antes de tentar novamente
-                  await new Promise((resolve) => setTimeout(resolve, 5000));
+                  // Aguarda 10s para o socket ter tempo de reconectar
+                  await new Promise((resolve) => setTimeout(resolve, 10000));
                 }
               }
             }
@@ -697,4 +711,5 @@ function startMensagemDiariaScheduler(socket) {
 
 module.exports = {
   startMensagemDiariaScheduler,
+  updateMensagemDiariaSocket,
 };
