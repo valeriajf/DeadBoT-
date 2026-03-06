@@ -1,14 +1,15 @@
-# 🤖 DeadBoT
+# 🤖 Takeshi Bot
 
 ![Takeshi Bot](./assets/images/takeshi-bot.png)
 
-[![Version](https://img.shields.io/badge/Vers%C3%A3o-6.6.3-blue)](https://github.com/guiireal/takeshi-bot)
+[![Version](https://img.shields.io/badge/Vers%C3%A3o-7.7.0-blue)](https://github.com/guiireal/takeshi-bot)
+[![Tests](https://github.com/guiireal/takeshi-bot-private/actions/workflows/test.yml/badge.svg)](https://github.com/guiireal/takeshi-bot-private/actions/workflows/test.yml)
 
 > Base para bots de WhatsApp multifuncional com diversos comandos prontos.
 
-[![Node.js](https://img.shields.io/badge/Node.js-22.19-green?logo=node.js)](https://nodejs.org/en)
+[![Node.js](https://img.shields.io/badge/Node.js-22.22-green?logo=node.js)](https://nodejs.org/en)
 [![Axios](https://img.shields.io/badge/Axios-1.13-blue?logo=axios)](https://axios-http.com/ptbr/docs/intro)
-[![Baileys](https://img.shields.io/badge/Baileys-6.7.20-purple?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
+[![Baileys](https://img.shields.io/badge/Baileys-7.0.0.9-purple?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
 [![FFMPEG](https://img.shields.io/badge/FFMPEG-Latest-orange?logo=ffmpeg)](https://ffmpeg.org/)
 [![Spider X API](https://img.shields.io/badge/Spider_X-API-green?logo=api)](https://api.spiderx.com.br)
 
@@ -20,33 +21,36 @@
 
 ## 📋 Sumário
 
-1. [Idiomas disponíveis](#-acesse-o-takeshi-bot-em-outros-idiomas)
-2. [Atenção - suporte](#-atenção)
-3. [Sobre o projeto](#sobre-este-projeto)
-4. Instalação
-   - [Instalação no Termux](#instalação-no-termux)
-   - [Instalação nas principais hosts do Brasil](#instalação-nas-principais-hosts-do-brasil)
-   - [Instalação em VPS (Debian/Ubuntu)](#instalação-em-vps-debianubuntu)
-5. [Configuração de API](#alguns-comandos-necessitam-de-api)
-6. Funcionalidades
-   - [Funcionalidades gerais](#funcionalidades-gerais)
-   - [Funcionalidades de envio](#funcionalidades-de-envio-exemplos)
-7. [Auto responder](#auto-responder)
+1. [🌐 Idiomas Disponíveis](#-acesse-o-takeshi-bot-em-outros-idiomas)
+2. [⚠️ Atenção](#-atenção)
+3. [📖 Sobre o Projeto](#sobre-este-projeto)
+4. [🚀 Instalação](#instalação-no-termux)
+    - [No Termux](#instalação-no-termux)
+    - [Nas principais hosts do Brasil](#instalação-nas-principais-hosts-do-brasil)
+    - [Em VPS (Debian/Ubuntu)](#instalação-em-vps-debianubuntu)
+5. [📊 Diagrama de conexão](#diagrama-de-conexão)
+6. [⚙️ Alguns comandos necessitam de API](#alguns-comandos-necessitam-de-api)
+7. [🛠️ Funcionalidades](#funcionalidades-gerais)
+    - [Funcionalidades gerais](#funcionalidades-gerais)
+    - [Funcionalidades de envio (Exemplos)](#funcionalidades-de-envio-exemplos)
+8. [🤖 Auto responder](#auto-responder)
     - [Menu do bot](#onde-fica-o-menu-do-bot)
     - [Mensagens de boas vindas](#onde-modifico-a-mensagem-de-boas-vindas-e-quando-alguém-sai-do-grupo)
-8. [Implementação técnica](#implementação-técnica-dos-exemplos)
-9. [Estrutura de pastas](#estrutura-de-pastas)
-10. [Erros comuns](#erros-comuns)
-11. [Canal do YouTube](#inscreva-se-no-canal)
-12. [Contribuindo com o projeto](#contribuindo-com-o-projeto)
-13. [Licença](#licença)
-14. [Disclaimer](#-disclaimer)
+9. [📊 Diagrama de como os comandos funcionam](#diagrama-de-como-os-comandos-funcionam)
+10. [📊 Diagrama de como funcionam os middlewares](#diagrama-de-como-funcionam-os-middlewares-interceptadores-de-recepção-e-saída)
+11. [💻 Custom Middleware - Personalize o bot sem modificar arquivos principais](#custom-middleware---personalize-o-bot-sem-modificar-arquivos-principais)
+12. [🛠️ Implementação técnica dos exemplos](#implementação-técnica-dos-exemplos)
+13. [📁 Estrutura de pastas](#estrutura-de-pastas)
+14. [🔄 Atualizar o bot](#atualizar-o-bot)
+15. [🧪 Testes](#testes)
+16. [❓ Erros comuns](#erros-comuns)
+17. [📺 Inscreva-se no canal](#inscreva-se-no-canal)
+18. [🤝 Contribuindo com o projeto](#contribuindo-com-o-projeto)
+19. [⚖️ Licença e Disclaimer](#licença)
 
 ## 🌐 Acesse o Takeshi Bot em outros idiomas
 
-- 🇺🇸 [**English version**](https://github.com/guiireal/takeshi-bot-english)
 - 🇪🇸 [**Versión en Español**](https://github.com/guiireal/takeshi-bot-espanol)
-- 🇮🇩 [**Versi Bahasa Indonesia**](https://github.com/guiireal/takeshi-bot-bahasa-indonesia)
 
 ## ⚠ Atenção
 
@@ -94,13 +98,13 @@ cd /sdcard
 4 - Clone o repositório.
 
 ```sh
-git clone https://github.com/valeriajf/DeadBoT-.git
+git clone https://github.com/guiireal/takeshi-bot.git
 ```
 
 5 - Entre na pasta que foi clonada.
 
 ```sh
-cd DeadBoT-
+cd takeshi-bot
 ```
 
 6 - Habilite permissões de leitura e escrita (faça apenas 1x esse passo).
@@ -119,46 +123,30 @@ npm start
 
 9 - Informe o código que aparece no termux, no seu WhatsApp, [assista aqui, caso não encontre essa opção](https://youtu.be/6zr2NYIYIyc?t=5395).
 
-10 - Aqui você pode configurar de duas formas (10.1 ou 10.2):
-
-10.1 - Primeira forma: aguarde 10 segundos, depois digite `CTRL + C` para parar o bot.
+10 - Aguarde 10 segundos, depois digite `CTRL + C` para parar o bot.
 
 Depois, Configure o arquivo `config.js` que está dentro da pasta `src`.
 
 ```js
-// Prefixo dos comandos
-exports.PREFIX = "/";
+// Prefixo padrão dos comandos.
+export const PREFIX = "/";
 
 // Emoji do bot (mude se preferir).
-exports.BOT_EMOJI = "🤖";
+export const BOT_EMOJI = "🤖";
 
 // Nome do bot (mude se preferir).
-exports.BOT_NAME = "Takeshi Bot";
+export const BOT_NAME = "Takeshi Bot";
 
-// Número do bot. Coloque o número do bot
-// (apenas números, exatamente como está no WhatsApp).
-// Se o seu DDD não for de SP ou do Rio, não coloque o 9 antes do número.
-exports.BOT_NUMBER = "558112345678";
-
-// Número do dono do bot. Coloque o número do dono do bot
-// (apenas números, exatamente como está no WhatsApp).
-// Se o seu DDD não for de SP ou do Rio, não coloque o 9 antes do número.
-exports.OWNER_NUMBER = "5521950502020";
+// LID do bot.
+// Para obter o LID do bot, use o comando <prefixo>lid respondendo em cima de uma mensagem do número do bot
+// Troque o <prefixo> pelo prefixo do bot (ex: /lid).
+export const BOT_LID = "12345678901234567890@lid";
 
 // LID do dono do bot.
-// Para obter o LID do dono do bot, use o comando <prefixo>get-lid @marca ou +telefone do dono.
-exports.OWNER_LID = "219999999999999@lid";
+// Para obter o LID do dono do bot, use o comando <prefixo>meu-lid
+// Troque o <prefixo> pelo prefixo do bot (ex: /meu-lid).
+export const OWNER_LID = "12345678901234567890@lid";
 ```
-
-10.2 - Segunda forma: configure o número do dono do bot e número do bot pelo próprio WhatsApp, com os comandos:
-
-`/numero-dono +55 11 99999999`
-
-e
-
-`/numero-bot +55 11 88888888`
-
-Lembre-se de trocar os números acima pelos seus números, obviamente e tbm ver se o seu prefixo é a barra /.
 
 11 - Inicie o bot novamente.
 
@@ -172,15 +160,20 @@ As principais hosts já oferecem o Takeshi como **bot padrão**, não sendo nece
 
 **Hosts suportadas**:
 
-| Bronxys | Nexfuture |
-|---------|-----------|
-| [Grupo oficial](https://chat.whatsapp.com/J5OewHvweK1Kf7RGXAwIYM) | [Grupo oficial](https://chat.whatsapp.com/Fl5FzZQC00J5CZp07AZVwQ?mode=r_c) |
-| [![Bronxys](./assets/images/bronxys.png)](https://bronxyshost.com/) | [![Nexfuture](./assets/images/nexfuture.png)](https://nexfuture.com.br/) |
+| Bronxys | Nexfuture | Speed Cloud |
+|---------|-----------|-------------|
+| [Grupo oficial](https://chat.whatsapp.com/J5OewHvweK1Kf7RGXAwIYM) | [Grupo oficial](https://chat.whatsapp.com/Fl5FzZQC00J5CZp07AZVwQ?mode=r_c) | [Grupo oficial](https://chat.whatsapp.com/HsZDn6DJrx34z5lbNbNB2M) |
+| [![Bronxys](./assets/images/bronxys.png)](https://bronxyshost.com/) | [![Nexfuture](./assets/images/nexfuture.png)](https://nexfuture.com.br/) | [![Speed Cloud](./assets/images/speed-cloud.png)](https://speedhosting.cloud/) |
 
-| Speed Cloud | Bores Host |
-|-------------| ------------ |
-| [Grupo oficial](https://chat.whatsapp.com/HsZDn6DJrx34z5lbNbNB2M) | [Grupo oficial](https://chat.whatsapp.com/Ho2Zs63uKWuFwBwUdjV0cU) |
-| [![Speed Cloud](./assets/images/speed-cloud.png)](https://speedhosting.cloud/) | [![Bores Host](./assets/images/bores-host.png)](https://loja.botbores.shop/) |
+| TED Host | Nodz Host |
+|----------|-----------|
+| [Grupo oficial](https://chat.whatsapp.com/DVDE1TCtHrKFatUKrlepjZ) | [Grupo oficial](https://chat.whatsapp.com/I5d5tCyZsV4J7Cjn51IkbV) |
+| [![TED Host](./assets/images/ted-host.png)](https://loja.tedhost.com.br/) | [![Nodz Host](./assets/images/nodz.png)](loja.nodzhostinger.com.br) |
+
+| Host Cloud | Cebolinha Host |
+|------------|----------------|
+| [Grupo oficial](https://chat.whatsapp.com/Kh1xWK2nbe0BrPOC5gvo7q) | [Grupo oficial](https://chat.whatsapp.com/CCf2Pw9guan12orwGg0TqC?mode=gi_t) |
+| [![Host Cloud](./assets/images/host-cloud.png)](https://hostcloud.space/) | [![Cebolinha Host](./assets/images/cebolinha-host.jpeg)](https://chat.whatsapp.com/CCf2Pw9guan12orwGg0TqC?mode=gi_t) |
 
 ## Instalação em VPS (Debian/Ubuntu)
 
@@ -303,44 +296,30 @@ pm2 start npm --name "takeshi-bot" -- start
 
 ![tutorial-vps-8](./assets/images/tutorial-vps-8.png)
 
-23 - Aqui você pode configurar de duas formas (23.1 ou 23.2):
-
-23.1 - Primeira forma: aguarde 10 segundos, depois digite `CTRL + C` para parar o bot.
+23 - Aguarde 10 segundos, depois digite `CTRL + C` para parar o bot.
 
 Depois, Configure o arquivo `config.js` que está dentro da pasta `src`.
 
 ```js
-// Prefixo dos comandos
-exports.PREFIX = "/";
+// Prefixo padrão dos comandos.
+export const PREFIX = "/";
 
 // Emoji do bot (mude se preferir).
-exports.BOT_EMOJI = "🤖";
+export const BOT_EMOJI = "🤖";
 
 // Nome do bot (mude se preferir).
-exports.BOT_NAME = "Takeshi Bot";
+export const BOT_NAME = "Takeshi Bot";
 
-// Número do bot. Coloque o número do bot
-// (apenas números, exatamente como está no WhatsApp).
-// Se o seu DDD não for de SP ou do Rio, não coloque o 9 antes do número.
-exports.BOT_NUMBER = "558112345678";
+// LID do bot (no caso, o que você rodará o bot).
+// Para obter o LID do bot, use o comando <prefixo>lid respondendo em cima de uma mensagem do número do bot
+// Troque o <prefixo> pelo prefixo do bot (ex: /lid).
+export const BOT_LID = "12345678901234567890@lid";
 
-// Número do dono do bot. Coloque o número do dono do bot
-// (apenas números, exatamente como está no WhatsApp).
-// Se o seu DDD não for de SP ou do Rio, não coloque o 9 antes do número.
-exports.OWNER_NUMBER = "5521950502020";
-
-// LID do dono do bot.
-// Para obter o LID do dono do bot, use o comando <prefixo>get-lid @marca ou +telefone do dono.
-exports.OWNER_LID = "219999999999999@lid";
+// LID do dono do bot (no caso, o seu!).
+// Para obter o LID do dono do bot, use o comando <prefixo>meu-lid
+// Troque o <prefixo> pelo prefixo do bot (ex: /meu-lid).
+export const OWNER_LID = "12345678901234567890@lid";
 ```
-
-23.2 - Segunda forma: configure o número do dono do bot e número do bot pelo próprio WhatsApp, com os comandos:
-
-`/numero-dono +55 11 99999999`
-
-e
-
-`/numero-bot +55 11 88888888`
 
 Lembre-se de trocar os números acima pelos seus números, obviamente e tbm ver se o seu prefixo é a barra /.
 
@@ -348,14 +327,27 @@ Lembre-se de trocar os números acima pelos seus números, obviamente e tbm ver 
 
 ![tutorial-vps-9](./assets/images/tutorial-vps-9.png)
 
+## Diagrama de conexão
+
+[![diagram](https://mermaid.ink/img/pako:eNqdVc1u1DAQfpWpJSSQtqX7k_2JoChse-hh26qtWlTtxZtMs4bEXhxnVVpV4gDcOLQUDgipQnBAiBs3OO6b8AR9BMbJZvu3BYQPVmx_M558M9_4gPkqQOayBJ-mKH1cFDzUPO5KoMFTo2Qa91Dn6wHXRvhiwKWBRRwCT-Ds9OjLr-evz06Pf8KW8kdfryMfKpMjP7-DTf4Ek76we9eB216OO_4G231uEm8w6MoctqIMghqitveWtj2XYO-fQ1vFCtTEq68k-oaDVBMHDwoPt27B_cmAtfXlztLyugdbSzsX9nOoJiegw97tSnW-BJWanRznTn54UzSv3sKaFjEKzWGI-6BVwGVgo-sV_2rH-ReZzi4sEBEuyEEMiSEmzk9pn04J40KXLYpQ2BtBjn7EqBUEmVd7NNWf45TLrWJMuzv3bgNfwwDBH30PREhu0eYDeYzSqHP0tjdbeF5Ho7TkE4vbuOdCuVKtzTr1RvPO1PjPTk-OoKMSoyd2F2ymhXeJXxe8Hlmep9Sm18cojbi-19N3F7ZGHwFj4sKzwUd9lVBdZIUQqKTLMkw7ElTfOWx8qKHAjzETloufi7OYA3Vz9iyDvz68hPbYggpwV-iYbC4EeYnIMY82hr3RJ5VJTIt9HvCZq-RlwA0eDYk2TWmSvuAi-TNfmY2N6OHqJrRXV5bam97i6kz2f16oiEeMEIZ8opWcQhtFzEmIWeoREowHGvMLUAY3aWj05tFyx9uwIlra-IOMxgrKtPQXGZ28gBVqAgM9-r4nYvoiLWHyv_rJueZaY3iJREgsrck0QYyrA65QMlUNWeqLUpv5x8ysra-ubI5TYlvjY1u-iaFZyUhIzA4QeJhynbcQCiDhIU0XEgJTByuxUIuAuUanWGLUK2Jul-zAWnSZ6WOMXWYbR4C7PI2M7SCHZEYNeEepuLDUKg37zN3lUUKrdBBwUzwNk11NgaBuq1Qa5pZbzUrmhbkHbI_WzfpcrdGq1eabTtNpVSrVEnvG3Mb8XKPpVKpVakx1p1FvHpbYfnZvea5RL9drjfK8UynXW80Sw0CQNjr5-5Q9U4e_ARz-Fnw?type=png)](https://mermaid.live/edit#pako:eNqdVc1u1DAQfpWpJSSQtqX7k_2JoChse-hh26qtWlTtxZtMs4bEXhxnVVpV4gDcOLQUDgipQnBAiBs3OO6b8AR9BMbJZvu3BYQPVmx_M558M9_4gPkqQOayBJ-mKH1cFDzUPO5KoMFTo2Qa91Dn6wHXRvhiwKWBRRwCT-Ds9OjLr-evz06Pf8KW8kdfryMfKpMjP7-DTf4Ek76we9eB216OO_4G231uEm8w6MoctqIMghqitveWtj2XYO-fQ1vFCtTEq68k-oaDVBMHDwoPt27B_cmAtfXlztLyugdbSzsX9nOoJiegw97tSnW-BJWanRznTn54UzSv3sKaFjEKzWGI-6BVwGVgo-sV_2rH-ReZzi4sEBEuyEEMiSEmzk9pn04J40KXLYpQ2BtBjn7EqBUEmVd7NNWf45TLrWJMuzv3bgNfwwDBH30PREhu0eYDeYzSqHP0tjdbeF5Ho7TkE4vbuOdCuVKtzTr1RvPO1PjPTk-OoKMSoyd2F2ymhXeJXxe8Hlmep9Sm18cojbi-19N3F7ZGHwFj4sKzwUd9lVBdZIUQqKTLMkw7ElTfOWx8qKHAjzETloufi7OYA3Vz9iyDvz68hPbYggpwV-iYbC4EeYnIMY82hr3RJ5VJTIt9HvCZq-RlwA0eDYk2TWmSvuAi-TNfmY2N6OHqJrRXV5bam97i6kz2f16oiEeMEIZ8opWcQhtFzEmIWeoREowHGvMLUAY3aWj05tFyx9uwIlra-IOMxgrKtPQXGZ28gBVqAgM9-r4nYvoiLWHyv_rJueZaY3iJREgsrck0QYyrA65QMlUNWeqLUpv5x8ysra-ubI5TYlvjY1u-iaFZyUhIzA4QeJhynbcQCiDhIU0XEgJTByuxUIuAuUanWGLUK2Jul-zAWnSZ6WOMXWYbR4C7PI2M7SCHZEYNeEepuLDUKg37zN3lUUKrdBBwUzwNk11NgaBuq1Qa5pZbzUrmhbkHbI_WzfpcrdGq1eabTtNpVSrVEnvG3Mb8XKPpVKpVakx1p1FvHpbYfnZvea5RL9drjfK8UynXW80Sw0CQNjr5-5Q9U4e_ARz-Fnw)
+
 ## Alguns comandos necessitam de API
 
 Edite o arquivo `config.js` que está dentro da pasta `src` e cole sua api key da plataforma Spider X API, conforme o código abaixo.
 Para obter seu token, acesse: [https://api.spiderx.com.br](https://api.spiderx.com.br) e crie sua conta gratuitamente!
 
 ```js
-exports.SPIDER_API_TOKEN = "seu_token_aqui";
+export const SPIDER_API_TOKEN = "seu_token_aqui";
 ```
+
+Para comandos de **canvas** e **gerar-link**, é necessário configurar a API do **Linker**:
+
+```js
+export const LINKER_BASE_URL = "https://linker.devgui.dev/api";
+export const LINKER_API_KEY = "seu_token_aqui";
+```
+
+Obtenha sua API Key em: [https://linker.devgui.dev](https://linker.devgui.dev)
 
 ## Funcionalidades gerais
 
@@ -368,6 +360,7 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 | Modificar o prefixo por grupo | Dono | ❌ |
 | Obter o ID do grupo | Dono | ❌ |
 | Abrir grupo | Admin | ❌ |
+| Advertir | Admin | ❌ |
 | Agendar mensagem | Admin | ❌ |
 | Anti audio | Admin | ❌ |
 | Anti documento | Admin | ❌ |
@@ -378,6 +371,7 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 | Anti sticker | Admin | ❌ |
 | Anti video | Admin | ❌ |
 | Banir membros | Admin | ❌ |
+| Bloquear número no WhatsApp | Admin | ❌ |
 | Excluir mensagens | Admin | ❌ |
 | Fechar grupo | Admin | ❌ |
 | Gestão de mensagens do auto-responder | Admin | ❌ |
@@ -389,6 +383,8 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 | Mudar nome do grupo | Admin | ❌ |
 | Mute/unmute | Admin | ❌ |
 | Obter o link do grupo | Admin | ❌ |
+| Reativar advertência | Admin | ❌ |
+| Remover advertência | Admin | ❌ |
 | Revelar | Admin | ❌ |
 | Somente admins | Admin | ❌ |
 | Ver saldo | Admin | ❌ |
@@ -400,16 +396,21 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 | Canvas RIP | Membro | ✅ |
 | Comandos de diversão/brincadeiras | Membro |❌ |
 | Espelhar imagem | Membro | ❌ |
+| Facebook download | Membro | ✅ |
 | Fake chat | Membro | ❌ |
+| Figurinha animada para GIF | Membro | ✅ |
 | Figurinha de texto animada | Membro | ✅ |
 | Geração de imagens com IA | Membro | ✅ |
 | Gerar link | Membro | ❌ |
 | Google Gemini | Membro | ✅ |
 | Google search | Membro | ✅ |
+| GPT-5 Mini | Membro | ✅ |
 | Imagem com contraste | Membro | ❌ |
 | Imagem IA Flux | Membro | ✅ |
 | Imagem pixelada | Membro | ❌ |
 | Imagem preto/branco | Membro | ❌ |
+| Informações de um comando | Membro | ❌ |
+| Instagram download | Membro | ✅ |
 | Ping | Membro | ❌ |
 | Play áudio | Membro | ✅ |
 | Play vídeo | Membro | ✅ |
@@ -459,7 +460,7 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 ### 🎭 Exemplos de sticker
 
 | Comando | Função | Descrição | Características |
-|---------|---------|-----------|-----------------|
+|---------|--------|-----------|-----------------|
 | `/enviar-sticker-de-arquivo` | Enviar sticker de arquivo | Demonstra envio de arquivos sticker do armazenamento local | Formato WebP |
 | `/enviar-sticker-de-url` | Enviar sticker de URL | Demonstra envio de arquivos sticker de URLs externas | Formato WebP |
 | `/enviar-sticker-de-buffer` | Enviar sticker de buffer | Demonstra envio de arquivos sticker de buffers de memória | Buffer de arquivo ou URL |
@@ -467,7 +468,7 @@ exports.SPIDER_API_TOKEN = "seu_token_aqui";
 ### 📊 Exemplos de enquete/votação
 
 | Comando | Função | Descrição | Características |
-|---------|---------|-----------|-----------------|
+|---------|--------|-----------|-----------------|
 | `/enviar-enquete` | Enviar enquete | Demonstra como criar e enviar enquetes/votações em grupos | Suporte a escolha única ou múltipla escolha |
 
 ### 📍 Exemplos de localização
@@ -534,6 +535,17 @@ O Takeshi Bot possui um auto-responder embutido, edite o arquivo em `./database/
 ]
 ```
 
+## Auto figurinha / Auto sticker
+
+O Takeshi Bot possui um recurso de auto-figurinha que converte automaticamente imagens e vídeos enviados em figurinhas:
+
+| Comando | Função | Descrição |
+|---------|---------|-----------|
+| `/auto-stick 1` | Ativar | Ativa a conversão automática no grupo |
+| `/auto-stick 0` | Desativar | Desativa a conversão automática no grupo |
+
+**Nota:** O recurso suporta imagens e vídeos de até 10 segundos.
+
 ## Onde fica o menu do bot?
 
 O menu do bot fica dentro da pasta `src` no arquivo chamado `menu.js`
@@ -541,6 +553,95 @@ O menu do bot fica dentro da pasta `src` no arquivo chamado `menu.js`
 ## Onde modifico a mensagem de boas vindas e quando alguém sai do grupo?
 
 As mensagens ficam dentro da pasta `src` no arquivo chamado `messages.js`
+
+## Diagrama de como os comandos funcionam
+
+[![diagram](https://mermaid.ink/img/pako:eNqNVltrG0cU_isnCwGJqJJ2tZKtpTE4GwUMteVYlinFL6Pd0Xpb7Y48F9eJMeRCX_pSSqEPJRDSBAp9K6HQ9_0n_gPtT-iZ2YscW7KiBzGz831nznduuxdWwEJqeZagp4qmAX0ck4iT5DgF_BElWaqSCeX5fk64jIN4TlIJY0E5EAH_vf35A25U9o7H7DbsEZM56sOvcEi-o-Ik1s9uA_0kzIG_vIJtfqriMwYhA58lJA3RcM7YY5ICO8Or9f0NJHlI-e0FPB1v7z0ewtHQz36EXVxvw3gX_KFeDkv2_fvwsPrBeDTOXh7sDGGwd7Szfe0kB3MaSODRpOZ02g1wXP3X7dbzwyW-oCoP7H__-enq9fsqIEDTs5hAUKoouZrxxdaW4bQSmqplZs2pDiC6QicUCCBSkIgW6aFpuFzZo-Eh7B8M_cFodJeuQpIRV1_pgFNI0o7gw3gaBwQozDkLFCfAbotbrJBTqjwqqQKNQ8TVHIMjZPYOiMRcfwZnzuk0Pi9ZAeOcSga1Vn0pd_-mf3BsmUBbyxy9GXQltMjE-3LCW1tYky9B8KCFlrQp0WLfp5S3VhySMInTVYcJ1e3UWhOsqzc_wCANWCo5Ux4UJO1-81uxNlRnLMj-BEkTmFOexEJk79lniN6vwDAhgpKQQEqwR4UkeRyuXvwOuXJ4CCL7iP2ZmiadMFkBcvUIMAuhj02yK0AhBhGnisxw6nBQ6wq66GMYfD3wx4d31bQp564u7M7Kms7HRqeo68E5DZTUhUIWY2dtTRsT_glJTFN-mpZl1xr8sLqi4JSdLVWo6xvzzRahFhiOAzqfPYOamSIc0WLOMB31TzA7CY6EChPrXbJAEB4JqOG_wjslE9fULUAUEhIL6LYfwFSl2R_Z31Tk_hBxb5kwlFMG4avsY6QLb2HXqPNWRsFugk-weSNSOAsFxbjjNGFX34v5kPRcGqOlYWEQnSb2hp6qBftBDlztpqnuKlJPOEuexDNay-mNnF1fU4EHg9H-cHS49jVh6u-O0tOD3wP32kw1SU1DerPCciROkL8KuXmQVr1_8qFxZFq_el-UBXOvUmc1rIjHoeVJrmgDJyLHzOPWutCQY0ue0IQeWx4uQzolaib1wLxEGr6lv2EsKZk4mKITy5uSmcCdmodElh8P1VOOF1LuM5VKy3PaTs9YsbwL6xz3bq_Z6fW7tuM6G92O7XQb1jPLs-1e0-72-z27t9F3Hdu-bFjPzb120-1vbvZdt9tpu5sbbbRGw1gyvpt_wpgvmcv_AYwQ1RY?type=png)](https://mermaid.live/edit#pako:eNqNVltrG0cU_isnCwGJqJJ2tZKtpTE4GwUMteVYlinFL6Pd0Xpb7Y48F9eJMeRCX_pSSqEPJRDSBAp9K6HQ9_0n_gPtT-iZ2YscW7KiBzGz831nznduuxdWwEJqeZagp4qmAX0ck4iT5DgF_BElWaqSCeX5fk64jIN4TlIJY0E5EAH_vf35A25U9o7H7DbsEZM56sOvcEi-o-Ik1s9uA_0kzIG_vIJtfqriMwYhA58lJA3RcM7YY5ICO8Or9f0NJHlI-e0FPB1v7z0ewtHQz36EXVxvw3gX_KFeDkv2_fvwsPrBeDTOXh7sDGGwd7Szfe0kB3MaSODRpOZ02g1wXP3X7dbzwyW-oCoP7H__-enq9fsqIEDTs5hAUKoouZrxxdaW4bQSmqplZs2pDiC6QicUCCBSkIgW6aFpuFzZo-Eh7B8M_cFodJeuQpIRV1_pgFNI0o7gw3gaBwQozDkLFCfAbotbrJBTqjwqqQKNQ8TVHIMjZPYOiMRcfwZnzuk0Pi9ZAeOcSga1Vn0pd_-mf3BsmUBbyxy9GXQltMjE-3LCW1tYky9B8KCFlrQp0WLfp5S3VhySMInTVYcJ1e3UWhOsqzc_wCANWCo5Ux4UJO1-81uxNlRnLMj-BEkTmFOexEJk79lniN6vwDAhgpKQQEqwR4UkeRyuXvwOuXJ4CCL7iP2ZmiadMFkBcvUIMAuhj02yK0AhBhGnisxw6nBQ6wq66GMYfD3wx4d31bQp564u7M7Kms7HRqeo68E5DZTUhUIWY2dtTRsT_glJTFN-mpZl1xr8sLqi4JSdLVWo6xvzzRahFhiOAzqfPYOamSIc0WLOMB31TzA7CY6EChPrXbJAEB4JqOG_wjslE9fULUAUEhIL6LYfwFSl2R_Z31Tk_hBxb5kwlFMG4avsY6QLb2HXqPNWRsFugk-weSNSOAsFxbjjNGFX34v5kPRcGqOlYWEQnSb2hp6qBftBDlztpqnuKlJPOEuexDNay-mNnF1fU4EHg9H-cHS49jVh6u-O0tOD3wP32kw1SU1DerPCciROkL8KuXmQVr1_8qFxZFq_el-UBXOvUmc1rIjHoeVJrmgDJyLHzOPWutCQY0ue0IQeWx4uQzolaib1wLxEGr6lv2EsKZk4mKITy5uSmcCdmodElh8P1VOOF1LuM5VKy3PaTs9YsbwL6xz3bq_Z6fW7tuM6G92O7XQb1jPLs-1e0-72-z27t9F3Hdu-bFjPzb120-1vbvZdt9tpu5sbbbRGw1gyvpt_wpgvmcv_AYwQ1RY)
+
+## Diagrama de como funcionam os middlewares (interceptadores) de recepção e saída
+
+[![diagram](https://mermaid.ink/img/pako:eNqtld9qE0EUxl_lOFBoIW2TzV8WrU2tFKVJa9uAltycZE_TwexMnJ2NtaXghQqiIPXCC1FELIgXeq3XeZO-gD6Cs7NJtmmTBsG9CDsz5zvn7De_yRyxpvSIuSygRyGJJq1ybCn06wLMg6GWIvQbpOJxB5XmTd5BoaHs-VwABvDn08mPeHQ5aEXqOOT0HezgQwr2eTR3ObAWkOonO4Wq7EqokN9Qst5PWpWaQHZNkK2UiuJdE_3-KdyrlaurG1BeX6v1XlbgdnVnqwwbNdgu3wEzv7ZV29wYpJmZgRvD54IkWYhjFTU1qFZj1smmU-Dkop98fi5enNzT2YfnUG63wt43H0hohSAktFTYkYkyebPK-aUlY4prBsYOKRCW78reFwl4SWjCBsGrpE2DCGbbAM_Vk-G4OueEKxKD-S4XnrGbAt37DKh5Fz28eb2hFpdmm9JH4UkXFh9T2wzMN4q5cTmxrUeS9dMkARcKb1ILwScRYIt88AgaiXhUlDhrhdthI9Bch9y1HR4J09QxnL14C9aneNI6Fc9Wo6a9S-Yl7QzoOXkFdbZCvm1CwqjrcP_B7rU6m9RZstsWV9_iGkFDDRp-ZSKmdkAjbnkUjDXswrefPfv1--cbqEad7eEhiBEBCS8e2JerGI9Ow2TC-3BbzKcT_vH1kPAA-RinJ_C9Rb5JBssVVBzHyKbQbWpNY7tyjq4Ae989nII4HXB9Fd9jEv4z5manO-TxKRs9GXJr179Dbq0fUh57Hlk4FEWAT-a7L48AX7PRfbSF1HyPN7H31SB5ge8xbv1fzCdu_Dr3O6YYejI6WecsmzVtUdtigF2zL6E2mVNAujk3PDnAUqyluMdcrUJKMZ-Uj9GQHUUxdab3yac6c82rR3sYtnXk27GRmctrV0p_oDT_vq195u6hcSPFwo6HenCjDmeVqUjqlgyFZq6TLuVsFuYesQPmZorFhYKTzWSK6Wwpn8s4ZvUJc-cLhYVizsmWSvlC2kk72exxih3awpmFfM4pFLJ5s54pFfMpZljTUlXie91e78d_AUVrgqU?type=png)](https://mermaid.live/edit#pako:eNqtld9qE0EUxl_lOFBoIW2TzV8WrU2tFKVJa9uAltycZE_TwexMnJ2NtaXghQqiIPXCC1FELIgXeq3XeZO-gD6Cs7NJtmmTBsG9CDsz5zvn7De_yRyxpvSIuSygRyGJJq1ybCn06wLMg6GWIvQbpOJxB5XmTd5BoaHs-VwABvDn08mPeHQ5aEXqOOT0HezgQwr2eTR3ObAWkOonO4Wq7EqokN9Qst5PWpWaQHZNkK2UiuJdE_3-KdyrlaurG1BeX6v1XlbgdnVnqwwbNdgu3wEzv7ZV29wYpJmZgRvD54IkWYhjFTU1qFZj1smmU-Dkop98fi5enNzT2YfnUG63wt43H0hohSAktFTYkYkyebPK-aUlY4prBsYOKRCW78reFwl4SWjCBsGrpE2DCGbbAM_Vk-G4OueEKxKD-S4XnrGbAt37DKh5Fz28eb2hFpdmm9JH4UkXFh9T2wzMN4q5cTmxrUeS9dMkARcKb1ILwScRYIt88AgaiXhUlDhrhdthI9Bch9y1HR4J09QxnL14C9aneNI6Fc9Wo6a9S-Yl7QzoOXkFdbZCvm1CwqjrcP_B7rU6m9RZstsWV9_iGkFDDRp-ZSKmdkAjbnkUjDXswrefPfv1--cbqEad7eEhiBEBCS8e2JerGI9Ow2TC-3BbzKcT_vH1kPAA-RinJ_C9Rb5JBssVVBzHyKbQbWpNY7tyjq4Ae989nII4HXB9Fd9jEv4z5manO-TxKRs9GXJr179Dbq0fUh57Hlk4FEWAT-a7L48AX7PRfbSF1HyPN7H31SB5ge8xbv1fzCdu_Dr3O6YYejI6WecsmzVtUdtigF2zL6E2mVNAujk3PDnAUqyluMdcrUJKMZ-Uj9GQHUUxdab3yac6c82rR3sYtnXk27GRmctrV0p_oDT_vq195u6hcSPFwo6HenCjDmeVqUjqlgyFZq6TLuVsFuYesQPmZorFhYKTzWSK6Wwpn8s4ZvUJc-cLhYVizsmWSvlC2kk72exxih3awpmFfM4pFLJ5s54pFfMpZljTUlXie91e78d_AUVrgqU)
+
+## Custom Middleware - Personalize o bot sem modificar arquivos principais
+
+O arquivo `src/middlewares/customMiddleware.js` permite adicionar lógica personalizada sem mexer nos arquivos core do bot.
+
+### Quando usar?
+
+- ✅ Adicionar comportamentos personalizados
+- ✅ Criar logs customizados
+- ✅ Implementar lógica específica por grupo
+- ✅ Reagir a eventos automáticos
+
+### Exemplos práticos
+
+#### Exemplo 1: Reagir automaticamente a mensagens
+
+```javascript
+export async function customMiddleware({ socket, webMessage, type, commonFunctions }) {
+  if (type === "message" && commonFunctions) {
+    const { userMessageText } = commonFunctions;
+    if (userMessageText?.toLowerCase() === "oi") {
+      await socket.sendMessage(webMessage.key.remoteJid, {
+        react: { text: "👋", key: webMessage.key }
+      });
+    }
+  }
+}
+```
+
+#### Exemplo 2: Log quando alguém entra no grupo
+
+```javascript
+export async function customMiddleware({ webMessage, type, action }) {
+  if (type === "participant" && action === "add") {
+    console.log("Novo membro:", webMessage.messageStubParameters[0]);
+  }
+}
+```
+
+#### Exemplo 3: Mensagem personalizada em grupo específico
+
+```javascript
+export async function customMiddleware({ type, action, commonFunctions }) {
+  const grupoVIP = "120363123456789012@g.us";
+  
+  if (type === "participant" && action === "add" && commonFunctions?.remoteJid === grupoVIP) {
+    const { sendReply } = commonFunctions;
+    await sendReply("🎉 Bem-vindo ao grupo VIP!");
+  }
+}
+```
+
+#### Exemplo 4: Usar funções avançadas do bot
+
+```javascript
+export async function customMiddleware({ type, commonFunctions }) {
+  if (type === "message" && commonFunctions) {
+    const {
+      sendReply,
+      sendSuccessReply,
+      args,
+      userMessageText,
+      isImage,
+      downloadImage,
+    } = commonFunctions;
+    
+    // Sua lógica personalizada aqui
+  }
+}
+```
+
+### Parâmetros disponíveis
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|----------|
+| `socket` | Object | Socket do Baileys para enviar mensagens |
+| `webMessage` | Object | Mensagem completa do WhatsApp |
+| `type` | String | "message" ou "participant" |
+| `commonFunctions` | Object/null | Todas as funções do bot (null para eventos de participantes) |
+| `action` | String | "add" ou "remove" (apenas em eventos de participantes) |
+| `data` | String | Dados do participante (apenas em eventos de participantes) |
 
 ## Implementação técnica dos exemplos
 
@@ -663,6 +764,7 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
 
 ## Estrutura de pastas
 
+- 📁 .github ➔ _workflows de CI/CD e arquivo para o agente do copilot_
 - 📁 assets ➔ _arquivos de mídia_
   - 📁 auth ➔ _arquivos da conexão do bot_
   - 📁 images ➔ _arquivos de imagem_
@@ -670,6 +772,7 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
   - 📁 samples ➔ _arquivos de exemplo para testes_
   - 📁 temp ➔ _arquivos temporários_
 - 📁 database ➔ _arquivos de dados_
+- 📁 diagrams ➔ _diagramas de fluxos de dados e execução do Bot_
 - 📁 node_modules ➔ _módulos do Node.js_
 - 📁 src ➔ _código fonte do bot (geralmente você mexerá mais aqui)_
   - 📁 @types ➔ _pasta onde fica as definições de tipos_
@@ -682,6 +785,7 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
   - 📁 errors ➔ _classes de erros usadas nos comandos_
   - 📁 middlewares ➔ _interceptadores de requisições_
   - 📁 services ➔ _serviços diversos_
+  - 📁 test ➔ _testes_
   - 📁 utils ➔ _utilitários_
   - 📝 config.js ➔ _arquivo de configurações do bot_
   - 📝 connection.js ➔ _script de conexão do bot com a biblioteca Baileys_
@@ -690,10 +794,12 @@ Todos os arquivos de exemplo são armazenados em `assets/samples/`:
   - 📝 menu.js ➔ _menu do bot_
   - 📝 messages.js ➔ _arquivos de mensagens de boas vindas e saída_
   - 📝 test.js ➔ _script de testes_
-- 📝 ⚡-cases-estao-aqui.js ➔ _easter egg_
-- 📝 CONTRIBUTING.md ➔ _eguia de contribuição_
-- 📝 index.js ➔ _script ponto de entrada do bot para hospedagem_
 - 📝 .gitignore ➔ _arquivo para não subir certas pastas no GitHub_
+- 📝 ⚡-cases-estao-aqui.js ➔ _easter egg_
+- 📝 AGENTS.md ➔ _arquivo de instruções para IA's_
+- 📝 CLAUDE.md ➔ _arquivo de instruções para a IA Claude_
+- 📝 GEMINI.md ➔ _arquivo de instruções para a IA Gemini_
+- 📝 CONTRIBUTING.md ➔ _guia de contribuição_
 - 📝 LICENSE ➔ _arquivo de licença_
 - 📝 package-lock.json ➔ _arquivo de cache das dependências do bot_
 - 📝 package.json ➔ _arquivo de definição das dependências do bot_

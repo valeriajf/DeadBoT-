@@ -130,38 +130,38 @@ module.exports = {
       // FRASES PÓS-BAN — Deadpool Mode ON (com menção)
       // =============================
       const frasesPosBan = [
-        `💀 *Plot twist!
-${nome} estava tão inativo que o WhatsApp já tinha declarado como peça de museu.
-A roleta só fez o que precisava ser feito. 🔫✨*`,
-        `🎯 *Missão cumprida!
-${nome} passou tanto tempo sem falar que achei que era NPC bugado.
-Atualização concluída: removido com sucesso.*`,
-        `🔫 *A roleta girou...
-E adivinha?
-${nome} perdeu até sem jogar.
-Isso que eu chamo de talento raro. 👏*`,
-        `☠️ *Silêncio absoluto detectado.
-${nome} estava treinando pra ser fantasma no grupo.
-Resultado: promovido a lenda urbana. 👻*`,
-        `🧃 *${nome} ficou tão quieto que achei que estava carregando 1% há três meses.
-A bateria social acabou. Desinstalando...*`,
-        `🎪 *Bem-vindos ao circo!
-Hoje o número principal foi:
-${nome} desaparecendo magicamente.
-Palmas, plateia. 👏*`,
-        `🕵️ *Investigação concluída:
-${nome} tinha 0 mensagens. ZERO.
-Nem um "oi sumida". Isso é dedicação ao silêncio.*`,
-        `💣 *Spoiler alert:
-A roleta não gosta de plantas ornamentais.
-${nome} foi regado demais pela inatividade.*`,
-        `🎮 *Modo difícil ativado.
-${nome} tentou zerar o grupo sem enviar mensagens.
-Conquista desbloqueada: Expulsão Aleatória™*`,
-        `🧠 *Pensei em dar uma segunda chance…
-Mentira.
-A roleta não tem coração.
-${nome} agora faz parte do multiverso dos removidos.*`,
+        `💀 *Plot twist!*
+*${nome} estava tão inativo que o WhatsApp já tinha declarado como peça de museu.*
+*A roleta só fez o que precisava ser feito. 🔫✨*`,
+        `🎯 *Missão cumprida!*
+*${nome} passou tanto tempo sem falar que achei que era NPC bugado.*
+*Atualização concluída: removido com sucesso.*`,
+        `🔫 *A roleta girou...*
+*E adivinha?*
+*${nome} perdeu até sem jogar.*
+*Isso que eu chamo de talento raro. 👏*`,
+        `☠️ *Silêncio absoluto detectado.*
+*${nome} estava treinando pra ser fantasma no grupo.*
+*Resultado: promovido a lenda urbana. 👻*`,
+        `🧃 *${nome} ficou tão quieto que achei que estava carregando 1% há três meses.*
+*A bateria social acabou. Desinstalando...*`,
+        `🎪 *Bem-vindos ao circo!*
+*Hoje o número principal foi:*
+*${nome} desaparecendo magicamente.*
+*Palmas, plateia. 👏*`,
+        `🕵️ *Investigação concluída:*
+*${nome} tinha 0 mensagens. ZERO.*
+*Nem um "oi sumida". Isso é dedicação ao silêncio.*`,
+        `💣 *Spoiler alert:*
+*A roleta não gosta de plantas ornamentais.*
+*${nome} foi regado demais pela inatividade.*`,
+        `🎮 *Modo difícil ativado.*
+*${nome} tentou zerar o grupo sem enviar mensagens.*
+*Conquista desbloqueada: Expulsão Aleatória™*`,
+        `🧠 *Pensei em dar uma segunda chance…*
+*Mentira.*
+*A roleta não tem coração.*
+*${nome} agora faz parte do multiverso dos removidos.*`,
       ];
 
       const atoFinalTexto = atosFinaisEliminado[Math.floor(Math.random() * atosFinaisEliminado.length)];

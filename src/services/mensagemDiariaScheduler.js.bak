@@ -605,16 +605,8 @@ async function enviarMensagemParaGrupo(socket, groupJid) {
  * Verifica se são 06:00h (Brasília) a cada minuto e envia para todos os grupos ativos.
  * @param {import('@whiskeysockets/baileys').WASocket} socket
  */
-// Flag global — garante que o scheduler só roda UMA vez mesmo com reconexões
-let _schedulerIniciado = false;
-
 function startMensagemDiariaScheduler(socket) {
-  if (_schedulerIniciado) {
-    console.log("[MensagemDiaria] ⚠️ Scheduler já está rodando, ignorando nova chamada.");
-    return;
-  }
-  _schedulerIniciado = true;
-  console.log("[MensagemDiaria] 💌 Agendador de mensagem diária iniciado!");
+  console.log("[MensagemDiaria] 💌 Sistema iniciado!");
 
   let alreadySentToday = false;
   let lastDay = null;
