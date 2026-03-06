@@ -1,4 +1,4 @@
-# 🤖 Takeshi Bot
+# 🤖 DeadBoT 
 
 ![Takeshi Bot](./assets/images/takeshi-bot.png)
 
