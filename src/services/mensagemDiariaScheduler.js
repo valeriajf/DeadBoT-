@@ -614,7 +614,7 @@ function startMensagemDiariaScheduler(socket) {
     return;
   }
   _schedulerIniciado = true;
-  console.log("[MensagemDiaria] 💌 Agendador de mensagem diária iniciado!");
+  console.log("[MensagemDiaria] 💌 Sistema iniciado!");
 
   let alreadySentToday = false;
   let lastDay = null;

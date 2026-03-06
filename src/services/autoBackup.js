@@ -146,7 +146,7 @@ async function sendBackupToWhatsApp(socket, ownerNumber, info, backupFilePath) {
         `🕐 *Gerado em:* ${info.timestamp}\n` +
         `💾 *Tamanho:* ${info.size}\n` +
         `📁 *Backups salvos:* ${info.total}/${MAX_BACKUPS}\n\n` +
-        `💡 Arquivo para restauração no servidor.`,
+        `💡 Mantenha este arquivo para restauração rápida em caso de queda da VPS.`,
     });
 
     console.log("📩 [AutoBackup] Arquivo de backup enviado no WhatsApp com sucesso!");
@@ -165,7 +165,42 @@ function startAutoBackup(socket, ownerNumber) {
 
   const ativo = isBackupAtivo();
   console.log(`📁[AutoBackup] Backup iniciado. Status: ${ativo ? "✅ Ativo" : "⏸️  Inativo"}`);
+
+  // Verifica se algum horário foi perdido na reconexão
+  if (ativo) {
+    verificarBackupPerdido(socket, ownerNumber);
+  }
+
   agendarProximoBackup(socket, ownerNumber);
+}
+
+// ── VERIFICA SE PERDEU UM HORÁRIO DE BACKUP ───────────────────
+function verificarBackupPerdido(socket, ownerNumber) {
+  try {
+    // Lê o timestamp do último backup feito
+    if (!fs.existsSync(LAST_BACKUP_JSON)) return;
+    const info = JSON.parse(fs.readFileSync(LAST_BACKUP_JSON, "utf-8"));
+
+    // Converte o timestamp do último backup para Date
+    // Formato: "06/03/2026 às 00:41:51"
+    const partes = info.timestamp.replace(" às ", " ").split(" ");
+    const [dia, mes, ano] = partes[0].split("/");
+    const hora = partes[1];
+    const ultimoBackup = new Date(`${ano}-${mes}-${dia}T${hora}-03:00`);
+
+    const agora = new Date();
+    const diffHoras = (agora - ultimoBackup) / (1000 * 60 * 60);
+
+    // Se o último backup foi há mais de 6 horas, faz agora
+    if (diffHoras >= 6) {
+      console.log(`⚠️  [AutoBackup] Backup atrasado detectado (${Math.floor(diffHoras)}h sem backup). Executando agora...`);
+      runBackup(socket, ownerNumber).catch((e) =>
+        console.error("❌ [AutoBackup] Erro no backup de recuperação:", e.message)
+      );
+    }
+  } catch (e) {
+    console.error("❌ [AutoBackup] Erro ao verificar backup perdido:", e.message);
+  }
 }
 
 module.exports = { startAutoBackup, runBackup, setOwnerJid, isBackupAtivo, setBackupAtivo };
